@@ -1,0 +1,6 @@
+INSERT INTO questions_section (section_order, text, created, updated) VALUES
+('A', 'Características generales de la empresa', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('B', 'Desempeño', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('C', 'Desafíos al desarrollo empresarial', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('D', 'Políticas de promoción empresarial', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('E', 'Responsabilidad Social Empresaria', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)

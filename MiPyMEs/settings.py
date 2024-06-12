@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'questions.apps.QuestionsConfig'
+    'questions.apps.QuestionsConfig',
+    'companies.apps.CompaniesConfig'
 ]
 
 MIDDLEWARE = [

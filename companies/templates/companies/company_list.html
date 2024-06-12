@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Páginas{% endblock %}
+{% block content %}
+{% include 'companies/includes/companies_menu.html' %}
+<main role="main">
+  <div class="container mb-4">
+    {% for company in company_list %}
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto">
+          <h2 class="mb-4">{{company.name}}</h2>
+          <div>
+            <p>{{company.city|striptags|safe|truncatechars:"200"}}</p>
+            <p><a href="{% url 'company' company.id company.name|slugify %}">Leer más</a>
+              <!--
+              {% if request.user.is_staff %}
+                | <a href="#">Editar</a>
+                | <a href="#">Borrar</a>
+              {% endif %}
+              -->
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
