@@ -8,10 +8,10 @@
     <div class="collapse navbar-collapse" id="nep">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#"><i>Agregar Empresa</i></a>
+          <a class="nav-link" href="{% url 'companies:create' %}"><i>Agregar Empresa</i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'companies' %}"><i>Listado de Empresas</i></a>
+          <a class="nav-link" href="{% url 'companies:companies' %}"><i>Listado de Empresas</i></a>
         </li>
       </ul>
     </div>

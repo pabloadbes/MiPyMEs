@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Agregar Empresa{% endblock %}
+{% block content %}
+{% include 'companies/includes/companies_menu.html'%}
+<main role="main">
+  <div class="container">
+    <div class="row mt-3 mb-3">
+      <div class="col-md-9 mx-auto">
+         <form action="" method="post">{% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <div class="text-center">
+               <input type="submit" class="btn btn-primary" value="Agregar Empresa" />
+            </div>
+            
+         </form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

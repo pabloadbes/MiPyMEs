@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Actualizar Empresa{% endblock %}
+{% block content %}
+{% include 'companies/includes/companies_menu.html'%}
+<main role="main">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-9 mx-auto">
+        <div>
+          
+          {% if 'ok' in request.GET %}
+            <p style="color:green;">
+              Datos modificados.
+              <a href="{% url 'companies:company' company.id company.name|slugify %}">Haz click aquí para ver los cambios</a>.
+            </p>
+          {% endif %}
+            
+          <form action="" method="post">{% csrf_token %}
+            <table>
+              {{ form.as_table }}
+            </table>
+            <br>
+            <input type="submit" value="Actualizar Empresa" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

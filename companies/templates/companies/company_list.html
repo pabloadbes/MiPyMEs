@@ -11,13 +11,11 @@
           <h2 class="mb-4">{{company.name}}</h2>
           <div>
             <p>{{company.city|striptags|safe|truncatechars:"200"}}</p>
-            <p><a href="{% url 'company' company.id company.name|slugify %}">Leer más</a>
-              <!--
+            <p><a href="{% url 'companies:company' company.id company.name|slugify %}">Leer más</a>
               {% if request.user.is_staff %}
-                | <a href="#">Editar</a>
-                | <a href="#">Borrar</a>
+                | <a href="{% url 'companies:update' company.id %}">Editar</a>
+                | <a href="{% url 'companies:delete' company.id %}">Borrar</a>
               {% endif %}
-              -->
             </p>
           </div>
         </div>

@@ -16,7 +16,7 @@
             <li>{{company.district|safe}}</li>
           </ul>
           {% if request.user.is_staff %}
-            <p><a href="#">Editar</a></p>
+            <p><a href="{% url 'companies:update' company.id %}">Editar</a></p>
           {% endif %}
         </div>
       </div>
