@@ -4,13 +4,13 @@
 {% block content %}
 <main role="main">
   <div class="container mb-4">
-    {% for response in responses %}
+    {% for page in pages %}
       <div class="row mt-3">
         <div class="col-md-9 mx-auto">
-          <h2 class="mb-4">{{response.company}}</h2>
+          <h2 class="mb-4">{{page.title}}</h2>
           <div>
-            <p>{{response.value|striptags|safe|truncatechars:"200"}}</p>
-            <p><a href="{% url 'response' response.id response.company|slugify %}">Leer más</a>
+            <p>{{page.content|striptags|safe|truncatechars:"200"}}</p>
+            <p><a href="{% url 'page' page.id page.title|slugify %}">Leer más</a>
               <!--
               {% if request.user.is_staff %}
                 | <a href="#">Editar</a>

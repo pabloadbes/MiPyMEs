@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'core',
     'questions.apps.QuestionsConfig',
     'companies.apps.CompaniesConfig'
+    'surveys.apps.CompaniesConfig'
 ]
 
 MIDDLEWARE = [
