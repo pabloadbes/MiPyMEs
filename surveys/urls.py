@@ -1,7 +1,8 @@
 from django.urls import path
-from . import views
+from .views import SurveyListView, SurveyDetailView, SurveyCreate
 
-urlpatterns = [
-    path('', views.pages, name='pages'),
-    path('<int:page_id>/<slug:page_slug>/', views.page, name='page'),
-]
+surveys_patterns = ([
+    path('', SurveyListView.as_view(), name='surveys'),
+    path('<int:pk>/<slug:slug>/', SurveyDetailView.as_view(), name='survey'),
+    path('create/', SurveyCreate.as_view(), name='create')
+], 'surveys')

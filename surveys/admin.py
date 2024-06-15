@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Page
+from .models import Survey
 
 # Register your models here.
-class PageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'order')
+class SurveyAdmin(admin.ModelAdmin):
+    list_display = ('company', 'updated')
 
-admin.site.register(Page, PageAdmin)
+admin.site.register(Survey, SurveyAdmin)

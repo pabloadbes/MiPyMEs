@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'questions.apps.QuestionsConfig',
-    'companies.apps.CompaniesConfig'
-    'surveys.apps.CompaniesConfig'
+    'companies.apps.CompaniesConfig',
+    'surveys.apps.SurveysConfig'
 ]
 
 MIDDLEWARE = [
