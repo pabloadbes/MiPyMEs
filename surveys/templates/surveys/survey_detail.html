@@ -11,7 +11,7 @@
         <div>
           {{survey.company|safe}}
           {% if request.user.is_staff %}
-            <p><a href="#">Editar</a></p>
+            <p><a href="{% url 'surveys:update' survey.id %}">Editar</a></p>
           {% endif %}
         </div>
       </div>
