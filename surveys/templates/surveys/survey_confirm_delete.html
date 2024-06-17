@@ -9,8 +9,8 @@
       <div class="col-md-9 mx-auto">
         <div>
             <form action="" method="post">{% csrf_token %}
-                <p>¿Estás seguro de que quieres borrar la encuesta de "{{ object }}"?</p>
-                <input type="submit" value="Sí, borrar" />
+                <p>¿Estás seguro de que quieres borrar la encuesta de <b>"{{ survey }}"</b>?</p>
+                <input type="submit" class="btn btn-danger btn-block" value="Sí, borrar" />
             </form>
         </div>
       </div>

@@ -35,7 +35,7 @@ class CompanyDetailView(DetailView):
 
 class CompanyCreate(CreateView):
     model = Company
-    fields = ['name', 'cuit', 'clanae_code', 'address_street', 'address_number', 'city', 'district', 'zip_code', 'phone', 'email']
+    form_class = CompanyForm
     success_url = reverse_lazy('companies:companies')
 
 class CompanyUpdate(UpdateView):

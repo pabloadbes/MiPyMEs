@@ -4,6 +4,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Survey
+from .forms import SurveyForm
 
 # Create your views here.
 class SurveyListView(ListView):
@@ -14,7 +15,7 @@ class SurveyDetailView(DetailView):
 
 class SurveyCreate(CreateView):
     model = Survey
-    fields = ['company']
+    form_class = SurveyForm
     success_url = reverse_lazy('surveys:surveys')
     # debo redirigir a continuar llenando encuesta
 
