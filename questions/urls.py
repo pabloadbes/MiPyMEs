@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import QuestionsListView, QuestionDetail
 
 urlpatterns = [
-    path('', views.questions, name='questions'),
-    path('<int:question_id>/<slug:question_slug>/', views.question, name='question'),
+    path('', QuestionsListView.as_view(), name='questions'),
+    path('<int:pk>/<slug:slug>/', QuestionDetail.as_view(), name='question'),
 ]
