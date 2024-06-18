@@ -19,21 +19,20 @@ def ctx_dict(request):
    question_type = aux[3]
 
    items = []
-   options = []
-
    its = Item.objects.all().filter(question_id = question_number)
    
    for item in its:
       opts = Option.objects.all().filter(item_id = item)
-      list_aux = []
+      options = []
 
       for option in opts:
-         list_aux.append(option)   
-      items.append(item)
-      options.append(list_aux)
+         options.append(option)   
+
+      items.append([item, options])
+      
       
    ctx['items'] = items
-   ctx['options'] = options
+   # ctx['options'] = options
    print(ctx)
    return ctx
 
