@@ -8,10 +8,16 @@ def ctx_dict(request):
    print("**********************************************************")
    print("**********************************************************")
    print("**********************************************************")
+
+   ctx = {}
+   
    aux = request.__str__().split("/")
+   if aux[1] != "questions":
+      return ctx
+
    question_number = aux[2]
    question_type = aux[3]
-   ctx = {}
+
    items = []
    options = []
 
@@ -22,10 +28,9 @@ def ctx_dict(request):
       list_aux = []
 
       for option in opts:
-         list_aux.append(option.text)   
-      items.append(item.text+"wwwww")
+         list_aux.append(option)   
+      items.append(item)
       options.append(list_aux)
-      items.append("idjsfoisjfoijdof")
       
    ctx['items'] = items
    ctx['options'] = options
