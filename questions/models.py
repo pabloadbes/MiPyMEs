@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Section(models.Model):
     section_order = models.CharField(max_length=2, verbose_name="Orden")
@@ -9,10 +10,10 @@ class Section(models.Model):
     class Meta:
         verbose_name = "sección"
         verbose_name_plural = "secciones"
-        ordering = ["-created"]
+        ordering = ["section_order"]
     
     def __str__(self) -> str:
-        return self.text
+        return self.section_order + ": " + self.text
     
 class Question(models.Model):
     question_order = models.CharField(verbose_name="Orden", max_length=10)
@@ -26,10 +27,14 @@ class Question(models.Model):
     class Meta:
         verbose_name = "pregunta"
         verbose_name_plural = "preguntas"
-        ordering = ['-updated', 'question_order']
+        ordering = ['question_order']
 
     def __str__(self):
-        return self.content
+        return self.question_order + ". " + self.content
+    
+    def get_absolute_url(self):
+        return reverse("question_detail", kwargs={"pk": self.pk})
+    
 
 class Item(models.Model):
     item_order = models.IntegerField(verbose_name="Orden")

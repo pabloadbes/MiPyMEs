@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% comment %} {% load static %} {% endcomment %}
+{% block title %}Pregunta {{ question.number }}{% endblock %}
+{% block content %}
+<main role="main">
+  <div class="container">
+    <h1 class="section-heading mb-4" 
+        style="background-color:black;color:white" >
+      Sección {{ question.section }}
+    </h1>
+    <div class="row mt-3">
+      <div class="col-md-9 mx-auto">
+
+        {% block question_content %}
+          
+        {% endblock question_content %}
+        {% comment %} <div>
+          {{question.content|safe}}
+          {% if request.user.is_staff %}
+            <p><a href="#">Editar</a></p>
+          {% endif %}
+        </div> {% endcomment %}
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

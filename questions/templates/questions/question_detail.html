@@ -1,20 +1,41 @@
-{% extends 'core/base.html' %}
+{% extends 'questions/question_detail_base.html' %}
 {% load static %}
-{% block title %}{{question.title}}{% endblock %}
-{% block content %}
-<main role="main">
-  <div class="container">
-    <div class="row mt-3">
-      <div class="col-md-9 mx-auto">
-        <h2 class="section-heading mb-4">{{question.number}}</h2>
+{% block question_content %}
+
         <div>
-          {{question.content|safe}}
-          {% if request.user.is_staff %}
+          <b>{{ question }}</b>
+          {% comment %} {% if request.user.is_staff %}
             <p><a href="#">Editar</a></p>
-          {% endif %}
+          {% endif %} {% endcomment %}
+          <hr>
         </div>
-      </div>
-    </div>
-  </div>
-</main>
+        <div class="row">
+          {% comment %} <div class="col-md-4 mx-auto">
+            {% for item in items  %}
+              {{ item }}
+          </div> {% endcomment %}
+          <div class="col-md-12 mx-auto">
+              {% for option in options  %}
+                
+                {% for op in option %}
+                  {{op}}
+                {% endfor %}
+                  
+              {% endfor %}
+            {% comment %} {% endfor %} {% endcomment %}
+          </div>          
+        </div>
+                {% comment %} <div class="row">
+          <div class="col-md-4 mx-auto">
+            {% for item in items  %}
+              {{ item }}
+          </div>
+          <div class="col-md-4 mx-auto">
+              {% for option in options  %}
+                {{ option }}
+              {% endfor %}
+            {% endfor %}
+          </div>          
+        </div>{% endcomment %}
+
 {% endblock %}
