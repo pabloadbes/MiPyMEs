@@ -1,0 +1,42 @@
+{% load static %}
+
+{% for item in items %}
+  <div>
+    {% if item.0.text %}
+      <div class="mb-2">
+        <b>{{ item.0.text }}</b>
+      </div> 
+    {% endif %} 
+    {% for option in item.1  %}
+      <div class="row">
+        <div class="col-md-9 mx-auto mb-3">
+          <label for="{{option.id}}">{{option.text}}({{option.id}})</label>
+        </div>
+        <div class="col-md-3 mx-auto mb-3">
+          <select class="form-control" id="{{option.id}}"/>
+            <option selected>Elija un valor</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+    {% endfor %}
+    <hr>
+  </div>
+{% endfor %}
+
+
+
+<div class="mb-3">
+  <button class="btn btn-primary btn-block">Guardar</button>
+</div>
+
+

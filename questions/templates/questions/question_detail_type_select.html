@@ -1,0 +1,33 @@
+{% for item in items %}
+  <div>
+    {% if item.0.text %}
+      <div class="mb-2">
+        <b>{{ item.0.text }}</b>
+      </div> 
+    {% endif %} 
+    {% for option in item.1  %}
+    <div class="row">
+      <div class="col-md-10 mx-auto mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="{{option.id}}" id="{{option.id}}" value="{{option.id}}">
+          <label class="form-check-label" for="exampleRadios1">
+            {{option.text}}
+          </label>
+          </div>
+        </div>
+      </div>
+      {% comment %} <div class="row">
+        <div class="col-md-3 mx-auto mb-3">
+          <label for="{{option.id}}">{{option.text}}({{option.id}})</label>
+        </div>
+        <div class="col-md-9 mx-auto mb-3">
+          <input type="text" class="form-control" id="{{option.id}}"/>
+        </div>
+      </div> {% endcomment %}
+    {% endfor %}
+    <hr>
+  </div>
+{% endfor %}
+<div class="mb-3">
+  <button class="btn btn-primary btn-block">Guardar</button>
+</div>

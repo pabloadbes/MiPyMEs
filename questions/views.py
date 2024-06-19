@@ -1,10 +1,10 @@
 from typing import Any
-from django.http import HttpResponse
+#from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView
+#from django.views.generic.edit import FormView
 from django.shortcuts import render
-from .models import Question, Item
+from .models import Question
 
 # Create your views here.
 # def questions(request):
