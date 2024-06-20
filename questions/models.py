@@ -15,11 +15,25 @@ class Section(models.Model):
     def __str__(self) -> str:
         return self.section_order + ": " + self.text
     
+class Type(models.Model):
+    name = models.CharField(verbose_name="nombre")
+    description = models.CharField(max_length=500, verbose_name="Descripción")
+    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+
+    class Meta:
+        verbose_name = "Tipo de pregunta"
+        verbose_name_plural = "Tipos de pregunta"
+        ordering = ["name"]
+    
+    def __str__(self) -> str:
+        return self.name   
+    
 class Question(models.Model):
     question_order = models.CharField(verbose_name="Orden", max_length=10)
     number = models.IntegerField(verbose_name="Número")
     content = models.CharField(verbose_name="Contenido", max_length=500)
-    type = models.IntegerField(verbose_name="Tipo")
+    type = models.ForeignKey(Type, verbose_name="Tipo", on_delete=models.SET_DEFAULT, default=0)
     section = models.ForeignKey(Section, verbose_name="Secciones", on_delete=models.SET_DEFAULT, default=0)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
@@ -31,6 +45,9 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_order + ". " + self.content
+    
+    def __type__(self):
+        return self.type.name
     
     def get_absolute_url(self):
         return reverse("question_detail", kwargs={"pk": self.pk})
@@ -65,7 +82,8 @@ class Option(models.Model):
     
     def __str__(self) -> str:
         return self.text
-    
+
+
 # from django.db import models
 # from django.utils.timezone import now
 # from django.contrib.auth.models import User
