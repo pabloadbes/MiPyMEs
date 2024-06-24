@@ -5,7 +5,8 @@ class SurveyForm(forms.ModelForm):
 
    class Meta:
       model = Survey
-      fields = ['company']
+      fields = ['company', 'survey_type']
       widgets = {
-         'company': forms.Select(attrs={'class':'form-control'})
+         'company': forms.Select(attrs={'class':'form-control'}),
+         'survey_type': forms.Select(attrs={'class':'form-control'})
       }

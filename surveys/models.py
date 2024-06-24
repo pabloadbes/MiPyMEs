@@ -1,9 +1,10 @@
 from django.db import models
 from companies.models import Company
-from questions.models import Option
+from questions.models import Option, Survey_Type
 
 class Survey(models.Model):
     company = models.ForeignKey(Company, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
+    survey_type = models.ForeignKey(Survey_Type, verbose_name="Tipo de Encuesta", on_delete=models.SET_DEFAULT, default=1)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
 
