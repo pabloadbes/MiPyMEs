@@ -40,7 +40,7 @@ class Question_Type(models.Model):
         verbose_name = "Tipo de pregunta"
         verbose_name_plural = "Tipos de pregunta"
         ordering = ["name"]
-    
+        
     def __str__(self) -> str:
         return self.name
         
@@ -59,7 +59,7 @@ class Question(models.Model):
         ordering = ['question_order']
 
     def __str__(self):
-        return self.question_order + ". " + self.content
+        return self.question_order + ". " + self.text
     
     def __type__(self):
         return self.type.name
@@ -71,7 +71,7 @@ class Question(models.Model):
 class Item(models.Model):
     item_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
-    question = models.ForeignKey(Question, verbose_name="Preguntas", on_delete=models.SET_DEFAULT, default=0)
+    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
     created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
 
@@ -86,7 +86,7 @@ class Item(models.Model):
 class Option(models.Model):
     option_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
-    item = models.ForeignKey(Item, verbose_name="Opciones", on_delete=models.SET_DEFAULT, default=0)
+    item = models.ForeignKey(Item, verbose_name="Item", on_delete=models.SET_DEFAULT, default=0)
     created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
 
@@ -94,6 +94,35 @@ class Option(models.Model):
         verbose_name = "opción"
         verbose_name_plural = "opciones"
         ordering = ["option_order"]
+    
+    def __str__(self) -> str:
+        return self.text
+    
+class Note(models.Model):
+    note_order = models.IntegerField(verbose_name="Orden")
+    text = models.CharField(max_length=500, verbose_name="Texto")
+    item = models.ForeignKey(Item, verbose_name="Item", on_delete=models.SET_DEFAULT, default=0)
+    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+
+    class Meta:
+        verbose_name = "nota"
+        verbose_name_plural = "notas"
+        ordering = ["note_order"]
+    
+    def __str__(self) -> str:
+        return self.text
+    
+class Subtitle(models.Model):
+    text = models.CharField(max_length=500, verbose_name="Texto")
+    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
+    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
+    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+
+    class Meta:
+        verbose_name = "subtítulo"
+        verbose_name_plural = "subtítulos"
+        ordering = ["-updated"]
     
     def __str__(self) -> str:
         return self.text
