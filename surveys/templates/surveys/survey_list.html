@@ -10,7 +10,7 @@
         <div class="col-md-9 mx-auto">
           <h2 class="mb-4">{{survey.company}}</h2>
           <div>
-            <p>{{survey.company|striptags|safe|truncatechars:"200"}}</p>
+            <p>Encuesta de <b>{{survey.survey_type}}</b></p>
             <p><a href="{% url 'surveys:survey' survey.id survey.company|slugify %}">Leer más</a>
               {% if request.user.is_staff %}
                 | <a href="{% url 'surveys:update' survey.id %}">Editar</a>

@@ -9,7 +9,8 @@
       <div class="col-md-9 mx-auto">
         <h2 class="section-heading mb-4">{{survey.company}}</h2>
         <div>
-          {{survey.company|safe}}
+          <p>Encuesta de <b>{{survey.survey_type}}</b></p>
+
           {% if request.user.is_staff %}
             <p><a href="{% url 'surveys:update' survey.id %}">Editar</a></p>
           {% endif %}

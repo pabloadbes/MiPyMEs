@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{survey.company}}{% endblock %}
+{% block content %}
+
+<main role="main">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-9 mx-auto">
+        <h2 class="section-heading mb-4">Empresa: {{ survey }}</h2>
+        <div>
+          <p>Encuesta de <b>{{survey.survey_type}}</b></p>
+          <h1>Formulario
+            {% if survey.survey_type_id == 1 %}
+              S
+            {% endif %}
+
+            {% if survey.survey_type_id == 2 %}
+              P
+            {% endif %}
+          </h1>
+          <hr>
+          <div class="text-center">
+            <button class="btn btn-primary btn-block">Iniciar Encuesta</button>
+          </div>
+          {% comment %} {% if request.user.is_staff %}
+            <p><a href="{% url 'surveys:update' survey.id %}">Editar</a></p>
+          {% endif %} {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

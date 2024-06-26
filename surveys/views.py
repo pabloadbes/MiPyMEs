@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -16,12 +17,13 @@ class SurveyDetailView(DetailView):
 class SurveyCreate(CreateView):
     model = Survey
     form_class = SurveyForm
-    success_url = reverse_lazy('surveys:surveys')
-    # debo redirigir a continuar llenando encuesta
+
+    def get_success_url(self) -> str:
+        return reverse_lazy('surveys:init', args=[self.object.id])
 
 class SurveyUpdate(UpdateView):
     model = Survey
-    fields = ['company']
+    form_class = SurveyForm
     template_name_suffix = '_update_form'
 
     def get_success_url(self) -> str:
@@ -30,3 +32,14 @@ class SurveyUpdate(UpdateView):
 class SurveyDelete(DeleteView):
     model = Survey
     success_url = reverse_lazy('surveys:surveys')
+
+class SurveyInitView(TemplateView):
+    template_name = 'surveys/survey_init.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["survey"] = Survey.objects.all().filter(id = context['pk']).first().__get_survey__()
+        print("CONTEXTO")
+        print(context)
+        print(context['survey'].survey_type_id)
+        return context

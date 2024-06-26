@@ -18,6 +18,9 @@ class Survey(models.Model):
         # return self.company.__str__(self.company)
         # return self.company.__str__(company.self)
 
+    def __get_survey__(self):
+        return self
+
 class Response(models.Model):
     value = models.CharField(verbose_name="Valor", max_length=500)
     survey = models.ForeignKey(Survey, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
