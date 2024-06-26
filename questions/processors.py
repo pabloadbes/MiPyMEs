@@ -1,4 +1,4 @@
-from .models import Question, Item, Option
+from .models import Question, Item, Option, Note, Subtitle
 
 def ctx_dict(request):
    print("**********************************************************")
@@ -45,6 +45,9 @@ def ctx_questions(request):
    print(question)
    print(question.question_type)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
+
+   subtitle = Subtitle.objects.all().filter(question_id = question_number).first()
+   print(subtitle)
    items = []
    its = Item.objects.all().filter(question_id = question_number)
 
@@ -52,10 +55,16 @@ def ctx_questions(request):
       opts = Option.objects.all().filter(item_id = item)
       options = []
       for option in opts:
-         options.append(option)   
+         nts = Note.objects.all().filter(option_id = option.id)
+         notes = []
+         for note in nts:
+            notes.append(note.text)
+         options.append([option, notes])   
       items.append([item, options])
 
    ctx = {}
    ctx['items'] = items
    ctx['template_type'] = template_type
+   if subtitle:
+      ctx['subtitle'] = subtitle
    return ctx

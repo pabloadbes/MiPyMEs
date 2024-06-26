@@ -101,7 +101,7 @@ class Option(models.Model):
 class Note(models.Model):
     note_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
-    item = models.ForeignKey(Item, verbose_name="Item", on_delete=models.SET_DEFAULT, default=0)
+    option = models.ForeignKey(Option, verbose_name="Option", on_delete=models.SET_DEFAULT, default=1)
     created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
 

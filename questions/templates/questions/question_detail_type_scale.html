@@ -10,10 +10,13 @@
     {% for option in item.1  %}
       <div class="row">
         <div class="col-md-9 mx-auto mb-3">
-          <label for="{{option.id}}">{{option.text}}({{option.id}})</label>
+          <label for="{{option.0.id}}"
+                  title="{{option.1.0}}">
+            {{option.0.text}}({{option.0.id}})
+          </label>
         </div>
         <div class="col-md-3 mx-auto mb-3">
-          <select class="form-control" id="{{option.id}}"/>
+          <select class="form-control" id="{{option.0.id}}"/>
             <option selected>Elija un valor</option>
             <option value="1">1</option>
             <option value="2">2</option>
