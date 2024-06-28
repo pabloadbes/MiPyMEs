@@ -19,7 +19,10 @@ class SurveyCreate(CreateView):
     form_class = SurveyForm
 
     def get_success_url(self) -> str:
-        return reverse_lazy('surveys:init', args=[self.object.id])
+        if self.object.id:
+            return reverse_lazy('surveys:init', args=[self.object.id])
+        survey = Survey.objects.get(company_id=self.object.company_id)
+        return reverse_lazy('surveys:init', args=[survey.id])
 
 class SurveyUpdate(UpdateView):
     model = Survey
