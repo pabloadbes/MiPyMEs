@@ -9,11 +9,19 @@ class Survey_State(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
 
+    class Meta:
+        verbose_name = "Estado de la encuesta"
+        verbose_name_plural = "Estados de la encuesta"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+    
 class Survey(models.Model):
     company = models.ForeignKey(Company, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
     survey_type = models.ForeignKey(Survey_Type, verbose_name="Tipo de Encuesta", on_delete=models.SET_DEFAULT, default=1)
     survey_state = models.ForeignKey(Survey_State, verbose_name="Estado de la Encuesta", on_delete=models.SET_DEFAULT, default=1)
-    progress = models.IntegerField(verbose_name="Progreso")
+    progress = models.IntegerField(verbose_name="Progreso", default=1)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
 
