@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from .models import Survey
 from .forms import SurveyForm
@@ -42,7 +42,57 @@ class SurveyInitView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["survey"] = Survey.objects.all().filter(id = context['pk']).first().__get_survey__()
-        print("CONTEXTO")
-        print(context)
-        print(context['survey'].survey_type_id)
+        print("CONTEXTO DE INIT")
+        # print(context)
+        # print(context['survey'].survey_type_id)
+        # print("SELF DE INIT")
+        # print(self)
+        # # print(self.name)
+        # print(self.__dict__)
         return context
+    
+    def get(self, request, *args, **kwargs):
+        # Lógica para manejar solicitudes GET
+        print("TAMO EN EL GET")
+        print(self)
+        print(request)
+        print(args)
+        print(kwargs)
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        print("TAMO EN EL POST")
+        print(self)
+        print(request)
+        print(args)
+        print(kwargs)
+        # Lógica para manejar solicitudes POST
+        # Puedes acceder a los datos del formulario con request.POST
+        data = request.POST.get('campo')
+        # Procesa los datos del formulario aquí
+        context = self.get_context_data(**kwargs)
+        context['resultado'] = 'Datos procesados'
+        return self.render_to_response(context)
+    
+# class SurveyInitView(FormView):
+#     template_name = 'surveys/survey_init.html'
+#     form_class = SurveyForm
+#     success_url = 'surveys/surveys.html'
+
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         # form.send_email()
+#         return super().form_valid(form)
+#     # def get_context_data(self, **kwargs):
+#     #     context = super().get_context_data(**kwargs)
+#     #     context["survey"] = Survey.objects.all().filter(id = context['pk']).first().__get_survey__()
+#     #     print("CONTEXTO DE INIT")
+#     #     print(context)
+#     #     print(context['survey'].survey_type_id)
+#     #     print("SELF DE INIT")
+#     #     print(self)
+#     #     # print(self.name)
+#     #     print(self.__dict__)
+#     #     return context

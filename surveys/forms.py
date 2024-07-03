@@ -10,3 +10,4 @@ class SurveyForm(forms.ModelForm):
          'company': forms.Select(attrs={'class':'form-control'}),
          'survey_type': forms.Select(attrs={'class':'form-control'})
       }
+
