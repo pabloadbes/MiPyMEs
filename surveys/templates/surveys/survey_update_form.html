@@ -12,7 +12,7 @@
           {% if 'ok' in request.GET %}
             <p style="color:green;">
               Encuesta actualizada.
-              <a href="{% url 'surveys:survey' survey.id survey.company.name|slugify %}">Haz clic aquí para ver el resultado.</a>
+              <a href="{% url 'surveys:survey' survey.id survey.id %}">Haz clic aquí para ver el resultado.</a>
             </p>
           {% endif %}
             

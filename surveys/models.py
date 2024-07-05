@@ -35,7 +35,8 @@ class Survey(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if(Survey.objects.all().filter(company_id=self.company.id)):
-            return
+            if(not self.id):
+                return
         return super().save(*args, **kwargs)
 
     def __get_survey__(self):

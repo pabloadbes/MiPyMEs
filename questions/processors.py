@@ -12,13 +12,10 @@ def ctx_dict(request):
    ctx = {}
    
    page = page_request(request)
-   # print(page)
    if page == "home":
       return ctx
    elif page == "questions":
       ctx = ctx_questions(request)
-
-   # print(ctx)
    return ctx
 
 # question types
@@ -29,10 +26,7 @@ def ctx_dict(request):
 # 5:multiple select
 
 def page_request(request):
-   # print(request)
    aux = request.__str__().split("/")
-   # print(aux)
-   # print(len(aux))
    if (aux[1]=="'>"):
       return "home"
    else:
@@ -42,12 +36,9 @@ def ctx_questions(request):
    aux = request.__str__().split("/")
    question_number = aux[2]
    question = Question.objects.all().filter(id = question_number).first()
-   # print(question)
-   # print(question.question_type)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
 
    subtitle = Subtitle.objects.all().filter(question_id = question_number).first()
-   # print(subtitle)
    items = []
    its = Item.objects.all().filter(question_id = question_number)
 

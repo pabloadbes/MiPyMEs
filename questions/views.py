@@ -1,39 +1,30 @@
-from typing import Any
-#from django.http import HttpResponse
+from django.db import transaction
+from django.http import HttpResponseRedirect
+from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
-#from django.views.generic.edit import FormView
-from django.shortcuts import render
+from django.urls import reverse_lazy
 from .models import Question
+from surveys.models import Survey
 
 # Create your views here.
-# def questions(request):
-#     questions = get_list_or_404(Question)
-#     return render(request, 'questions/questions.html', {'questions':questions})
-
 class QuestionsListView(ListView):
     model = Question
 
-# def question(request, question_id, question_slug):
-#     question = get_object_or_404(Question, id=question_id)
-#     return render(request, 'questions/question.html', {'question':question})
+class QuestionDetail(TemplateView):
+    template_name = 'questions/question_detail.html'
 
-class QuestionDetail(DetailView):
-    model = Question
-
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        # print(ctx)
-        # print("HOLANDA")
-        # print("context")
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #context[""] =
-        # print(context)
-        # print("self")
-        # print(self.get_object)
-        # items = Item.objects.all().filter(question_id=question.id)
-        # print("ITEM")
-        # print(items)
+        context["question"] = Question.objects.get(id = context['pk'])
         return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        survey_id = context['survey']
+        survey = Survey.objects.get(pk = survey_id)
+        survey.progress = survey.progress + 1
+        survey.save()
+        return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.progress, 'survey':survey.id}))
 
 
 # question types
@@ -42,28 +33,3 @@ class QuestionDetail(DetailView):
 # 3:scale
 # 4:select
 # 5:multiple select
-
-# Primer intento formulario simple
-# class Question0FormView(FormView):
-#     model = Question
-#     template_name = 'questions/question0.html'
-#     form_class = Question0Form
-#     success_url = '/'
-
-#     def form_valid(self, form: Question0Form) -> HttpResponse:
-#         print("TODO OK CON EL TIPO 0 PREGUNTA")
-#         return super().form_valid(form)
-
-#     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-#         print("self")
-#         print(self.model.objects.all())
-#         print("kwargs")
-#         print(**kwargs)
-#         print("dict")
-#         print(dict)
-#         print("super")
-#         print(super().get_context_data(**kwargs))
-#         return super().get_context_data(**kwargs)
-
-# Segundo intento formulario con modelo
-# Al parecer me sirve solo para CRUD

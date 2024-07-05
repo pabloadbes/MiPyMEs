@@ -9,14 +9,7 @@
         <div class="col-md-9 mx-auto">
           <h2 class="mb-4">{{question.number}}</h2>
           <div>
-            <p>{{question.content|striptags|safe|truncatechars:"200"}}</p>
-            <p><a href="{% url 'question' question.id question.number|slugify %}">Leer más</a>
-              <!--
-              {% if request.user.is_staff %}
-                | <a href="#">Editar</a>
-                | <a href="#">Borrar</a>
-              {% endif %}
-              -->
+
             </p>
           </div>
         </div>

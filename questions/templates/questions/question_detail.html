@@ -8,10 +8,16 @@
 
   <div class="mb-5">
     <b>{{ question }}</b>
-    {% comment %} {% if request.user.is_staff %}
-      <p><a href="#">Editar</a></p>
-    {% endif %} {% endcomment %}
+
   </div>
+
+  <form action="" method=post>
+    {% csrf_token %}
         
-  {% include template_type %}
+    {% include template_type %}
+
+    <div class="mb-3">
+      <input type="submit" class="btn btn-primary btn-block" value="Guardar" />
+    </div>
+  </form>
 {% endblock %}

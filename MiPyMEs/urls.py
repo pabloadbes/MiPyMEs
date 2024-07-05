@@ -22,7 +22,6 @@ from surveys.urls import surveys_patterns
 
 urlpatterns = [
     path('', include('core.urls')),
-    # path('questions/', include('questions.urls')),
     path('companies/', include(companies_patterns)),
     path('questions/', include(questions_patterns)),
     path('surveys/', include(surveys_patterns)),

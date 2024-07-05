@@ -20,22 +20,14 @@
             {% endif %}
           </h1>
           <hr>
-          {% comment %} <form action="{% url 'questions:question_detail' survey.progress survey.company|slugify %}" method="get"> {% endcomment %}
           <form action="" method="post">
             {% csrf_token %}
             <input type="text" id="name" name="xxxxxx">
             <div class="text-center">
               <input type="submit" class="btn btn-primary btn-block" value="Iniciar Encuesta" />
-              {% comment %} <button class="btn btn-primary btn-block">Iniciar Encuesta</button> {% endcomment %}
             </div>
           </form>
-          <p>GET</p>
-          {{request.GET}}
-          <p>POST</p>
-          {{request.POST}}
-          {% comment %} {% if request.user.is_staff %}
-            <p><a href="{% url 'surveys:update' survey.id %}">Editar</a></p>
-          {% endif %} {% endcomment %}
+
         </div>
       </div>
     </div>
