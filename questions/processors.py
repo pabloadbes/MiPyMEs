@@ -1,4 +1,6 @@
 from .models import Question, Item, Option, Note, Subtitle
+from companies.models import Company
+from surveys.models import Survey
 
 def ctx_dict(request):
    print("**********************************************************")
@@ -35,7 +37,12 @@ def page_request(request):
 def ctx_questions(request):
    aux = request.__str__().split("/")
    question_number = aux[2]
-   question = Question.objects.all().filter(id = question_number).first()
+   question = Question.objects.get(id = question_number)
+   survey_id = aux[3]
+   company_id = Survey.objects.get(id = survey_id).company_id
+   print("COMPANY ID")
+   print(company_id)
+   company = Company.objects.get(id = company_id)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
 
    subtitle = Subtitle.objects.all().filter(question_id = question_number).first()
@@ -54,6 +61,7 @@ def ctx_questions(request):
       items.append([item, options])
 
    ctx = {}
+   ctx['company'] = company
    ctx['items'] = items
    ctx['template_type'] = template_type
    if subtitle:
