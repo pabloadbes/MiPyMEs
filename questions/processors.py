@@ -18,6 +18,10 @@ def ctx_dict(request):
       return ctx
    elif page == "questions":
       ctx = ctx_questions(request)
+   elif page == "surveys":
+      ctx = ctx_surveys(request)
+   print("CONTEXTO")
+   print(ctx)
    return ctx
 
 # question types
@@ -64,4 +68,17 @@ def ctx_questions(request):
    ctx['template_type'] = template_type
    if subtitle:
       ctx['subtitle'] = subtitle
+   return ctx
+
+def ctx_surveys(request):
+   ctx = {}
+   aux = request.__str__().split("/")
+   survey_id = int(''.join([car for car in aux[3] if car.isdigit()]))
+   if aux[2] == "init":
+      print("ENCUESTA TIPO")
+      survey = Survey.objects.get(id = survey_id)
+      first_letter = survey.survey_type
+      print(first_letter)
+      # ctx['survey_letter'] = 
+      return ctx
    return ctx

@@ -3,6 +3,7 @@ from django.urls import reverse
 
 class Survey_Type(models.Model):
     name = models.CharField(verbose_name="nombre")
+    year = models.IntegerField(verbose_name="año")
     description = models.CharField(max_length=500, verbose_name="Descripción")
     created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
@@ -13,7 +14,7 @@ class Survey_Type(models.Model):
         ordering = ["name"]
     
     def __str__(self) -> str:
-        return self.name   
+        return self.name + " " + str(self.year)
     
 class Section(models.Model):
     section_order = models.CharField(max_length=2, verbose_name="Orden")

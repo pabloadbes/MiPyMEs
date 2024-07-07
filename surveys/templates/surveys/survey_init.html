@@ -10,8 +10,8 @@
         <h2 class="section-heading mb-4">Empresa: {{ survey }}</h2>
         <div>
           <p>Encuesta de <b>{{survey.survey_type}}</b></p>
-          <h1>Formulario
-            {% if survey.survey_type_id == 1 %}
+          <h1>Formulario {{survey.survey_type|slice:":0"}}
+            {% if "Servicios" in survey.survey_type %}
               S
             {% endif %}
 
