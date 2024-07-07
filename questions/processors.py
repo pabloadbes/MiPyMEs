@@ -40,8 +40,6 @@ def ctx_questions(request):
    question = Question.objects.get(id = question_number)
    survey_id = aux[3]
    company_id = Survey.objects.get(id = survey_id).company_id
-   print("COMPANY ID")
-   print(company_id)
    company = Company.objects.get(id = company_id)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
 

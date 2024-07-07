@@ -20,12 +20,11 @@ class QuestionDetail(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        responses = []
         print("EN EL POST")
         context = self.get_context_data(**kwargs)
         survey_id = context['survey']
         survey = Survey.objects.get(pk = survey_id)
-        survey.progress = survey.progress + 1
+        # survey.progress = survey.progress + 1
 
         ctx = ctx_dict(request)
         data = request.POST.dict()
@@ -34,17 +33,49 @@ class QuestionDetail(TemplateView):
         print(request)
         print("DATA")
         print(data)
-
-        try:
-            with transaction.atomic():
+        # try:
+        with transaction.atomic():
+            if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
                 for d in data:
                     response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id)
                     response.save()
-                survey.save()
+            
+            elif "select_one" in ctx['template_type']:
+                for item in ctx['items']:
+                    for option in item[1]:
+                        print(option[0].text)
+                        if option[0].text == data[str(item[0].id)]:
+                            response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id)
+                        else: 
+                            response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id)
+                        response.save()
 
-        except Exception as e:
-            print(f"Error: {e}")
-            return HttpResponseRedirect(reverse_lazy(""))
+            elif "select_many" in ctx['template_type']: #falta poner a prueba este caso
+                for item in ctx['items']:
+                    print("ITEM")
+                    print(item)
+                    print(item[0].id)
+                    print(item[0].text)
+                    print(data[str(item[0].id)])
+                    for option in item[1]:
+                        print("OPTION")
+                        print(option)
+                        print(option[0])
+                        print(option[0].id)
+                        print(option[0].text)
+                        if option[0].text in data[str(item[0].id)]:
+                            print("ADENTRO!!")
+                            response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id)
+                        else: 
+                            print("AFUERA!!")
+                            response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id)
+                        response.save()
+
+                # survey.save()
+
+        # except Exception as e:
+        #     print(f"Error: {e}")
+        #     return HttpResponseRedirect(reverse_lazy("home"))
 
 
         return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.progress, 'survey':survey.id}))
