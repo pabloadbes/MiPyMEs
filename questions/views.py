@@ -20,19 +20,28 @@ class QuestionDetail(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print("EN EL POST")
+        print("EN EL POST DE LA PREGUNTA")
         context = self.get_context_data(**kwargs)
         survey_id = context['survey']
         survey = Survey.objects.get(pk = survey_id)
-        survey.progress = survey.progress + 1
+        survey.next_question = survey.next_question + 1
+        survey.progress = 100*(survey.next_question - 1)/survey.number_of_questions
 
         ctx = ctx_dict(request)
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
+        print("contexto ctx y request en el post de la pregunta!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(context)
         print(ctx)
         print(request)
         print("DATA")
         print(data)
+        print("PREGUNTA - ID - NUMERO - ORDEN")
+        question = context['question']
+        print(question)
+        print(question.id)
+        print(question.question_order)
+        print(question.number)
         try:
             with transaction.atomic():
                 if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
@@ -65,8 +74,20 @@ class QuestionDetail(TemplateView):
             print(f"Error: {e}")
             return HttpResponseRedirect(reverse_lazy("home"))
 
-
-        return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.progress, 'survey':survey.id}))
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print("***************************************************************")
+        print(survey.next_question)
+        print(survey.number_of_questions)
+        if question.number == survey.number_of_questions:
+            return HttpResponseRedirect(reverse_lazy("surveys:end", args=[survey.id]))
+        return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.next_question, 'survey':survey.id}))
 
 
 # question types

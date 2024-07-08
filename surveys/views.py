@@ -8,6 +8,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.urls import reverse, reverse_lazy
 from .models import Survey
 from .forms import SurveyForm
+from questions.models import Question, Section
 
 # Create your views here.
 class SurveyListView(ListView):
@@ -43,7 +44,10 @@ class SurveyInitView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["survey"] = Survey.objects.all().filter(id = context['pk']).first().__get_survey__()
+        print("SURVEY INIT GET POR ID")
+        context["survey"] = Survey.objects.get(id = context['pk'])
+        print("GET_SURVEY")
+        print(context['survey'])
         return context
 
     def post(self, request, *args, **kwargs):
@@ -51,4 +55,35 @@ class SurveyInitView(TemplateView):
         #falta implementar validaciones
         context = self.get_context_data(**kwargs)
         survey = context['survey']    
-        return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.progress, 'survey':survey.id}))
+        survey.number_of_questions = survey.calculate_number_of_questions()
+        survey.next_question = survey.calculate_next_question()
+        survey.progress = 0
+        survey.save()
+        return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.next_question, 'survey':survey.id}))
+    
+class SurveyEndView(TemplateView):
+    template_name = 'surveys/survey_end.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["survey"] = Survey.objects.get(id = context['pk'])
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        print("**********************************************")
+        print("EN EL POST DEL SURVEY END")
+
+        # context = self.get_context_data(**kwargs)
+        # survey = context['survey']    
+        # if survey.next_question == 1:
+        #     section_ids = list(Section.objects.all().filter(survey_type = survey.survey_type).values_list('id', flat=True))
+        #     question_ids = []
+        #     for section_id in section_ids:
+        #         question_ids.extend(list(Question.objects.all().filter(section_id = section_id).order_by('id').values_list('id', flat=True)))
+
+        #     survey_questions = len(question_ids)
+        #     survey.number_of_questions = survey_questions
+        #     survey.next_question = question_ids[0]
+        #     survey.progress = 0
+        #     survey.save()
+        return HttpResponseRedirect(reverse_lazy("home"))

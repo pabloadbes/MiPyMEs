@@ -5,11 +5,6 @@ from surveys.models import Survey
 def ctx_dict(request):
    print("**********************************************************")
    print("**********************************************************")
-   print("**********************************************************")
-   print("**********************************************************")
-   print("**********************************************************")
-   print("**********************************************************")
-   print("**********************************************************")
 
    ctx = {}
    
@@ -73,12 +68,11 @@ def ctx_questions(request):
 def ctx_surveys(request):
    ctx = {}
    aux = request.__str__().split("/")
-   survey_id = int(''.join([car for car in aux[3] if car.isdigit()]))
    if aux[2] == "init":
-      print("ENCUESTA TIPO")
-      survey = Survey.objects.get(id = survey_id)
-      first_letter = survey.survey_type
-      print(first_letter)
-      # ctx['survey_letter'] = 
-      return ctx
+      if aux[3]:
+         survey_id = int(''.join([car for car in aux[3] if car.isdigit()]))      
+         survey = Survey.objects.get(id = survey_id)
+         first_letter = survey.survey_type.name[0:1]
+         ctx['first_letter'] = first_letter
+         return ctx
    return ctx
