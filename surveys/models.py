@@ -23,7 +23,7 @@ class Survey(models.Model):
     survey_type = models.ForeignKey(Survey_Type, verbose_name="Tipo de Encuesta", on_delete=models.SET_DEFAULT, default=1)
     survey_state = models.ForeignKey(Survey_State, verbose_name="Estado de la Encuesta", on_delete=models.SET_DEFAULT, default=1)
     progress = models.IntegerField(verbose_name="Progreso", default=1)
-    next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=1)
+    next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=0)
     number_of_questions = models.IntegerField(verbose_name="Cantidad de preguntas", default=1)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
@@ -37,15 +37,40 @@ class Survey(models.Model):
         return self.company.name
 
     def save(self, *args, **kwargs) -> None:
-        print("DENTRO DEL SAVE()")
-        print("ESTE ES EL SELF QUE RECIBO EN EL SAVE() DE SURVEY")
-        print(self)
         if(Survey.objects.all().filter(company_id=self.company.id)):    #Si la encuesta ya existe
             if(not self.id):                                            #Si no tiene id, estamos creando encuesta que ya existe, no hacemos nada (return vacío)
-                print("NO GUARDAMOS NADA PAPÁ")                                                        #Si tiene id, estamos en otra pantalla que no es creación, salimos del if y retornamos el save por defecto, sí guardamos cambios
                 return
-        print("SI GUARDAMOS")
         return super().save(*args, **kwargs)
+    
+    def get_survey_type(self) -> str:
+        return str(self.survey_type)
+    
+    def get_survey_state(self) -> str:
+        return str(self.survey_state)
+    
+    def set_survey_state(self, survey_type_id:int) -> None:
+        self.survey_type = survey_type_id
+
+    def get_progress(self) -> int:
+        return self.progress
+    
+    def set_progress(self, progress:int) -> None:
+        self.progress = progress
+
+    def get_next_question(self) -> int:
+        try:
+            return Question.objects.get(id = self.next_question).id
+        except:
+            return 0
+
+    def set_next_question(self, next_question_id:int) -> None:
+        self.next_question = next_question_id        
+
+    def get_number_of_questions(self) -> int:
+        return self.number_of_questions
+    
+    def set_number_of_questions(self, number_of_questions:int) -> None:
+        self.number_of_questions = number_of_questions
 
     def get_questions(self) -> List[Question]:
         section_ids = list(Section.objects.all().filter(survey_type = self.survey_type).values_list('id', flat=True))
@@ -59,8 +84,6 @@ class Survey(models.Model):
     
     def get_first_question(self) -> int:
         questions = self.get_questions()
-        for question in questions:
-            print(question)
         questions.sort(key = lambda question:question.number)
         return questions[0].id
     
@@ -69,41 +92,24 @@ class Survey(models.Model):
         questions.sort(key = lambda question:question.number, reverse=True)
         return questions[0].id
     
-    def get_next_question(self) -> int:
-        return Question.objects.get(id = self.next_question).values('id')
-    
     def calculate_next_question(self) -> int:
         #Al iniciar la encuesta debe indicar la primera pregunta
         print("ESTADO DE LA ENCUESTA")
-        if str(self.survey_state) == "created":
+        if self.get_survey_state() == "created":
             print("NO COMPLETA")
-            if self.next_question == 1:
+            if self.get_next_question() == 0:
                 print("NO INICIADA")
                 return self.get_first_question()
         #Debe detectar si la encuesta se completó
-            if self.next_question == self.get_number_of_questions():
-                self.survey_state = 2
+            if self.get_next_question() == self.get_number_of_questions():
+                self.set_survey_state(2)
                 return self.get_last_question()
         #Durante el llenado debe indicar la pregunta siguiente
-            self.next_question = self.next_question + 1
+            self.set_next_question(self.get_next_question() + 1)
         #Evaluar filtros
         
         return self.next_question
 
-    # def __get_first_question__(self) -> List[Question]:
-    #     section_ids = list(Section.objects.all().filter(survey_type = self.survey_type).values_list('id', flat=True))
-    #     question_ids = []
-    #     for section_id in section_ids:
-    #         question_ids.extend(list(Question.objects.all().filter(section_id = section_id).order_by('id').values_list('id', flat=True)))
-
-    #         survey_questions = len(question_ids)
-    #         survey.number_of_questions = survey_questions
-    #         survey.next_question = question_ids[0]
-    #         survey.progress = 0
-    #         survey.save()
-
-    #     return Question.objects.all()
-    
 class Response(models.Model):
     value = models.CharField(verbose_name="Valor", max_length=500)
     survey = models.ForeignKey(Survey, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
