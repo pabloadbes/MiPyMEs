@@ -48,8 +48,8 @@ class Survey(models.Model):
     def get_survey_state(self) -> str:
         return str(self.survey_state)
     
-    def set_survey_state(self, survey_type_id:int) -> None:
-        self.survey_type = survey_type_id
+    def set_survey_state(self, survey_state_id:int) -> None:
+        self.survey_state_id = survey_state_id
 
     def get_progress(self) -> int:
         return self.progress
@@ -92,17 +92,16 @@ class Survey(models.Model):
         questions.sort(key = lambda question:question.number, reverse=True)
         return questions[0].id
     
+    def is_survey_complete(self) -> bool:
+        return self.get_next_question() == self.get_number_of_questions() + self.get_first_question() - 1
+    
     def calculate_next_question(self) -> int:
         #Al iniciar la encuesta debe indicar la primera pregunta
-        print("ESTADO DE LA ENCUESTA")
         if self.get_survey_state() == "created":
-            print("NO COMPLETA")
             if self.get_next_question() == 0:
-                print("NO INICIADA")
                 return self.get_first_question()
         #Debe detectar si la encuesta se completó
-            if self.get_next_question() == self.get_number_of_questions():
-                self.set_survey_state(2)
+            if self.is_survey_complete():
                 return self.get_last_question()
         #Durante el llenado debe indicar la pregunta siguiente
             self.set_next_question(self.get_next_question() + 1)

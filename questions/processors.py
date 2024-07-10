@@ -3,9 +3,6 @@ from companies.models import Company
 from surveys.models import Survey
 
 def ctx_dict(request):
-   print("**********************************************************")
-   print("**********************************************************")
-
    ctx = {}
    
    page = page_request(request)
@@ -15,8 +12,6 @@ def ctx_dict(request):
       ctx = ctx_questions(request)
    elif page == "surveys":
       ctx = ctx_surveys(request)
-   print("CONTEXTO")
-   print(ctx)
    return ctx
 
 # question types

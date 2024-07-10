@@ -25,6 +25,8 @@ class QuestionDetail(TemplateView):
         survey = Survey.objects.get(pk = survey_id)
         question = context['question']
 
+        if survey.is_survey_complete():
+            survey.set_survey_state(2)
         survey.set_next_question(survey.calculate_next_question())
         survey.set_progress(100 * question.number / survey.get_number_of_questions())
 
