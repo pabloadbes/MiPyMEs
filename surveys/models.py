@@ -22,8 +22,8 @@ class Survey(models.Model):
     company = models.ForeignKey(Company, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
     survey_type = models.ForeignKey(Survey_Type, verbose_name="Tipo de Encuesta", on_delete=models.SET_DEFAULT, default=1)
     survey_state = models.ForeignKey(Survey_State, verbose_name="Estado de la Encuesta", on_delete=models.SET_DEFAULT, default=1)
-    progress = models.IntegerField(verbose_name="Progreso", default=1)
-    next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=0)
+    progress = models.IntegerField(verbose_name="Progreso", default=0)
+    next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=1)
     number_of_questions = models.IntegerField(verbose_name="Cantidad de preguntas", default=1)
     created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
     updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
@@ -61,7 +61,7 @@ class Survey(models.Model):
         try:
             return Question.objects.get(id = self.next_question).id
         except:
-            return 0
+            return 1
 
     def set_next_question(self, next_question_id:int) -> None:
         self.next_question = next_question_id        

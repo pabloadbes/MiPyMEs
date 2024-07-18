@@ -4,57 +4,57 @@
 {% include 'surveys/includes/surveys_menu.html' %}
 <main role="main">
   <div class="container mb-4">
-      <ul class="nav list-group">
-        {% for survey in survey_list %}
-          <li class="nav-item list-group-item list-group-item-action">
-            <a class="nav-link" href="{% url 'questions:question_detail' survey.next_question survey.id %}"
-                
-                {% if survey.survey_state_id == 2 or survey.survey_state_id == 4 %}
-                  style="pointer-events: none;cursor: default;" 
-                {% endif %}
-                >
-              <div class="row" style="display:flex;justify-content:left;align-items:center;color:black">
-                <div class="col-md-8 mx-auto">
-                  <h3>{{survey.company}}</h3>
-                </div>
-                <div class="col-md-2 mx-auto">
-                  <p>{{survey.updated|date:"SHORT_DATETIME_FORMAT"}}</p>
-                </div>              
-                <div class="col-md-1 mx-auto">
-                  
-                  {% if survey.survey_state_id == 1  %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-forward-fill" viewBox="0 0 16 16">
-                      <path d="m9.77 12.11 4.012-2.953a.647.647 0 0 0 0-1.114L9.771 5.09a.644.644 0 0 0-.971.557V6.65H2v3.9h6.8v1.003c0 .505.545.808.97.557"/>
-                    </svg>
-                  {% endif %}
-                    
-                  {% if survey.survey_state_id == 2  %}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                  </svg>                                
-                  {% endif %}
-                    
-                  {% if survey.survey_state_id == 3  %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-                      <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
-                      <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
-                    </svg>           
-                  {% endif %}
-                    
-                  {% if survey.survey_state_id == 4  %}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
-                      <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486z"/>
-                    </svg>
-                  {% endif %}
-                </div>   
-                <div class="col-md-1 mx-auto">
-                  <p>{{survey.progress}}%</p>
-                </div>  
+    <ul class="nav list-group">
+      {% for survey in survey_list %}
+        <li class="nav-item list-group-item list-group-item-action">
+          <a class="nav-link" href="{% url 'questions:question_detail' survey.next_question survey.id %}"
+              
+              {% if survey.survey_state_id == 2 or survey.survey_state_id == 4 %}
+                style="pointer-events: none;cursor: default;" 
+              {% endif %}
+              >
+            <div class="row" style="display:flex;justify-content:left;align-items:center;color:black">
+              <div class="col-md-8 mx-auto">
+                <h3>{{survey.company}}</h3>
               </div>
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
+              <div class="col-md-2 mx-auto">
+                <p>{{survey.updated|date:"SHORT_DATETIME_FORMAT"}}</p>
+              </div>              
+              <div class="col-md-1 mx-auto">
+                
+                {% if survey.survey_state_id == 1  %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-forward-fill" viewBox="0 0 16 16">
+                    <path d="m9.77 12.11 4.012-2.953a.647.647 0 0 0 0-1.114L9.771 5.09a.644.644 0 0 0-.971.557V6.65H2v3.9h6.8v1.003c0 .505.545.808.97.557"/>
+                  </svg>
+                {% endif %}
+                  
+                {% if survey.survey_state_id == 2  %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                </svg>                                
+                {% endif %}
+                  
+                {% if survey.survey_state_id == 3  %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                  </svg>           
+                {% endif %}
+                  
+                {% if survey.survey_state_id == 4  %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" alt="{{survey.survey_state.description}}" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                    <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486z"/>
+                  </svg>
+                {% endif %}
+              </div>   
+              <div class="col-md-1 mx-auto">
+                <p>{{survey.progress}}%</p>
+              </div>  
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
   </div>
 </main>
 {% endblock %}

@@ -53,7 +53,6 @@ class SurveyInitView(TemplateView):
         context = self.get_context_data(**kwargs)
         survey = context['survey']    
         survey.set_number_of_questions(survey.calculate_number_of_questions())
-        survey.set_next_question(survey.calculate_next_question())
         survey.set_progress(0)
         survey.save()
         return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.next_question, 'survey':survey.id}))
