@@ -1,5 +1,4 @@
-import unicodedata
-from typing import Iterable, List
+from typing import List
 from django.db import models
 from companies.models import Company
 from questions.models import Option, Survey_Type, Question, Section

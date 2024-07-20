@@ -1,9 +1,11 @@
 from django.db import models
+from team.models import Surveyor
 
 class Company(models.Model):
     name = models.CharField(max_length=100, verbose_name="Razón Social")
     cuit = models.CharField(max_length=13, verbose_name="CUIT", default="")
     clanae_code = models.CharField(max_length=6, verbose_name="CLANAE")
+    surveyor = models.ForeignKey(Surveyor, verbose_name="Encuestador Asignado", on_delete=models.DO_NOTHING, blank=True, null=True)
     address_street = models.CharField(max_length=100, verbose_name="Calle / Ruta")
     address_number = models.CharField(max_length=100, verbose_name="Número / Km")
     city = models.CharField(max_length=100, verbose_name="Localidad")

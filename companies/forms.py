@@ -5,11 +5,12 @@ class CompanyForm(forms.ModelForm):
 
    class Meta:
       model = Company
-      fields = ['name', 'cuit', 'clanae_code', 'address_street', 'address_number', 'city', 'district', 'zip_code', 'phone', 'email']
+      fields = ['name', 'cuit', 'clanae_code', 'surveyor', 'address_street', 'address_number', 'city', 'district', 'zip_code', 'phone', 'email']
       widgets = {
          'name': forms.TextInput(attrs={'class':'form-control'}),
          'cuit': forms.TextInput(attrs={'class':'form-control'}),
          'clanae_code': forms.NumberInput(attrs={'class':'form-control'}),
+         'surveyor': forms.Select(attrs={'class':'form-control'}),
          'address_street': forms.TextInput(attrs={'class':'form-control'}),
          'address_number': forms.TextInput(attrs={'class':'form-control'}),
          'city': forms.TextInput(attrs={'class':'form-control'}),
