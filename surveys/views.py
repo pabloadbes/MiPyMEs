@@ -1,9 +1,10 @@
-# from django.utils.text import slugify
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+# from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
 from .models import Survey
@@ -11,11 +12,12 @@ from .forms import SurveyForm
 from questions.models import Question, Section
 
 # Create your views here.
+@method_decorator(login_required, name='dispatch')
 class SurveyListView(ListView):
     model = Survey
 
-class SurveyDetailView(DetailView):
-    model = Survey
+# class SurveyDetailView(DetailView): DEFINIR SI ES NECESARIA
+#     model = Survey
 
 class SurveyCreate(CreateView):
     model = Survey
@@ -27,17 +29,17 @@ class SurveyCreate(CreateView):
         survey = Survey.objects.get(company_id=self.object.company_id)
         return reverse_lazy('surveys:init', args=[survey.id])
 
-class SurveyUpdate(UpdateView):
-    model = Survey
-    form_class = SurveyForm
-    template_name_suffix = '_update_form'
+# class SurveyUpdate(UpdateView): DEFINIR SI ES NECESARIA
+#     model = Survey
+#     form_class = SurveyForm
+#     template_name_suffix = '_update_form'
 
-    def get_success_url(self) -> str:
-        return reverse_lazy('surveys:update', args=[self.object.id])+'?ok'
+#     def get_success_url(self) -> str:
+#         return reverse_lazy('surveys:update', args=[self.object.id])+'?ok'
 
-class SurveyDelete(DeleteView):
-    model = Survey
-    success_url = reverse_lazy('surveys:surveys')
+# class SurveyDelete(DeleteView): DEFINIR SI ES NECESARIA
+#     model = Survey
+#     success_url = reverse_lazy('surveys:surveys')
 
 class SurveyInitView(TemplateView):
     template_name = 'surveys/survey_init.html'

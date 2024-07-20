@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
@@ -8,9 +10,10 @@ from surveys.models import Survey, Response
 from questions.processors import ctx_dict
 
 # Create your views here.
-class QuestionsListView(ListView):
-    model = Question
+# class QuestionsListView(ListView): DEFINIR SI ES NECESARIA
+#     model = Question
 
+@method_decorator(login_required, name='dispatch')
 class QuestionDetail(TemplateView):
     template_name = 'questions/question_detail.html'
 

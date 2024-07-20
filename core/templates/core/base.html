@@ -36,19 +36,23 @@
             </ul>
             <ul class="navbar-nav">
               
-              {% if not request.user.is_authenticated %}
+              {% if not user.is_authenticated %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'login' %}">Acceder</a>
                 </li>                
               {% else %}
-                <li class="nav-item">
-                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:inline;">
+              <li class="nav-item">
+                <a class="nav-link">{{user.first_name|add:" "|add:user.last_name|title}}</a>
+              </li>                
+              <li class="nav-item">
+                <a class="nav-link" href="">
+                    <form id="logout-form" method="post" action="{% url 'logout' %}">
                       {% csrf_token %}
                       <button type="submit" style="color: white;background: none;border: none;cursor: pointer;padding: 0;">Salir</button>
                     </form>
-                </li>                
+                  </a>
+                </li>
               {% endif %}
-                
 
             </ul>
           </div>
