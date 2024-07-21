@@ -1,3 +1,4 @@
+from django.forms import BaseModelForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -9,7 +10,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.urls import reverse, reverse_lazy
 from .models import Survey
 from .forms import SurveyForm
-from questions.models import Question, Section
+from companies.models import Company
+from team.models import Surveyor
+
+# from questions.models import Question, Section
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
@@ -23,6 +27,27 @@ class SurveyCreate(CreateView):
     model = Survey
     form_class = SurveyForm
 
+    # def get_form_kwargs(self) -> dict:
+    #     kwargs = super().get_form_kwargs()
+    #     user = self.request.user
+    #     surveyor = Surveyor.objects.get(user_id = user.id)
+    #     print("CREANDO ENCUESTA KWARGS")
+    #     print(user.first_name)
+    #     print(surveyor)
+    #     kwargs['initial']['company'] = Company.objects.filter(surveyor_id = surveyor.id)
+    #     print(kwargs)
+    #     return kwargs
+
+    def get_form(self, form_class=None) -> Survey:
+        form = super().get_form(form_class)
+        user = self.request.user
+        try:
+            surveyor = Surveyor.objects.get(user_id = user.id)
+            form.fields['company'].queryset = Company.objects.filter(surveyor_id = surveyor.id)
+        except:
+            pass
+        return form
+    
     def get_success_url(self) -> str:
         if self.object.id:
             return reverse_lazy('surveys:init', args=[self.object.id])
