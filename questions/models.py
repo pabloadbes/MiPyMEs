@@ -1,12 +1,15 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 class Survey_Type(models.Model):
     name = models.CharField(verbose_name="nombre")
     year = models.IntegerField(verbose_name="año")
     description = models.CharField(max_length=500, verbose_name="Descripción")
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="survey_type_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="survey_type_updated_by_user")
 
     class Meta:
         verbose_name = "Tipo de pregunta"
@@ -20,8 +23,10 @@ class Section(models.Model):
     section_order = models.CharField(max_length=2, verbose_name="Orden")
     text = models.CharField(max_length=200, verbose_name="Texto")
     survey_type = models.ForeignKey(Survey_Type, verbose_name="Tipo de Encuesta", on_delete=models.SET_DEFAULT, default=1)
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="section_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="section_updated_by_user")
 
     class Meta:
         verbose_name = "sección"
@@ -34,8 +39,10 @@ class Section(models.Model):
 class Question_Type(models.Model):
     name = models.CharField(verbose_name="nombre")
     description = models.CharField(max_length=500, verbose_name="Descripción")
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="question_type_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="question_type_updated_by_user")
 
     class Meta:
         verbose_name = "Tipo de pregunta"
@@ -51,8 +58,10 @@ class Question(models.Model):
     text = models.CharField(verbose_name="Contenido", max_length=500)
     question_type = models.ForeignKey(Question_Type, verbose_name="Tipo", on_delete=models.SET_DEFAULT, default=0)
     section = models.ForeignKey(Section, verbose_name="Secciones", on_delete=models.SET_DEFAULT, default=0)
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="question_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="question_updated_by_user")
 
     class Meta:
         verbose_name = "pregunta"
@@ -73,8 +82,10 @@ class Item(models.Model):
     item_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
     question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="item_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="item_updated_by_user")
 
     class Meta:
         verbose_name = "ítem"
@@ -88,8 +99,10 @@ class Option(models.Model):
     option_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
     item = models.ForeignKey(Item, verbose_name="Item", on_delete=models.SET_DEFAULT, default=0)
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="option_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="option_updated_by_user")
 
     class Meta:
         verbose_name = "opción"
@@ -103,8 +116,10 @@ class Note(models.Model):
     note_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
     option = models.ForeignKey(Option, verbose_name="Option", on_delete=models.SET_DEFAULT, default=1)
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="note_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="note_updated_by_user")
 
     class Meta:
         verbose_name = "nota"
@@ -117,13 +132,15 @@ class Note(models.Model):
 class Subtitle(models.Model):
     text = models.CharField(max_length=500, verbose_name="Texto")
     question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
-    created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="subtitle_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="subtitle_updated_by_user")
 
     class Meta:
         verbose_name = "subtítulo"
         verbose_name_plural = "subtítulos"
-        ordering = ["-updated"]
+        ordering = ["-updated_at"]
     
     def __str__(self) -> str:
         return self.text

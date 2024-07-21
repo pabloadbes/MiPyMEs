@@ -1,13 +1,16 @@
 from typing import List
 from django.db import models
+from django.contrib.auth.models import User
 from companies.models import Company
 from questions.models import Option, Survey_Type, Question, Section
 
 class Survey_State(models.Model):
     name = models.CharField(verbose_name="Nombre", max_length=50)
     description = models.CharField(verbose_name="Descripción", max_length=500)
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="survey_state_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="survey_state_updated_by_user")
 
     class Meta:
         verbose_name = "Estado de la encuesta"
@@ -24,13 +27,15 @@ class Survey(models.Model):
     progress = models.IntegerField(verbose_name="Progreso", default=0)
     next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=1)
     number_of_questions = models.IntegerField(verbose_name="Cantidad de preguntas", default=1)
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="survey_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="survey_updated_by_user")
 
     class Meta:
         verbose_name = "encuesta"
         verbose_name_plural = "encuestas"
-        ordering = ['-updated', 'company']
+        ordering = ['-updated_at', 'company']
 
     def __str__(self):
         return self.company.name
@@ -112,13 +117,15 @@ class Response(models.Model):
     value = models.CharField(verbose_name="Valor", max_length=500)
     survey = models.ForeignKey(Survey, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
     option = models.ForeignKey(Option, verbose_name="Opción", on_delete=models.SET_DEFAULT, default=0)
-    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    updated = models.DateTimeField(auto_now=True, verbose_name="Fecha de edición")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="response_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="response_updated_by_user")
 
     class Meta:
         verbose_name = "respuesta"
         verbose_name_plural = "respuestas"
-        ordering = ['survey', '-updated']
+        ordering = ['survey', '-updated_at']
 
     def __str__(self):
         return self.survey.company.name
