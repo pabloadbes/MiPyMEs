@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Supervisor(models.Model):
    user = models.OneToOneField(User, verbose_name="Usuario", on_delete=models.CASCADE)
    SUP_CODE = models.IntegerField(verbose_name="Código de Supervisor")
-   created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-   updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+   created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+   updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+   created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="supervisor_created_by_user")
+   updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="supervisor_updated_by_user")
 
    class Meta:
       verbose_name = "supervisor"
@@ -20,8 +23,10 @@ class Surveyor(models.Model):
    user = models.OneToOneField(User, verbose_name="Usuario", on_delete=models.CASCADE)
    ENC_CODE = models.IntegerField(verbose_name="Código de Encuestador")
    supervisor = models.ForeignKey(Supervisor, verbose_name="Supervisor", on_delete=models.CASCADE)
-   created = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
-   updated = models.DateTimeField(verbose_name="Fecha de última modificación", auto_now=True)
+   created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+   updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+   created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="surveyor_created_by_user")
+   updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="surveyor_updated_by_user")
 
    class Meta:
       verbose_name = "encuestador"
