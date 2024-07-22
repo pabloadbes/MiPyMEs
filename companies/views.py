@@ -17,6 +17,12 @@ class CompanyCreate(CreateView):
     form_class = CompanyForm
     success_url = reverse_lazy('companies:companies')
 
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+    
+
 class CompanyUpdate(UpdateView):
     model = Company
     form_class = CompanyForm
@@ -24,6 +30,11 @@ class CompanyUpdate(UpdateView):
 
     def get_success_url(self) -> str:
         return reverse_lazy('companies:update', args=[self.object.id]) + '?ok'
+    
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user
+        return super().form_valid(form)
+
     
 class CompanyDelete(DeleteView):
     model = Company

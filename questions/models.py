@@ -19,6 +19,9 @@ class Survey_Type(models.Model):
     def __str__(self) -> str:
         return self.name + " " + str(self.year)
     
+    def get_description(self) -> str:
+        return self.description
+    
 class Section(models.Model):
     section_order = models.CharField(max_length=2, verbose_name="Orden")
     text = models.CharField(max_length=200, verbose_name="Texto")

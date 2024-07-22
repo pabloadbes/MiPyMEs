@@ -1,4 +1,8 @@
+# from typing import Any, Mapping
 from django import forms
+# from django.core.files.base import File
+# from django.db.models.base import Model
+# from django.forms.utils import ErrorList
 from .models import Company
 
 class CompanyForm(forms.ModelForm):
@@ -18,4 +22,6 @@ class CompanyForm(forms.ModelForm):
          'zip_code': forms.NumberInput(attrs={'class':'form-control'}),
          'phone': forms.TextInput(attrs={'class':'form-control'}),
          'email': forms.TextInput(attrs={'class':'form-control'}),
+         'created_by': forms.HiddenInput(),
+         'updated_by': forms.HiddenInput()
       }

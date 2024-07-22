@@ -8,6 +8,8 @@ class SurveyForm(forms.ModelForm):
       fields = ['company', 'survey_type']
       widgets = {
          'company': forms.Select(attrs={'class':'form-control'}),
-         'survey_type': forms.Select(attrs={'class':'form-control'})
+         'survey_type': forms.Select(attrs={'class':'form-control'}),
+         'created_by': forms.HiddenInput(),
+         'updated_by': forms.HiddenInput()
       }
 

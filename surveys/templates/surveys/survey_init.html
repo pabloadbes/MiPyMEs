@@ -9,9 +9,18 @@
       <div class="col-md-9 mx-auto">
         <h2 class="section-heading mb-4">Empresa: {{ survey }}</h2>
         <div>
-          <p>Encuesta de <b>{{survey.survey_type}}</b></p>
+          <p>Encuesta de <b>{{survey.survey_type.description}} {{survey.survey_type.year}}</b></p>
           <h1>Formulario {{first_letter}}</h1>
-          <hr>
+
+          <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item">
+              Encuestador: {{surveyor}}
+            </li>
+            <li class="list-group-item">
+              Supervisor: {{supervisor}}
+            </li>
+          </ul>
+
           <form action="" method="post">
             {% csrf_token %}
             <div class="text-center">

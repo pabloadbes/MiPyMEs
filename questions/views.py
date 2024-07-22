@@ -23,6 +23,7 @@ class QuestionDetail(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        user_id = self.request.user
         context = self.get_context_data(**kwargs)
         survey_id = context['survey']
         survey = Survey.objects.get(pk = survey_id)
@@ -32,6 +33,7 @@ class QuestionDetail(TemplateView):
             survey.set_survey_state(2)
         survey.set_next_question(survey.calculate_next_question())
         survey.set_progress(100 * question.number / survey.get_number_of_questions())
+        survey.set_updated_by(user_id)
 
         ctx = ctx_dict(request)
         data = request.POST.dict()
@@ -41,16 +43,16 @@ class QuestionDetail(TemplateView):
             with transaction.atomic():
                 if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
                     for d in data:
-                        response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id)
+                        response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                         response.save()
                 
                 elif "select_one" in ctx['template_type']:
                     for item in ctx['items']:
                         for option in item[1]:
                             if option[0].text == data[str(item[0].id)]:
-                                response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id)
+                                response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             else: 
-                                response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id)
+                                response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             response.save()
 
                 elif "select_many" in ctx['template_type']: #falta poner a prueba este caso
@@ -58,9 +60,9 @@ class QuestionDetail(TemplateView):
                     for item in ctx['items']:
                         for option in item[1]:
                             if str(option[0].id) in selected_options:
-                                response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id)
+                                response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             else: 
-                                response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id)
+                                response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             response.save()
 
                 survey.save()

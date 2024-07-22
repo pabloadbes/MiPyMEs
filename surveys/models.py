@@ -25,8 +25,8 @@ class Survey(models.Model):
     survey_type = models.ForeignKey(Survey_Type, verbose_name="Tipo de Encuesta", on_delete=models.SET_DEFAULT, default=1)
     survey_state = models.ForeignKey(Survey_State, verbose_name="Estado de la Encuesta", on_delete=models.SET_DEFAULT, default=1)
     progress = models.IntegerField(verbose_name="Progreso", default=0)
-    next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=1)
-    number_of_questions = models.IntegerField(verbose_name="Cantidad de preguntas", default=1)
+    next_question = models.IntegerField(verbose_name="Pregunta siguiente", default=0)
+    number_of_questions = models.IntegerField(verbose_name="Cantidad de preguntas", default=0)
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
     created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="survey_created_by_user")
@@ -60,6 +60,18 @@ class Survey(models.Model):
     
     def set_progress(self, progress:int) -> None:
         self.progress = progress
+
+    def get_created_by(self) -> int:
+        return self.created_by
+    
+    def set_created_by(self, user_id:int) -> None:
+        self.created_by = user_id
+
+    def get_updated_by(self) -> int:
+        return self.updated_by
+    
+    def set_updated_by(self, user_id:int) -> None:
+        self.updated_by = user_id
 
     def get_next_question(self) -> int:
         try:
