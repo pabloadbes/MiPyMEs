@@ -39,6 +39,21 @@ class Section(models.Model):
     def __str__(self) -> str:
         return self.section_order + ": " + self.text
     
+class Subtitle(models.Model):
+    text = models.CharField(max_length=500, verbose_name="Texto")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="subtitle_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="subtitle_updated_by_user")
+
+    class Meta:
+        verbose_name = "subtítulo"
+        verbose_name_plural = "subtítulos"
+        ordering = ["-updated_at"]
+    
+    def __str__(self) -> str:
+        return self.text
+    
 class Question_Type(models.Model):
     name = models.CharField(verbose_name="nombre")
     description = models.CharField(max_length=500, verbose_name="Descripción")
@@ -56,11 +71,12 @@ class Question_Type(models.Model):
         return self.name
         
 class Question(models.Model):
-    question_order = models.CharField(verbose_name="Orden", max_length=10)
+    # question_order = models.CharField(verbose_name="Orden", max_length=10)
     number = models.IntegerField(verbose_name="Número")
     text = models.CharField(verbose_name="Contenido", max_length=500)
     question_type = models.ForeignKey(Question_Type, verbose_name="Tipo", on_delete=models.SET_DEFAULT, default=0)
     section = models.ForeignKey(Section, verbose_name="Secciones", on_delete=models.SET_DEFAULT, default=0)
+    subtitle = models.ForeignKey(Subtitle, verbose_name="Subtítulo", on_delete=models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
     created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="question_created_by_user")
@@ -69,10 +85,10 @@ class Question(models.Model):
     class Meta:
         verbose_name = "pregunta"
         verbose_name_plural = "preguntas"
-        ordering = ['question_order']
+        ordering = ['number']
 
     def __str__(self):
-        return self.question_order + ". " + self.text
+        return self.text
     
     def __type__(self):
         return self.type.name
@@ -132,18 +148,4 @@ class Note(models.Model):
     def __str__(self) -> str:
         return self.text
     
-class Subtitle(models.Model):
-    text = models.CharField(max_length=500, verbose_name="Texto")
-    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
-    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
-    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
-    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="subtitle_created_by_user")
-    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="subtitle_updated_by_user")
 
-    class Meta:
-        verbose_name = "subtítulo"
-        verbose_name_plural = "subtítulos"
-        ordering = ["-updated_at"]
-    
-    def __str__(self) -> str:
-        return self.text
