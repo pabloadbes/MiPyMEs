@@ -39,7 +39,7 @@ class Section(models.Model):
     def __str__(self) -> str:
         return self.section_order + ": " + self.text
     
-class Subtitle(models.Model):
+class Subsection(models.Model):
     text = models.CharField(max_length=500, verbose_name="Texto")
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
@@ -71,12 +71,11 @@ class Question_Type(models.Model):
         return self.name
         
 class Question(models.Model):
-    # question_order = models.CharField(verbose_name="Orden", max_length=10)
     number = models.IntegerField(verbose_name="Número")
     text = models.CharField(verbose_name="Contenido", max_length=500)
     question_type = models.ForeignKey(Question_Type, verbose_name="Tipo", on_delete=models.SET_DEFAULT, default=0)
     section = models.ForeignKey(Section, verbose_name="Secciones", on_delete=models.SET_DEFAULT, default=0)
-    subtitle = models.ForeignKey(Subtitle, verbose_name="Subtítulo", on_delete=models.DO_NOTHING, blank=True, null=True)
+    subsection = models.ForeignKey(Subsection, verbose_name="Subtítulo", on_delete=models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
     created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="question_created_by_user")

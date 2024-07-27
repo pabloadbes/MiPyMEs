@@ -1,4 +1,4 @@
-from .models import Question, Item, Option, Note, Subtitle
+from .models import Question, Item, Option, Note, Subsection
 from companies.models import Company
 from surveys.models import Survey
 
@@ -37,7 +37,7 @@ def ctx_questions(request):
    company = Company.objects.get(id = company_id)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
 
-   subtitle = Subtitle.objects.all().filter(question_id = question_number).first()
+   # subsection = Subsection.objects.all().filter(question_id = question_number).first()
    items = []
    its = Item.objects.all().filter(question_id = question_number)
 
@@ -56,8 +56,8 @@ def ctx_questions(request):
    ctx['company'] = company
    ctx['items'] = items
    ctx['template_type'] = template_type
-   if subtitle:
-      ctx['subtitle'] = subtitle
+   # if subsection:
+      # ctx['subsection'] = subsection
    return ctx
 
 def ctx_surveys(request):
