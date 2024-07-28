@@ -37,7 +37,7 @@ class Section(models.Model):
         ordering = ["section_order"]
     
     def __str__(self) -> str:
-        return self.section_order + ": " + self.text
+        return self.text
     
 class Subsection(models.Model):
     text = models.CharField(max_length=500, verbose_name="Texto")

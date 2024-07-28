@@ -2,19 +2,39 @@
 {% load static %}
 {% block question_content %}
 
-  
-  {% if question.subsection  %}
-    {% comment %} <h3 style="background-color:black;color:white"> {% endcomment %}
-    <h3>{{ question.subsection }}</h3>
-    <hr>
-    {% comment %} </h3> {% endcomment %}
-  {% endif %}
+
+{% if 'init' in template_type %}
+      {% comment %} <div class="mb-5">
+        <h3><b>{{ question|upper }}</b></h3>
+      </div> {% endcomment %}
+        
+      <form action="" method=post>
+        {% csrf_token %}
+            
+        {% include template_type %}
+
+        <div class="mb-3">
+          <input type="submit" class="btn btn-primary btn-block" value="Siguiente" />
+        </div>
+      </form>
+{% else %}
+{% if question.subsection  %}
+{% comment %} <h3 style="background-color:black;color:white"> {% endcomment %}
+<h3>{{ question.subsection }}</h3>
+<hr>
+{% comment %} </h3> {% endcomment %}
+{% endif %}
   <div class="row mt-3">
     <div class="col-md-9 mx-auto">
       <div class="mb-5">
         <b>{{ question.number }}.  {{ question }}</b>
       </div>
-
+      template_type -> {{ template_type }}
+      
+      {% if 'scale' in template_type %}
+        FUNCIONA MADERÍN!!!!
+      {% endif %}
+        
       <form action="" method=post>
         {% csrf_token %}
             
@@ -26,4 +46,6 @@
       </form>
     </div>
   </div>
+{% endif %}
+    
 {% endblock %}

@@ -3,11 +3,16 @@
 {% block content %}
 <main role="main">
   <div class="container">
-    <h3 style="display:flex;justify-content:right;align-items:center;">{{ company|upper }}</h3>
-    <h1 class="section-heading mb-4" 
-        style="background-color:black;color:white" >
-      Sección {{ question.section }}
-    </h1>
+    
+    {% if 'init' not in template_type %}
+      <h3 style="display:flex;justify-content:right;align-items:center;">{{ company|upper }}</h3>
+      <h1 class="section-heading mb-4" 
+          style="background-color:black;color:white" >
+        Sección: {{ question.section }}
+      </h1>
+    {% endif %}
+      
+
     {% block question_content %}
       
     {% endblock question_content %}

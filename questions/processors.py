@@ -37,7 +37,6 @@ def ctx_questions(request):
    company = Company.objects.get(id = company_id)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
 
-   # subsection = Subsection.objects.all().filter(question_id = question_number).first()
    items = []
    its = Item.objects.all().filter(question_id = question_number)
 

@@ -7,6 +7,8 @@ from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from .models import Question
 from surveys.models import Survey, Response
+from companies.models import Company
+from team.models import Supervisor
 from questions.processors import ctx_dict
 
 # Create your views here.
@@ -20,6 +22,11 @@ class QuestionDetail(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["question"] = Question.objects.get(id = context['pk'])
+        context["survey_data"] = Survey.objects.get(id = context['survey'])
+        surveyor = Company.objects.get(id = context["survey_data"].company.id).surveyor
+        context["surveyor"] = surveyor
+        supervisor = Supervisor.objects.get(id = surveyor.supervisor.id)
+        context["supervisor"] = supervisor
         return context
 
     def post(self, request, *args, **kwargs):
