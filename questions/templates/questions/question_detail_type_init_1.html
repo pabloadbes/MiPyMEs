@@ -1,19 +1,24 @@
 {% load static %}
 {% comment %} {% block title %}Pregunta {{object}} fdv {% endblock %} {% endcomment %}
 {% block content %}
-<h2 class="section-heading mb-4">Empresa: {{ company }}</h2>
-<div>
-  <p>Usted está iniciando un <b>{{survey_data.survey_type.description}} {{survey_data.survey_type.year}}</b></p>
-  <h1>Formulario {{survey_data.survey_type.name|slice:":1"}}</h1>
+{% comment %} <div> {% endcomment %}
+<h1>Formulario {{survey_data.survey_type.name|slice:":1"}}</h1>
+<ul class="list-group list-group-flush mb-4">
+  <li class="list-group-item">
+    Encuestador: <b>{{surveyor}}</b> | {{surveyor.ENC_CODE}}
+  </li>
+  <li class="list-group-item">
+    Supervisor: <b>{{supervisor}}</b> | {{supervisor.SUP_CODE}}
+  </li>
+  <li class="list-group-item">
+    Empresa: <b>{{ company }}</b>
+  </li>
+  <li class="list-group-item">
+    <p>Usted está iniciando un <b>{{survey_data.survey_type.description}} {{survey_data.survey_type.year}}</b></p>
+  </li>
+</ul>
+<h2 class="section-heading mb-4"></h2>
 
-  <ul class="list-group list-group-flush mb-4">
-    <li class="list-group-item">
-      Encuestador: {{surveyor}}
-    </li>
-    <li class="list-group-item">
-      Supervisor: {{supervisor}}
-    </li>
-  </ul>
 
   {% comment %} <form action="" method="post">
     {% csrf_token %}
@@ -21,5 +26,5 @@
       <input type="submit" class="btn btn-primary btn-block" value="Iniciar Encuesta" />
     </div>
   </form> {% endcomment %}
-</div>
+{% comment %} </div> {% endcomment %}
 {% endblock %}

@@ -141,3 +141,53 @@ class Response(models.Model):
 
     def __str__(self):
         return self.survey.company.name
+    
+class Variable_Type(models.Model):
+    name = models.CharField(verbose_name="Nombre", max_length=50)
+    description = models.CharField(verbose_name="Descripción", max_length=500)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="variable_type_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="variable_type_updated_by_user")
+
+    class Meta:
+        verbose_name = "Tipo de variable estadística de interés"
+        verbose_name_plural = "Tipos de variable estadística de interés"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+class Variable_List(models.Model):
+    name = models.CharField(verbose_name="Nombre", max_length=500)
+    variable_type = models.ForeignKey(Variable_Type, verbose_name="Tipo de variable", on_delete=models.SET_DEFAULT, default=0)
+    option = models.ForeignKey(Option, verbose_name="Opción", on_delete=models.SET_DEFAULT, default=0)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="variable_list_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="variable_list_updated_by_user")
+
+    class Meta:
+        verbose_name = "Tabla de variables estadísticas de interés"
+        verbose_name_plural = "Tabla de variables estadísticas de interés"
+        ordering = ['name', '-updated_at']
+
+    def __str__(self):
+        return self.name
+    
+class Variable(models.Model):
+    value = models.CharField(verbose_name="Valor", max_length=500)
+    survey = models.ForeignKey(Survey, verbose_name="Encuesta", on_delete=models.SET_DEFAULT, default=0)
+    variable_list = models.ForeignKey(Variable_List, verbose_name="Listado de variables", on_delete=models.SET_DEFAULT, default=0)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="variables_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="variable_updated_by_user")
+
+    class Meta:
+        verbose_name = "Variable estadística de interés"
+        verbose_name_plural = "Variables estadísticas de interés"
+        ordering = ['survey', '-updated_at']
+
+    def __str__(self):
+        return self.survey
