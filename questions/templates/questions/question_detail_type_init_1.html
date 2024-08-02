@@ -2,10 +2,27 @@
 {% comment %} {% block title %}Pregunta {{object}} fdv {% endblock %} {% endcomment %}
 {% block content %}
 {% comment %} <div> {% endcomment %}
-<h1>Formulario {{survey_data.survey_type.name|slice:":1"}}</h1>
+{% comment %} <h3>Formulario <b>{{survey_data.survey_type.name|slice:":1"}}</b></h3> {% endcomment %}
 <ul class="list-group list-group-flush mb-4">
   <li class="list-group-item">
-    Encuestador: <b>{{surveyor}}</b> | {{surveyor.ENC_CODE}}
+    <h3>Formulario <b>{{survey_data.survey_type.name|slice:":1"}}</b><h3>
+  </li>
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-3">
+        Encuestador: 
+      </div>
+      <div class="col-9">
+        <select class="form-select form-control" aria-label="Default select example">
+          <option value="{{ surveyor_asigned.ENC_CODE }}" selected>{{ surveyor_asigned }}</option>
+          
+          {% for surveyor in surveyors %}
+            <option value="{{ surveyor.ENC_CODE }}">{{ surveyor }}</option>
+          {% endfor %}
+
+        </select>
+      </div>
+    </div>
   </li>
   <li class="list-group-item">
     Supervisor: <b>{{supervisor}}</b> | {{supervisor.SUP_CODE}}

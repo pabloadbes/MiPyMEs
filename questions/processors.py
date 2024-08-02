@@ -1,6 +1,6 @@
 from .models import Question, Item, Option, Note, Subsection
 from companies.models import Company
-from surveys.models import Survey
+from surveys.models import Survey, Variable_List
 
 def ctx_dict(request):
    ctx = {}
@@ -10,8 +10,8 @@ def ctx_dict(request):
       return ctx
    elif page == "questions":
       ctx = ctx_questions(request)
-   elif page == "surveys":
-      ctx = ctx_surveys(request)
+   # elif page == "surveys":
+   #    ctx = ctx_surveys(request)
    return ctx
 
 # question types
@@ -48,25 +48,27 @@ def ctx_questions(request):
          notes = []
          for note in nts:
             notes.append(note.text)
-         options.append([option, notes])   
+         vbles = Variable_List.objects.all().filter(option_id = option.id)
+         variables = []
+         for variable in vbles:
+            variables.append(variable.name)
+         options.append([option, notes, variables])   
       items.append([item, options])
 
    ctx = {}
    ctx['company'] = company
    ctx['items'] = items
    ctx['template_type'] = template_type
-   # if subsection:
-      # ctx['subsection'] = subsection
    return ctx
 
-def ctx_surveys(request):
-   ctx = {}
-   aux = request.__str__().split("/")
-   if aux[2] == "init":
-      if aux[3]:
-         survey_id = int(''.join([car for car in aux[3] if car.isdigit()]))      
-         survey = Survey.objects.get(id = survey_id)
-         first_letter = survey.survey_type.name[0:1]
-         ctx['first_letter'] = first_letter
-         return ctx
-   return ctx
+# def ctx_surveys(request):
+#    ctx = {}
+#    aux = request.__str__().split("/")
+#    if aux[2] == "init":
+#       if aux[3]:
+#          survey_id = int(''.join([car for car in aux[3] if car.isdigit()]))      
+#          survey = Survey.objects.get(id = survey_id)
+#          first_letter = survey.survey_type.name[0:1]
+#          ctx['first_letter'] = first_letter
+#          return ctx
+#    return ctx

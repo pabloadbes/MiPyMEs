@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from .models import Question
 from surveys.models import Survey, Response
 from companies.models import Company
-from team.models import Supervisor
+from team.models import Supervisor, Surveyor
 from questions.processors import ctx_dict
 
 # Create your views here.
@@ -24,9 +24,12 @@ class QuestionDetail(TemplateView):
         context["question"] = Question.objects.get(id = context['pk'])
         context["survey_data"] = Survey.objects.get(id = context['survey'])
         surveyor = Company.objects.get(id = context["survey_data"].company.id).surveyor
-        context["surveyor"] = surveyor
+        context["surveyor_asigned"] = surveyor
         supervisor = Supervisor.objects.get(id = surveyor.supervisor.id)
         context["supervisor"] = supervisor
+        context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
+        print("context del get_context_data")
+        print(context)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -45,6 +48,20 @@ class QuestionDetail(TemplateView):
         ctx = ctx_dict(request)
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
+
+        ########################################################
+        ########################################################
+        ########################################################
+        print("EN EL POST")
+        print(question)
+        question_dict = question.__dict__
+        print(question_dict)
+        print(ctx)
+        print(ctx['items'])
+        print(context)
+        ########################################################
+        ########################################################
+        ########################################################
 
         try:
             with transaction.atomic():

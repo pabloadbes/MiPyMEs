@@ -5,7 +5,7 @@
 
 {% if 'init' in template_type %}
       <div class="mb-5">
-        <h3><b>{{ question|upper }}</b></h3>
+        <h1><b>{{ question|upper }}</b></h1>
       </div>
         
       <form action="" method=post>
@@ -29,12 +29,6 @@
       <div class="mb-5">
         <b>{{ question.number }}.  {{ question }}</b>
       </div>
-      template_type -> {{ template_type }}
-      
-      {% if 'scale' in template_type %}
-        FUNCIONA MADERÍN!!!!
-      {% endif %}
-        
       <form action="" method=post>
         {% csrf_token %}
             
