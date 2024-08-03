@@ -1,47 +1,49 @@
 {% load static %}
-{% comment %} {% block title %}Pregunta {{object}} fdv {% endblock %} {% endcomment %}
 {% block content %}
-{% comment %} <div> {% endcomment %}
-{% comment %} <h3>Formulario <b>{{survey_data.survey_type.name|slice:":1"}}</b></h3> {% endcomment %}
-<ul class="list-group list-group-flush mb-4">
-  <li class="list-group-item">
-    <h3>Formulario <b>{{survey_data.survey_type.name|slice:":1"}}</b><h3>
-  </li>
-  <li class="list-group-item">
-    <div class="row">
-      <div class="col-3">
-        Encuestador: 
-      </div>
-      <div class="col-9">
-        <select class="form-select form-control" aria-label="Default select example">
-          <option value="{{ surveyor_asigned.ENC_CODE }}" selected>{{ surveyor_asigned }}</option>
-          
-          {% for surveyor in surveyors %}
-            <option value="{{ surveyor.ENC_CODE }}">{{ surveyor }}</option>
-          {% endfor %}
-
-        </select>
-      </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="surveyor">Encuestador</label>
     </div>
-  </li>
-  <li class="list-group-item">
-    Supervisor: <b>{{supervisor}}</b> | {{supervisor.SUP_CODE}}
-  </li>
-  <li class="list-group-item">
-    Empresa: <b>{{ company }}</b>
-  </li>
-  <li class="list-group-item">
-    <p>Usted está iniciando un <b>{{survey_data.survey_type.description}} {{survey_data.survey_type.year}}</b></p>
-  </li>
-</ul>
-<h2 class="section-heading mb-4"></h2>
+    <div class="col-md-10 mx-auto mb-3">
+      <select class="form-control" id="surveyor" name="surveyor">
+        <option value="{{ surveyor_asigned.ENC_CODE }}" selected>{{ surveyor_asigned }}</option>
+        
+        {% for surveyor in surveyors %}
+          <option value="{{ surveyor.ENC_CODE }}">{{ surveyor }}</option>
+        {% endfor %}
 
+      </select>
 
-  {% comment %} <form action="" method="post">
-    {% csrf_token %}
-    <div class="text-center">
-      <input type="submit" class="btn btn-primary btn-block" value="Iniciar Encuesta" />
     </div>
-  </form> {% endcomment %}
-{% comment %} </div> {% endcomment %}
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="supervisor">Supervisor</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="encuestador" name="supervisor" 
+            value="{{ supervisor }}" disabled/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="company">Empresa</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="company" name="company" 
+            value="{{ company }}" disabled/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="survey_type">Cuestionario</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="survey_type" name="survey_type" 
+            value="{{ survey_data.survey_type }}" disabled/>
+    </div>
+  </div>
 {% endblock %}

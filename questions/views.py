@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from .models import Question
-from surveys.models import Survey, Response
+from surveys.models import Survey, Response, Variable
 from companies.models import Company
 from team.models import Supervisor, Surveyor
 from questions.processors import ctx_dict
@@ -28,8 +28,6 @@ class QuestionDetail(TemplateView):
         supervisor = Supervisor.objects.get(id = surveyor.supervisor.id)
         context["supervisor"] = supervisor
         context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
-        print("context del get_context_data")
-        print(context)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -48,20 +46,6 @@ class QuestionDetail(TemplateView):
         ctx = ctx_dict(request)
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
-
-        ########################################################
-        ########################################################
-        ########################################################
-        print("EN EL POST")
-        print(question)
-        question_dict = question.__dict__
-        print(question_dict)
-        print(ctx)
-        print(ctx['items'])
-        print(context)
-        ########################################################
-        ########################################################
-        ########################################################
 
         try:
             with transaction.atomic():
@@ -88,6 +72,44 @@ class QuestionDetail(TemplateView):
                             else: 
                                 response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             response.save()
+
+                elif "init_1" in ctx['template_type']:
+                    item = ctx['items'][0]
+                    option_encuestador = item[1][1][0]
+                    vble_tipo_cuest = item[1][0][2]
+                    vble_encuestador = item[1][1][2]
+                    vble_supervisor = item[1][2][2]
+                    response_encuestador = Response.objects.create(value = data['surveyor'], option_id = option_encuestador.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_tipo_cuest = Variable.objects.create(value = survey.survey_type.id, survey_id = survey.id, variable_list_id = vble_tipo_cuest.id, created_by = user_id, updated_by = user_id)
+                    variable_encuestador = Variable.objects.create(value = data['surveyor'], survey_id = survey.id, variable_list_id = vble_encuestador.id, created_by = user_id, updated_by = user_id)
+                    variable_supervisor = Variable.objects.create(value = context['supervisor'].SUP_CODE, survey_id = survey.id, variable_list_id = vble_supervisor.id, created_by = user_id, updated_by = user_id)
+
+                    response_encuestador.save()
+                    variable_tipo_cuest.save()
+                    variable_encuestador.save()
+                    variable_supervisor.save()
+
+                elif "init_2" in ctx['template_type']:
+                    print(ctx['items'])
+                    item_entrevista = ctx['items'][0]
+                    item_fecha = ctx['items'][1]
+                    print(item_entrevista)
+                    print(item_fecha)
+                    option_entrevista = item[1][0][0]
+                    print(option_entrevista)
+                    option_fecha = item[1][1][0]
+                    print(option_fecha)
+                    vble_entrevista = item[1][0][2]
+                    vble_fecha = item[1][1][2]
+                    response_entrevista = Response.objects.create(value = data['entrevista'], option_id = option_entrevista.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_fecha = Response.objects.create(value = data['fecha'], option_id = option_fecha.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_entrevista = Variable.objects.create(value = data['entrevista'], survey_id = survey.id, variable_list_id = vble_entrevista.id, created_by = user_id, updated_by = user_id)
+                    variable_fecha = Variable.objects.create(value = data['fecha'], option_id = option_fecha.id, variable_list_id = vble_fecha.id, created_by = user_id, updated_by = user_id)
+
+                    response_entrevista.save()
+                    response_fecha.save()
+                    variable_entrevista.save()
+                    variable_fecha.save()
 
                 survey.save()
 

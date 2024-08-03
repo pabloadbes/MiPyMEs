@@ -48,11 +48,11 @@ def ctx_questions(request):
          notes = []
          for note in nts:
             notes.append(note.text)
-         vbles = Variable_List.objects.all().filter(option_id = option.id)
-         variables = []
-         for variable in vbles:
-            variables.append(variable.name)
-         options.append([option, notes, variables])   
+         if Variable_List.objects.all().filter(option_id = option.id).exists():
+            variable = Variable_List.objects.get(option_id = option.id)
+            options.append([option, notes, variable])   
+         else:
+            options.append([option, notes])   
       items.append([item, options])
 
    ctx = {}
