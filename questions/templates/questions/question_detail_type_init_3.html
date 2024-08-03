@@ -1,26 +1,53 @@
-{% comment %} {% extends 'core/base.html' %} {% endcomment %}
 {% load static %}
-{% comment %} {% block title %}Pregunta {{object}} fdv {% endblock %} {% endcomment %}
 {% block content %}
-<h2 class="section-heading mb-4">Empresa: {{ survey }}</h2>
-<div>
-  <p>Encuesta de <b>{{survey.survey_type.description}} {{survey.survey_type.year}}</b></p>
-  <h1>Formulario {{first_letter}}</h1>
-
-  <ul class="list-group list-group-flush mb-4">
-    <li class="list-group-item">
-      Encuestador: {{surveyor}}
-    </li>
-    <li class="list-group-item">
-      Supervisor: {{supervisor}}
-    </li>
-  </ul>
-
-  <form action="" method="post">
-    {% csrf_token %}
-    <div class="text-center">
-      <input type="submit" class="btn btn-primary btn-block" value="Iniciar Encuesta" />
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="state">Provincia</label>
     </div>
-  </form>
-</div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="state" name="state" 
+            value="Tierra del Fuego" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="district">Departamento</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="district" name="district" 
+            value="{{ company.district }}" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="city">Localidad</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="city" name="city" 
+            value="{{ company.city }}" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="clanae">Código Empresa</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="clanae" name="clanae" 
+            value="{{ company.clanae_code }}" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 mx-auto mb-3">
+      <label for="year">Año</label>
+    </div>
+    <div class="col-md-10 mx-auto mb-3">
+      <input type="text" class="form-control" 
+            id="year" name="year" 
+            value="2024" disabled/>
+    </div>
+  </div>
 {% endblock %}
