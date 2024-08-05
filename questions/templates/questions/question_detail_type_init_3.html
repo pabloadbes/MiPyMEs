@@ -1,13 +1,13 @@
 {% load static %}
 {% block content %}
-  <div class="row">
+  <div class=row>
     <div class="col-md-2 mx-auto mb-3">
       <label for="state">Provincia</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="state" name="state" 
-            value="Tierra del Fuego" />
+            value="Tierra del Fuego" disabled/>
     </div>
   </div>
   <div class="row">
@@ -15,9 +15,14 @@
       <label for="district">Departamento</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <input type="text" class="form-control" 
-            id="district" name="district" 
-            value="{{ company.district }}" />
+      <select class="form-control" id="district" name="district">
+        <option value="{{ district_registered.code }}" selected>{{ district_registered }}</option>
+        
+        {% for district in districts %}
+          <option value="{{ district.code }}">{{ district }}</option>
+        {% endfor %}
+
+      </select>
     </div>
   </div>
   <div class="row">
@@ -25,9 +30,14 @@
       <label for="city">Localidad</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <input type="text" class="form-control" 
-            id="city" name="city" 
-            value="{{ company.city }}" />
+      <select class="form-control" id="city" name="city">
+        <option value="{{ city_registered.code }}" selected>{{ city_registered }}</option>
+        
+        {% for city in cities %}
+          <option value="{{ city.code }}">{{ city }}</option>
+        {% endfor %}
+
+      </select>
     </div>
   </div>
   <div class="row">

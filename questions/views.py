@@ -6,8 +6,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from .models import Question
-from surveys.models import Survey, Response, Variable
-from companies.models import Company
+from surveys.models import Survey, Response, Variable, Variable_List
+from companies.models import Company, District, City
 from team.models import Supervisor, Surveyor
 from questions.processors import ctx_dict
 
@@ -23,11 +23,20 @@ class QuestionDetail(TemplateView):
         context = super().get_context_data(**kwargs)
         context["question"] = Question.objects.get(id = context['pk'])
         context["survey_data"] = Survey.objects.get(id = context['survey'])
-        surveyor = Company.objects.get(id = context["survey_data"].company.id).surveyor
-        context["surveyor_asigned"] = surveyor
-        supervisor = Supervisor.objects.get(id = surveyor.supervisor.id)
-        context["supervisor"] = supervisor
-        context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
+        ctx = ctx_dict(self.request)
+        if "init_1" in ctx['template_type']:
+            surveyor = Company.objects.get(id = context["survey_data"].company.id).surveyor
+            context["surveyor_asigned"] = surveyor
+            supervisor = Supervisor.objects.get(id = surveyor.supervisor.id)
+            context["supervisor"] = supervisor
+            context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
+        elif "init_3" in ctx['template_type']:
+            company = Company.objects.get(id = context["survey_data"].company.id)
+            district, city = company.district, company.city
+            context["district_registered"], context["city_registered"] = district, city
+            context["districts"] = District.objects.all().exclude(id = district.id)
+            context["cities"] = City.objects.all().exclude(id = city.id)
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -53,12 +62,20 @@ class QuestionDetail(TemplateView):
                     for d in data:
                         response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                         response.save()
+                        if Variable_List.objects.all().filter(option_id = d).exists():
+                            vble = Variable_List.objects.get(option_id = d)
+                            variable = Variable.objects.create(value = data[d], survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
+                            variable.save()
                 
                 elif "select_one" in ctx['template_type']:
                     for item in ctx['items']:
                         for option in item[1]:
+                            if Variable_List.objects.all().filter(option_id = option[0].id).exists():
+                                vble = Variable_List.objects.get(option_id = option[0].id)
                             if option[0].text == data[str(item[0].id)]:
                                 response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                                variable = Variable.objects.create(value = option[0].id, survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
+                                variable.save()                                
                             else: 
                                 response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             response.save()
@@ -67,8 +84,12 @@ class QuestionDetail(TemplateView):
                     selected_options = data.keys()
                     for item in ctx['items']:
                         for option in item[1]:
+                            if Variable_List.objects.all().filter(option_id = option[0].id).exists():
+                                vble = Variable_List.objects.get(option_id = option[0].id)
                             if str(option[0].id) in selected_options:
                                 response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                                variable = Variable.objects.create(value = option[0].id, survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
+                                variable.save()                                
                             else: 
                                 response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             response.save()
@@ -105,6 +126,92 @@ class QuestionDetail(TemplateView):
                     response_fecha.save()
                     variable_entrevista.save()
                     variable_fecha.save()
+
+                elif "init_3" in ctx['template_type']:
+                    item = ctx['items'][0]
+                    option_provincia = item[1][0][0]
+                    option_departamento = item[1][1][0]
+                    option_localidad = item[1][2][0]
+                    option_cod_emp = item[1][3][0]
+                    vble_provincia = item[1][0][2]
+                    vble_departamento = item[1][1][2]
+                    vble_localidad = item[1][2][2]
+                    vble_cod_emp = item[1][3][2]
+
+                    response_provincia = Response.objects.create(value = '94', option_id = option_provincia.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_departamento = Response.objects.create(value = data['district'], option_id = option_departamento.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_localidad = Response.objects.create(value = data['city'], option_id = option_localidad.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_cod_emp = Response.objects.create(value = data['clanae'], option_id = option_cod_emp.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+
+                    variable_provincia = Variable.objects.create(value = '94', variable_list_id = vble_provincia.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_departamento = Variable.objects.create(value = data['district'], variable_list_id = vble_departamento.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_localidad = Variable.objects.create(value = data['city'], variable_list_id = vble_localidad.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_cod_emp = Variable.objects.create(value = data['clanae'], variable_list_id = vble_cod_emp.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+
+                    response_provincia.save()
+                    response_departamento.save()
+                    response_localidad.save()
+                    response_cod_emp.save()
+                    
+                    variable_provincia.save()
+                    variable_departamento.save()
+                    variable_localidad.save()
+                    variable_cod_emp.save()
+
+                elif "init_4" in ctx['template_type']:
+                    item = ctx['items'][0]
+                    option_cuit = item[1][0][0]
+                    option_name = item[1][1][0]
+                    option_address_street = item[1][2][0]
+                    option_address_number = item[1][3][0]
+                    option_zip_code = item[1][4][0]
+                    option_phone = item[1][5][0]
+                    option_email = item[1][6][0]
+                    option_web_page = item[1][7][0]
+                    vble_cuit = item[1][0][2]
+                    vble_name = item[1][1][2]
+                    vble_address_street = item[1][2][2]
+                    vble_address_number = item[1][3][2]
+                    vble_zip_code = item[1][4][2]
+                    vble_phone = item[1][5][2]
+                    vble_email = item[1][6][2]
+                    vble_web_page = item[1][7][2]
+
+                    response_cuit = Response.objects.create(value = context["survey_data"].company.cuit, option_id = option_cuit.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_name = Response.objects.create(value = data['name'], option_id = option_name.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_address_street = Response.objects.create(value = data['street'], option_id = option_address_street.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_address_number = Response.objects.create(value = data['number'], option_id = option_address_number.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_zip_code = Response.objects.create(value = data['zip_code'], option_id = option_zip_code.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_phone = Response.objects.create(value = data['phone'], option_id = option_phone.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_email = Response.objects.create(value = data['email'], option_id = option_email.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_web_page = Response.objects.create(value = data['web_page'], option_id = option_web_page.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+
+                    variable_cuit = Variable.objects.create(value = context["survey_data"].company.cuit, variable_list_id = vble_cuit.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_name = Variable.objects.create(value = data['name'], variable_list_id = vble_name.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_address_street = Variable.objects.create(value = data['street'], variable_list_id = vble_address_street.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_address_number = Variable.objects.create(value = data['number'], variable_list_id = vble_address_number.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_zip_code = Variable.objects.create(value = data['zip_code'], variable_list_id = vble_zip_code.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_phone = Variable.objects.create(value = data['phone'], variable_list_id = vble_phone.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_email = Variable.objects.create(value = data['email'], variable_list_id = vble_email.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_web_page = Variable.objects.create(value = data['web_page'], variable_list_id = vble_web_page.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+
+                    response_cuit.save()
+                    response_name.save()
+                    response_address_street.save()
+                    response_address_number.save()
+                    response_zip_code.save()
+                    response_phone.save()
+                    response_email.save()
+                    response_web_page.save()
+                    
+                    variable_cuit.save()
+                    variable_name.save()
+                    variable_address_street.save()
+                    variable_address_number.save()
+                    variable_zip_code.save()
+                    variable_phone.save()
+                    variable_email.save()
+                    variable_web_page.save()
 
                 survey.save()
 
