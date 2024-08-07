@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
-from .models import Question
+from .models import Question, Item, Option
 from surveys.models import Survey, Response, Variable, Variable_List
 from companies.models import Company, District, City
 from team.models import Supervisor, Surveyor
@@ -56,6 +56,26 @@ class QuestionDetail(TemplateView):
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
 
+        print("********************************************************")
+        print("EN EL POST")
+        print(context)
+        print("********************************************************")
+        print(ctx)
+        print("********************************************************")
+        print(data)
+        print("********************************************************")
+        for item in ctx['items']:
+            print(item)
+            for option in item[1]:
+                print(option[0])
+                if option[0].children_id:
+                    print(option[0].children_id)
+                    children_item = Item.objects.get(id = option[0].children_id)
+                    print(children_item)
+                    children_options = Option.objects.filter(item_id = children_item.id)
+
+                    for children_option in children_options:
+                        print(children_option)
         try:
             with transaction.atomic():
                 if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
@@ -71,13 +91,26 @@ class QuestionDetail(TemplateView):
                     for item in ctx['items']:
                         for option in item[1]:
                             if Variable_List.objects.all().filter(option_id = option[0].id).exists():
+                                print("HAY VARIABLE")
                                 vble = Variable_List.objects.get(option_id = option[0].id)
+                            print(item[0].id)
                             if option[0].text == data[str(item[0].id)]:
+                                print("ESTA ES LA OPCIÓN ELEGIDA")
                                 response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                                variable = Variable.objects.create(value = option[0].id, survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
-                                variable.save()                                
+                                variable = Variable.objects.create(value = option[0].code, survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
+                                variable.save()
                             else: 
+                                print("OTRAS OPCIONES")
                                 response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                            if option[0].children_id:
+                                print("ESTAMOS EN EL HIJO")
+                                children_item = Item.objects.get(id = option[0].children_id)
+                                children_option = Option.objects.get(item_id = children_item.id)
+                                children_vble = Variable_List.objects.get(option_id = children_option.id)
+                                children_response = Response.objects.create(value = data[str(children_option.id)], option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                                children_variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
+                                children_response.save()
+                                children_variable.save()
                             response.save()
 
                 elif "select_many" in ctx['template_type']: #falta poner a prueba este caso
@@ -97,9 +130,9 @@ class QuestionDetail(TemplateView):
                 elif "init_1" in ctx['template_type']:
                     item = ctx['items'][0]
                     option_encuestador = item[1][1][0]
-                    vble_tipo_cuest = item[1][0][2]
-                    vble_encuestador = item[1][1][2]
-                    vble_supervisor = item[1][2][2]
+                    vble_tipo_cuest = Variable_List.objects.get(option_id = item[1][0][0].id)
+                    vble_encuestador = Variable_List.objects.get(option_id = item[1][1][0].id)
+                    vble_supervisor = Variable_List.objects.get(option_id = item[1][2][0].id)
                     response_encuestador = Response.objects.create(value = data['surveyor'], option_id = option_encuestador.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     variable_tipo_cuest = Variable.objects.create(value = survey.survey_type.id, survey_id = survey.id, variable_list_id = vble_tipo_cuest.id, created_by = user_id, updated_by = user_id)
                     variable_encuestador = Variable.objects.create(value = data['surveyor'], survey_id = survey.id, variable_list_id = vble_encuestador.id, created_by = user_id, updated_by = user_id)
@@ -115,8 +148,8 @@ class QuestionDetail(TemplateView):
                     item_fecha = ctx['items'][1]
                     option_entrevista = item_entrevista[1][0][0]
                     option_fecha = item_fecha[1][0][0]
-                    vble_entrevista = item_entrevista[1][0][2]
-                    vble_fecha = item_fecha[1][0][2]
+                    vble_entrevista = Variable_List.objects.get(option_id = item_entrevista[1][0][0].id)
+                    vble_fecha = Variable_List.objects.get(option_id = item_fecha[1][0][0].id)
                     response_entrevista = Response.objects.create(value = data['entrevista'], option_id = option_entrevista.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     response_fecha = Response.objects.create(value = data['fecha'], option_id = option_fecha.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     variable_entrevista = Variable.objects.create(value = data['entrevista'], survey_id = survey.id, variable_list_id = vble_entrevista.id, created_by = user_id, updated_by = user_id)
@@ -133,10 +166,10 @@ class QuestionDetail(TemplateView):
                     option_departamento = item[1][1][0]
                     option_localidad = item[1][2][0]
                     option_cod_emp = item[1][3][0]
-                    vble_provincia = item[1][0][2]
-                    vble_departamento = item[1][1][2]
-                    vble_localidad = item[1][2][2]
-                    vble_cod_emp = item[1][3][2]
+                    vble_provincia = Variable_List.objects.get(option_id = item[1][0][0].id)
+                    vble_departamento = Variable_List.objects.get(option_id = item[1][1][0].id)
+                    vble_localidad = Variable_List.objects.get(option_id = item[1][2][0].id)
+                    vble_cod_emp = Variable_List.objects.get(option_id = item[1][3][0].id)
 
                     response_provincia = Response.objects.create(value = '94', option_id = option_provincia.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     response_departamento = Response.objects.create(value = data['district'], option_id = option_departamento.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
@@ -168,14 +201,14 @@ class QuestionDetail(TemplateView):
                     option_phone = item[1][5][0]
                     option_email = item[1][6][0]
                     option_web_page = item[1][7][0]
-                    vble_cuit = item[1][0][2]
-                    vble_name = item[1][1][2]
-                    vble_address_street = item[1][2][2]
-                    vble_address_number = item[1][3][2]
-                    vble_zip_code = item[1][4][2]
-                    vble_phone = item[1][5][2]
-                    vble_email = item[1][6][2]
-                    vble_web_page = item[1][7][2]
+                    vble_cuit = Variable_List.objects.get(option_id = item[1][0][0].id)
+                    vble_name = Variable_List.objects.get(option_id = item[1][1][0].id)
+                    vble_address_street = Variable_List.objects.get(option_id = item[1][2][0].id)
+                    vble_address_number = Variable_List.objects.get(option_id = item[1][3][0].id)
+                    vble_zip_code = Variable_List.objects.get(option_id = item[1][4][0].id)
+                    vble_phone = Variable_List.objects.get(option_id = item[1][5][0].id)
+                    vble_email = Variable_List.objects.get(option_id = item[1][6][0].id)
+                    vble_web_page = Variable_List.objects.get(option_id = item[1][7][0].id)
 
                     response_cuit = Response.objects.create(value = context["survey_data"].company.cuit, option_id = option_cuit.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     response_name = Response.objects.create(value = data['name'], option_id = option_name.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)

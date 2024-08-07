@@ -99,7 +99,7 @@ class Question(models.Model):
 class Item(models.Model):
     item_order = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
-    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
+    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
     created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="item_created_by_user")
@@ -114,9 +114,10 @@ class Item(models.Model):
         return self.text
 
 class Option(models.Model):
-    option_order = models.IntegerField(verbose_name="Orden")
+    code = models.IntegerField(verbose_name="Orden")
     text = models.CharField(max_length=500, verbose_name="Texto")
     item = models.ForeignKey(Item, verbose_name="Item", on_delete=models.SET_DEFAULT, default=0)
+    children = models.ForeignKey(Item, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='children')
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
     created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="option_created_by_user")
@@ -125,7 +126,7 @@ class Option(models.Model):
     class Meta:
         verbose_name = "opción"
         verbose_name_plural = "opciones"
-        ordering = ["option_order"]
+        ordering = ["code"]
     
     def __str__(self) -> str:
         return self.text
