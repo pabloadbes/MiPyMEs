@@ -1,5 +1,3 @@
-{% load static %}
-
 {% for item in items %}
   <div>
     {% if item.0.text %}
@@ -10,9 +8,8 @@
     {% for option in item.1  %}
       <div class="row">
         <div class="col-md-9 mx-auto mb-3">
-          <label for="{{option.0.id}}"
-                  title="{{option.1.0}}">
-            {{option.0.text}}({{option.0.id}})
+          <label for="{{option.0.id}}">
+            {{option.0.text}}
           </label>
         </div>
         <div class="col-md-3 mx-auto mb-3">
@@ -31,6 +28,28 @@
           </select>
         </div>
       </div>
+
+      {% if option.0.children %}
+        <div class="row">
+          <div class="col-md-3 mx-auto mb-3">
+            <label for="{{option.2.0.1.0.id}}">
+              {{option.2.0.1.0.text}}
+            </label>
+          </div>
+          <div class="col-md-9 mx-auto mb-3">
+            <input type="text" class="form-control" id="{{option.2.0.1.0.id}}" name="{{option.2.0.1.0.id}}"/>
+          </div>
+        </div>
+      {% endif %} 
+
+      {% if option.1.0 %}
+        <div class="row">
+          <div class="col">
+            <small><b>{{ option.1.0 }}</b></small>
+          </div>
+        </div>        
+      {% endif %}
+            
     {% endfor %}
     <hr>
   </div>

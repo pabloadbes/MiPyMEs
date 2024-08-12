@@ -88,27 +88,40 @@ class QuestionDetail(TemplateView):
                             variable.save()
                 
                 elif "select_one" in ctx['template_type']:
+                    print("SELECT ONE")
                     for item in ctx['items']:
+                        print("ITEM")
+                        print(item)
                         for option in item[1]:
+                            print("OPTION")
+                            print(option)
                             if Variable_List.objects.all().filter(option_id = option[0].id).exists():
-                                print("HAY VARIABLE")
+                                print("VARIABLE ASOCIADA")
                                 vble = Variable_List.objects.get(option_id = option[0].id)
-                            print(item[0].id)
+                                print(vble)
                             if option[0].text == data[str(item[0].id)]:
-                                print("ESTA ES LA OPCIÓN ELEGIDA")
+                                print("ESTA OPCIÓN FUE MARCADA")
                                 response = Response.objects.create(value = "true", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                                 variable = Variable.objects.create(value = option[0].code, survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
                                 variable.save()
                             else: 
-                                print("OTRAS OPCIONES")
                                 response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             if option[0].children_id:
-                                print("ESTAMOS EN EL HIJO")
+                                print("AHORA EN EL HIJO")
+                                print("BUSCAMOS EL ITEM HIJO - ID")
+                                print(option[0].children_id)
                                 children_item = Item.objects.get(id = option[0].children_id)
+                                print("BUSCAMOS LA OPTION DEL HIJO - ID")
+                                print(children_item.id)
                                 children_option = Option.objects.get(item_id = children_item.id)
+                                print("BUSCAMOS LA VARIABLE DE LISTA DEL HIJO - ID")
+                                print(children_option.id)
                                 children_vble = Variable_List.objects.get(option_id = children_option.id)
+                                print("CONSTRUIMOS LA RESPONSE")
                                 children_response = Response.objects.create(value = data[str(children_option.id)], option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                                print("CONSTRUIMOS LA VARIABLE")
                                 children_variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
+                                print(children_variable)
                                 children_response.save()
                                 children_variable.save()
                             response.save()

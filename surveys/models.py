@@ -190,4 +190,4 @@ class Variable(models.Model):
         ordering = ['survey', '-updated_at']
 
     def __str__(self):
-        return self.survey
+        return self.variable_list.name + " " + self.value
