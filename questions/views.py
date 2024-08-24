@@ -283,6 +283,10 @@ class QuestionDetail(TemplateView):
             print(f"Error: {e}")
             return HttpResponseRedirect(reverse_lazy("home"))
 
+        print("CANTIDAD DE PREGUNTAS")
+        print(survey.get_number_of_questions())
+        print("NÚMERO DE PREGUNTA")
+        print(question.number)
         if question.number == survey.get_number_of_questions():
             return HttpResponseRedirect(reverse_lazy("surveys:end", args=[survey.id]))
         return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.next_question, 'survey':survey.id}))

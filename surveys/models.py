@@ -96,7 +96,7 @@ class Survey(models.Model):
         return questions
     
     def calculate_number_of_questions(self) -> int:
-        return len(self.get_questions())
+        return len(self.get_questions()) - 4 # Las primeras cuatro no se cuentan
     
     def get_first_question(self) -> int:
         questions = self.get_questions()

@@ -73,4 +73,5 @@ class SurveyEndView(TemplateView):
         return context
     
     def post(self, request, *args, **kwargs):
+        print("Recuperar y guardar las variables")
         return HttpResponseRedirect(reverse_lazy("home"))
