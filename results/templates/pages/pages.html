@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Páginas{% endblock %}
+{% block content %}
+<main role="main">
+  <div class="container mb-4">
+    {% for result in results %}
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto">
+          <h2 class="mb-4">{{result.title}}</h2>
+          <div>
+            <p>{{result.content|striptags|safe|truncatechars:"200"}}</p>
+            <p><a href="{% url 'result' result.id result.title|slugify %}">Leer más</a>
+              <!--
+              {% if request.user.is_staff %}
+                | <a href="#">Editar</a>
+                | <a href="#">Borrar</a>
+              {% endif %}
+              -->
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

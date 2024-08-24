@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'core',
     'questions.apps.QuestionsConfig',
     'companies.apps.CompaniesConfig',
+    'results.apps.ResultsConfig',
     'surveys.apps.SurveysConfig',
     'team.apps.TeamConfig'
 ]

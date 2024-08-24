@@ -1,0 +1,72 @@
+  {% comment %} {% for item in items %} {% endcomment %}
+    {% comment %} <div> {% endcomment %}
+    <div>
+      <div class="row mb-3">
+        <div class="col-md-5">
+          <label for="{{option.0.id}}">
+            <b>{{items.0.0}}</b>
+          </label>
+        </div>
+        <div class="col-md-7 mx-auto">
+          <input type="text" class="form-control" id="{{option.0.id}}" name="{{option.0.id}}"/>
+        </div>
+      </div>
+    <hr>
+    <div class="row mb-3">
+      <div class="col">
+        <b>{{items.1.0}}</b>
+      </div>
+    </div>
+    {% for option in items.1.1  %}
+
+      <div class="row mb-3">
+
+        <div class="col">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{items.1.0.id}}" id="{{items.1.1.id}}" value="{{option.0.text}}">
+            <label class="form-check-label" 
+                    for="{{option.0.id}}">
+              {{option.0.text}}
+            </label>
+          </div>
+        </div>
+
+      </div>        
+      {% endfor %}
+                      
+            {% comment %} {% if option.1.0 %}
+              <div class="row">
+                <div class="col">
+                  <small><b>{{ option.1.0 }}</b></small>
+                </div>
+              </div>        
+            {% endif %} {% endcomment %}
+            
+            {% comment %} {% if option.0.children %} {% endcomment %}
+        
+        {% comment %} <hr>
+          <div class="col-md-3">
+              <b>{{option.0.children}}</b> {% endcomment %}
+              {% comment %} {% for child_option in option.2.0.1 %}
+              <div class="row">
+                <div class="col-md-10 mx-auto mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{item.0.id}}" id="{{option.0.id}}" value="{{option.0.text}}">
+                    <label class="form-check-label" 
+                            for="{{option.0.id}}"
+                            title="{{option.1.0}}">
+                      {{child_option.text}}
+                    </label>
+                  </div>
+                </div>
+              </div>    
+              {% endfor %} {% endcomment %}
+            {% comment %} {% else %}
+            {% endif %} {% endcomment %}
+            
+
+
+
+      </div>
+
+  {% comment %} {% endfor %} {% endcomment %}
