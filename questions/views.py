@@ -49,7 +49,10 @@ class QuestionDetail(TemplateView):
         if survey.is_survey_complete():
             survey.set_survey_state(2)
         survey.set_next_question(survey.calculate_next_question())
-        survey.set_progress(100 * question.number / survey.get_number_of_questions())
+        if question.number > 0:
+            survey.set_progress(100 * question.number / survey.get_number_of_questions())
+        else:
+            survey.set_progress(0)
         survey.set_updated_by(user_id)
 
         ctx = ctx_dict(request)
@@ -136,6 +139,7 @@ class QuestionDetail(TemplateView):
                                             children_vble = Variable_List.objects.get(option_id = children_option.id)
                                         if children_option.text == data[str(children_item.id)]:
                                             children_response = Response.objects.create(value = True, option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                                            print("¿AQUÍ ESTÁ EL PROBLEMA?")
                                             children_variable = Variable.objects.create(value = str(children_option.code), survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
                                             children_response.save()
                                             children_variable.save()

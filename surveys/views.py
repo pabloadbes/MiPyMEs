@@ -9,10 +9,11 @@ from django.views.generic.list import ListView
 # from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
-from .models import Survey
+from .models import Survey, Variable
 from .forms import SurveyForm
 from companies.models import Company
-from team.models import Surveyor, Supervisor
+from team.models import Surveyor
+from results.models import Result
 
 # from questions.models import Question, Section
 
@@ -74,4 +75,20 @@ class SurveyEndView(TemplateView):
     
     def post(self, request, *args, **kwargs):
         print("Recuperar y guardar las variables")
+        print(self)
+        print(request.user)
+        print(args)
+        print(kwargs)
+        result = Result()
+        survey_id = kwargs['pk']
+        variables = Variable.objects.all().filter(survey_id = survey_id).order_by('id')
+        for variable in variables:
+            print(variable)
+            print(variable.variable_list)
+            print(variable.value)
+            setattr(result, str(variable.variable_list), variable.value)
+        setattr(result, 'created_by', request.user)
+        setattr(result, 'updated_by', request.user)
+        setattr(result, 'survey_id', survey_id)
+        result.save()
         return HttpResponseRedirect(reverse_lazy("home"))
