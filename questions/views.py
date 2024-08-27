@@ -139,7 +139,6 @@ class QuestionDetail(TemplateView):
                                             children_vble = Variable_List.objects.get(option_id = children_option.id)
                                         if children_option.text == data[str(children_item.id)]:
                                             children_response = Response.objects.create(value = True, option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                                            print("¿AQUÍ ESTÁ EL PROBLEMA?")
                                             children_variable = Variable.objects.create(value = str(children_option.code), survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
                                             children_response.save()
                                             children_variable.save()
@@ -161,6 +160,29 @@ class QuestionDetail(TemplateView):
                             else: 
                                 response = Response.objects.create(value = "false", option_id = option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                             response.save()
+
+                if "txt_sel" in ctx['template_type']:
+                    items = ctx['items']
+                    [txt_item, sel_item] = items
+
+                    txt_option_id = txt_item[1][0][0].id
+                    txt_response = Response.objects.create(value = data[str(txt_option_id)], option_id = txt_option_id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    txt_response.save()
+                    if Variable_List.objects.all().filter(option_id = txt_option_id).exists():
+                        txt_vble = Variable_List.objects.get(option_id = txt_option_id)
+                        txt_variable = Variable.objects.create(value = data[str(txt_option_id)], survey_id = survey.id, variable_list_id = txt_vble.id, created_by = user_id, updated_by = user_id)   
+                        txt_variable.save()
+
+                    for sel_option in sel_item[1]:
+                        if Variable_List.objects.all().filter(option_id = sel_option[0].id).exists():
+                            sel_vble = Variable_List.objects.get(option_id = sel_option[0].id)
+                        if sel_option[0].text == data[str(sel_item[0].id)]:
+                            sel_response = Response.objects.create(value = "true", option_id = sel_option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                            sel_variable = Variable.objects.create(value = sel_option[0].code, survey_id = survey.id, variable_list_id = sel_vble.id, created_by = user_id, updated_by = user_id)   
+                            sel_variable.save()
+                        else: 
+                            sel_response = Response.objects.create(value = "false", option_id = sel_option[0].id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                        sel_response.save()
 
                 elif "init_1" in ctx['template_type']:
                     item = ctx['items'][0]
