@@ -74,18 +74,10 @@ class SurveyEndView(TemplateView):
         return context
     
     def post(self, request, *args, **kwargs):
-        print("Recuperar y guardar las variables")
-        print(self)
-        print(request.user)
-        print(args)
-        print(kwargs)
         result = Result()
         survey_id = kwargs['pk']
         variables = Variable.objects.all().filter(survey_id = survey_id).order_by('id')
         for variable in variables:
-            print(variable)
-            print(variable.variable_list)
-            print(variable.value)
             setattr(result, str(variable.variable_list), variable.value)
         setattr(result, 'created_by', request.user)
         setattr(result, 'updated_by', request.user)

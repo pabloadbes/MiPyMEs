@@ -109,10 +109,6 @@ class Survey(models.Model):
         return questions[0].id
     
     def is_survey_complete(self) -> bool:
-        print("ENCUESTA COMPLETA?")
-        print(self.get_next_question())
-        print(self.get_number_of_questions())
-        print(self.get_first_question())
         return self.get_next_question() == self.get_number_of_questions() + self.get_first_question() + 3
     
     def calculate_next_question(self) -> int:
@@ -123,7 +119,7 @@ class Survey(models.Model):
         #Debe detectar si la encuesta se completó
             if self.is_survey_complete():
                 return self.get_last_question()
-        #Durante el llenado debe indicar la pregunta siguiente
+        #Durante el llenado debe indicar la pregunta siguiente o el pase
             self.set_next_question(self.get_next_question() + 1)
         #Evaluar filtros
         
