@@ -89,7 +89,7 @@ class Survey(models.Model):
         self.number_of_questions = number_of_questions
 
     def get_questions(self) -> List[Question]:
-        section_ids = list(Section.objects.all().filter(survey_type = self.survey_type).values_list('id', flat=True))
+        section_ids = list(Section.objects.all().filter(survey_type = self.survey_type).values_list('id', flat=True).order_by('id'))
         questions = []
         for section_id in section_ids:
             questions.extend(list(Question.objects.all().filter(section_id = section_id).order_by('id')))
@@ -114,17 +114,35 @@ class Survey(models.Model):
     def calculate_next_question(self) -> int:
         #Al iniciar la encuesta debe indicar la primera pregunta
         if self.get_survey_state() == "created":
-            if self.get_next_question() == 0:
-                return self.get_first_question()
         #Debe detectar si la encuesta se completó
             if self.is_survey_complete():
                 return self.get_last_question()
         #Durante el llenado debe indicar la pregunta siguiente o el pase
-            self.set_next_question(self.get_next_question() + 1)
+            next_question = Survey_Remaining_Questions.objects.all().filter(survey_id = self.id).first()
+            self.set_next_question(next_question.question.id)
+            self.save()
+            next_question.delete()
+
         #Evaluar filtros
         
         return self.next_question
 
+class Survey_Remaining_Questions(models.Model):
+    survey = models.ForeignKey(Survey, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
+    question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="pregunta_pendiente_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="pregunta_pendiente_by_user")
+
+    class Meta:
+        verbose_name = "preguntas restantes de encuesta"
+        verbose_name_plural = "preguntas restantes de encuesta"
+        ordering = ['survey', 'question']
+
+    def __str__(self):
+        return self.survey.company.name + " - " + str(self.question.number) + ". " + self.question.text
+    
 class Response(models.Model):
     value = models.CharField(verbose_name="Valor", max_length=500)
     survey = models.ForeignKey(Survey, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)

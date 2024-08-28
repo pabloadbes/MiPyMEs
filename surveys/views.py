@@ -9,11 +9,12 @@ from django.views.generic.list import ListView
 # from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
-from .models import Survey, Variable
+from .models import Survey, Variable, Survey_Remaining_Questions
 from .forms import SurveyForm
 from companies.models import Company
 from team.models import Surveyor
 from results.models import Result
+# from questions.models import Question
 
 # from questions.models import Question, Section
 
@@ -52,16 +53,24 @@ class SurveyCreate(CreateView):
         return form
     
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        form.instance.updated_by = self.request.user
+        user_id = self.request.user
+        form.instance.created_by = user_id
+        form.instance.updated_by = user_id
+        self.object = form.save()
+        questions = self.object.get_questions()
+        for question in questions:
+            survey_remaining_question = Survey_Remaining_Questions.objects.create(survey_id = self.object.id, question_id = question.id, created_by = user_id, updated_by = user_id)
+            survey_remaining_question.save()
         return super().form_valid(form)
     
     def get_success_url(self) -> str:
         survey = self.object    
         if survey.get_progress() == 0:
             survey.set_number_of_questions(survey.calculate_number_of_questions())
-            survey.set_next_question(survey.get_first_question())
+            next_question = Survey_Remaining_Questions.objects.all().filter(survey_id = survey.id).first()
+            survey.set_next_question(next_question.question.id)
             survey.save()
+            next_question.delete()
         return reverse_lazy("questions:question_detail", kwargs={'pk':survey.get_next_question(), 'survey':survey.id})
 
 @method_decorator(login_required, name='dispatch')   
