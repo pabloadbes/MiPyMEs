@@ -59,26 +59,26 @@ class QuestionDetail(TemplateView):
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
 
-        print("********************************************************")
-        print("EN EL POST")
-        print(context)
-        print("********************************************************")
-        print(ctx)
-        print("********************************************************")
-        print(data)
-        print("********************************************************")
-        for item in ctx['items']:
-            print(item)
-            for option in item[1]:
-                print(option[0])
-                if option[0].children_id:
-                    print(option[0].children_id)
-                    children_item = Item.objects.get(id = option[0].children_id)
-                    print(children_item)
-                    children_options = Option.objects.filter(item_id = children_item.id)
+        # print("********************************************************")
+        # print("EN EL POST")
+        # print(context)
+        # print("********************************************************")
+        # print(ctx)
+        # print("********************************************************")
+        # print(data)
+        # print("********************************************************")
+        # for item in ctx['items']:
+        #     print(item)
+        #     for option in item[1]:
+        #         print(option[0])
+        #         if option[0].children_id:
+        #             print(option[0].children_id)
+        #             children_item = Item.objects.get(id = option[0].children_id)
+        #             print(children_item)
+        #             children_options = Option.objects.filter(item_id = children_item.id)
 
-                    for children_option in children_options:
-                        print(children_option)
+        #             for children_option in children_options:
+        #                 print(children_option)
         try:
             with transaction.atomic():
                 if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
@@ -309,10 +309,10 @@ class QuestionDetail(TemplateView):
             print(f"Error: {e}")
             return HttpResponseRedirect(reverse_lazy("home"))
 
-        print("CANTIDAD DE PREGUNTAS")
-        print(survey.get_number_of_questions())
-        print("NÚMERO DE PREGUNTA")
-        print(question.number)
+        # print("CANTIDAD DE PREGUNTAS")
+        # print(survey.get_number_of_questions())
+        # print("NÚMERO DE PREGUNTA")
+        # print(question.number)
         if question.number == survey.get_number_of_questions():
             return HttpResponseRedirect(reverse_lazy("surveys:end", args=[survey.id]))
         return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.next_question, 'survey':survey.id}))

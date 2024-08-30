@@ -118,18 +118,61 @@ class Survey(models.Model):
             if self.is_survey_complete():
                 return self.get_last_question()
         #Durante el llenado debe indicar la pregunta siguiente o el pase
-            next_question = Survey_Remaining_Questions.objects.all().filter(survey_id = self.id).first()
+            answering_question = Survey_Questions.objects.get(survey_id = self.id, survey_question_state_id = 4)
+            answering_question.survey_question_state_id = 2
+            answering_question.save()
+            print("HAY FILTRO????")
+            if Filter.objects.all().filter(question_id = answering_question.question.id).exists():
+                filter = Filter.objects.get(question_id = answering_question.question.id)
+                print("Filtro")
+                print(filter)
+                print(answering_question.question.id+1)
+                print(filter.dest)
+                print(filter.variables)
+                print(filter.variables_id)
+                variable = Variable.objects.get(survey_id = self.id, variable_list_id = filter.variables_id)
+                print("VALOR DEL FILTRO")
+                print(filter.value)
+                print("VALOR DE LA VARIABLE")
+                print(variable.value)
+                if(filter.value == variable.value):
+                    for i in range(answering_question.question.id+1,filter.dest):
+                        print("PASANDO PREGUNTAS")
+                        print(i)
+                        passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
+                        print(passed_question)
+                        passed_question.survey_question_state = 3
+                        passed_question.save()
+            next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
             self.set_next_question(next_question.question.id)
             self.save()
-            next_question.delete()
+            next_question.survey_question_state_id = 4
+            next_question.save()
 
         #Evaluar filtros
         
         return self.next_question
 
-class Survey_Remaining_Questions(models.Model):
+class Survey_Question_State(models.Model):
+    name = models.CharField(verbose_name="Nombre", max_length=50)
+    description = models.CharField(verbose_name="Descripción", max_length=500)
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="survey_question_state_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="survey_question_state_updated_by_user")
+
+    class Meta:
+        verbose_name = "Estado de preguntas de la encuesta"
+        verbose_name_plural = "Estados de preguntas de la encuesta"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+class Survey_Questions(models.Model):
     survey = models.ForeignKey(Survey, verbose_name="Empresa", on_delete=models.SET_DEFAULT, default=0)
     question = models.ForeignKey(Question, verbose_name="Pregunta", on_delete=models.SET_DEFAULT, default=0)
+    survey_question_state = models.ForeignKey(Survey_Question_State, verbose_name="Estado de la pregunta", on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
     created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="pregunta_pendiente_created_by_user")
@@ -209,3 +252,39 @@ class Variable(models.Model):
 
     def __str__(self):
         return self.variable_list.name + " " + self.value
+    
+
+class Filter_Type(models.Model):
+    name = models.CharField(verbose_name="nombre")
+    description = models.CharField(max_length=500, verbose_name="Descripción")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="filter_type_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="filter_type_updated_by_user")
+
+    class Meta:
+        verbose_name = "Tipo de filtro"
+        verbose_name_plural = "Tipos de filtro"
+        ordering = ["name"]
+        
+    def __str__(self) -> str:
+        return self.name
+
+class Filter(models.Model):
+    question = models.ForeignKey(Question, verbose_name="pregunta", on_delete=models.DO_NOTHING)
+    variables = models.ForeignKey(Variable_List, verbose_name="Variable", on_delete=models.DO_NOTHING)
+    filter_type = models.ForeignKey(Filter_Type, verbose_name="Tipo de filtro", on_delete=models.DO_NOTHING)
+    value = models.IntegerField(verbose_name="Valor")
+    dest = models.IntegerField(verbose_name="Destino")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="filter_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="filter_updated_by_user")
+
+    class Meta:
+        verbose_name = "Filtro"
+        verbose_name_plural = "Filtros"
+        ordering = ["question"]
+        
+    def __str__(self) -> str:
+        return self.question.text

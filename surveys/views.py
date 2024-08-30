@@ -9,7 +9,7 @@ from django.views.generic.list import ListView
 # from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
-from .models import Survey, Variable, Survey_Remaining_Questions
+from .models import Survey, Variable, Survey_Questions
 from .forms import SurveyForm
 from companies.models import Company
 from team.models import Surveyor
@@ -59,7 +59,7 @@ class SurveyCreate(CreateView):
         self.object = form.save()
         questions = self.object.get_questions()
         for question in questions:
-            survey_remaining_question = Survey_Remaining_Questions.objects.create(survey_id = self.object.id, question_id = question.id, created_by = user_id, updated_by = user_id)
+            survey_remaining_question = Survey_Questions.objects.create(survey_id = self.object.id, question_id = question.id, created_by = user_id, updated_by = user_id, survey_question_state_id = 1)
             survey_remaining_question.save()
         return super().form_valid(form)
     
@@ -67,10 +67,11 @@ class SurveyCreate(CreateView):
         survey = self.object    
         if survey.get_progress() == 0:
             survey.set_number_of_questions(survey.calculate_number_of_questions())
-            next_question = Survey_Remaining_Questions.objects.all().filter(survey_id = survey.id).first()
+            next_question = Survey_Questions.objects.all().filter(survey_id = survey.id).filter(survey_question_state_id = 1).first()
             survey.set_next_question(next_question.question.id)
             survey.save()
-            next_question.delete()
+            next_question.survey_question_state_id = 4
+            next_question.save()
         return reverse_lazy("questions:question_detail", kwargs={'pk':survey.get_next_question(), 'survey':survey.id})
 
 @method_decorator(login_required, name='dispatch')   
