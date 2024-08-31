@@ -46,14 +46,14 @@ class QuestionDetail(TemplateView):
         survey = Survey.objects.get(pk = survey_id)
         question = context['question']
 
-        if survey.is_survey_complete():
-            survey.set_survey_state(2)
-        survey.set_next_question(survey.calculate_next_question())
-        if question.number > 0:
-            survey.set_progress(100 * question.number / survey.get_number_of_questions())
-        else:
-            survey.set_progress(0)
-        survey.set_updated_by(user_id)
+        # if survey.is_survey_complete():
+        #     survey.set_survey_state(2)
+        # survey.set_next_question(survey.calculate_next_question())
+        # if question.number > 0:
+        #     survey.set_progress(100 * question.number / survey.get_number_of_questions())
+        # else:
+        #     survey.set_progress(0)
+        # survey.set_updated_by(user_id)
 
         ctx = ctx_dict(request)
         data = request.POST.dict()
@@ -308,6 +308,15 @@ class QuestionDetail(TemplateView):
         except Exception as e:
             print(f"Error: {e}")
             return HttpResponseRedirect(reverse_lazy("home"))
+
+        if survey.is_survey_complete():
+            survey.set_survey_state(2)
+        survey.set_next_question(survey.calculate_next_question())
+        if question.number > 0:
+            survey.set_progress(100 * question.number / survey.get_number_of_questions())
+        else:
+            survey.set_progress(0)
+        survey.set_updated_by(user_id)
 
         # print("CANTIDAD DE PREGUNTAS")
         # print(survey.get_number_of_questions())

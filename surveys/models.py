@@ -121,28 +121,39 @@ class Survey(models.Model):
             answering_question = Survey_Questions.objects.get(survey_id = self.id, survey_question_state_id = 4)
             answering_question.survey_question_state_id = 2
             answering_question.save()
-            print("HAY FILTRO????")
+            print("HAY FILTROS????")
             if Filter.objects.all().filter(question_id = answering_question.question.id).exists():
-                filter = Filter.objects.get(question_id = answering_question.question.id)
+                filters = Filter.objects.all().filter(question_id = answering_question.question.id)
                 print("Filtro")
-                print(filter)
-                print(answering_question.question.id+1)
-                print(filter.dest)
-                print(filter.variables)
-                print(filter.variables_id)
-                variable = Variable.objects.get(survey_id = self.id, variable_list_id = filter.variables_id)
-                print("VALOR DEL FILTRO")
-                print(filter.value)
-                print("VALOR DE LA VARIABLE")
-                print(variable.value)
-                if(filter.value == variable.value):
-                    for i in range(answering_question.question.id+1,filter.dest):
-                        print("PASANDO PREGUNTAS")
-                        print(i)
-                        passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
-                        print(passed_question)
-                        passed_question.survey_question_state = 3
-                        passed_question.save()
+                print(filters)
+                for filter in filters:
+                    print(filter)
+                    print(answering_question.question.id+1)
+                    print(filter.dest)
+                    print(filter.variable)
+                    print(filter.variable_id)
+                    variable = Variable.objects.get(survey_id = self.id, variable_list_id = filter.variable_id)
+                    print("VALOR DEL FILTRO")
+                    print(filter.value)
+                    print("VALOR DE LA VARIABLE")
+                    print(variable.value)
+                    if filter.evaluation(variable):
+                        if filter.filter_type_id == 1:
+                            print("ACTIVAMOS FILTRO GOTO")
+                            for i in range(answering_question.question.id+1,filter.dest):
+                                print("PASANDO PREGUNTAS")
+                                print(i)
+                                passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
+                                print(passed_question)
+                                passed_question.survey_question_state_id = 3
+                                passed_question.save()
+                        elif filter.filter_type_id == 2:
+                            print("ACTIVAMOS FILTRO DELETE")
+                            print("SOLO ELIMINO LA PREGUNTA DESTINO")
+                            passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = filter.dest)
+                            print(passed_question)
+                            passed_question.survey_question_state_id = 3
+                            passed_question.save()
             next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
             self.set_next_question(next_question.question.id)
             self.save()
@@ -253,7 +264,22 @@ class Variable(models.Model):
     def __str__(self):
         return self.variable_list.name + " " + self.value
     
+class Condition_Type(models.Model):
+    symbol = models.CharField(max_length=1 ,verbose_name="símbolo")
+    description = models.CharField(max_length=500, verbose_name="Descripción")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="condition_type_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="condition_type_updated_by_user")
 
+    class Meta:
+        verbose_name = "Tipo de condición"
+        verbose_name_plural = "Tipos de condición"
+        ordering = ["description"]
+        
+    def __str__(self) -> str:
+        return self.description
+    
 class Filter_Type(models.Model):
     name = models.CharField(verbose_name="nombre")
     description = models.CharField(max_length=500, verbose_name="Descripción")
@@ -272,8 +298,9 @@ class Filter_Type(models.Model):
 
 class Filter(models.Model):
     question = models.ForeignKey(Question, verbose_name="pregunta", on_delete=models.DO_NOTHING)
-    variables = models.ForeignKey(Variable_List, verbose_name="Variable", on_delete=models.DO_NOTHING)
+    variable = models.ForeignKey(Variable_List, verbose_name="Variable", on_delete=models.DO_NOTHING)
     filter_type = models.ForeignKey(Filter_Type, verbose_name="Tipo de filtro", on_delete=models.DO_NOTHING)
+    condition_type = models.ForeignKey(Condition_Type, verbose_name="Condición", on_delete=models.DO_NOTHING)
     value = models.IntegerField(verbose_name="Valor")
     dest = models.IntegerField(verbose_name="Destino")
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
@@ -288,3 +315,20 @@ class Filter(models.Model):
         
     def __str__(self) -> str:
         return self.question.text
+    
+    def evaluation(self, variable: Variable) -> bool:
+        if self.condition_type_id == 1:
+            if self.value == int(variable.value):
+                return True
+            else:
+                return False
+        elif self.condition_type_id == 2:
+            if self.value > int(variable.value):
+                return True
+            else:
+                return False
+        elif self.condition_type_id == 3:
+            if self.value < int(variable.value):
+                return True
+            else:
+                return False
