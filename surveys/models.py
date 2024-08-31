@@ -139,19 +139,12 @@ class Survey(models.Model):
                     print(variable.value)
                     if filter.evaluation(variable):
                         if filter.filter_type_id == 1:
-                            print("ACTIVAMOS FILTRO GOTO")
                             for i in range(answering_question.question.id+1,filter.dest):
-                                print("PASANDO PREGUNTAS")
-                                print(i)
                                 passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
-                                print(passed_question)
                                 passed_question.survey_question_state_id = 3
                                 passed_question.save()
                         elif filter.filter_type_id == 2:
-                            print("ACTIVAMOS FILTRO DELETE")
-                            print("SOLO ELIMINO LA PREGUNTA DESTINO")
                             passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = filter.dest)
-                            print(passed_question)
                             passed_question.survey_question_state_id = 3
                             passed_question.save()
             next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
@@ -160,8 +153,6 @@ class Survey(models.Model):
             next_question.survey_question_state_id = 4
             next_question.save()
 
-        #Evaluar filtros
-        
         return self.next_question
 
 class Survey_Question_State(models.Model):
