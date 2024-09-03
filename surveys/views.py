@@ -67,6 +67,11 @@ class SurveyCreate(CreateView):
         survey = self.object    
         if survey.get_progress() == 0:
             survey.set_number_of_questions(survey.calculate_number_of_questions())
+            questions = Survey_Questions.objects.all().filter(survey_id = survey.id)
+            for i in range(1, 40):
+                question = questions[i]
+                question.survey_question_state_id = 3
+                question.save()
             next_question = Survey_Questions.objects.all().filter(survey_id = survey.id).filter(survey_question_state_id = 1).first()
             survey.set_next_question(next_question.question.id)
             survey.save()

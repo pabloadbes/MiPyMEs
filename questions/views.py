@@ -59,8 +59,8 @@ class QuestionDetail(TemplateView):
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
 
-        # print("********************************************************")
-        # print("EN EL POST")
+        print("********************************************************")
+        print("EN EL POST")
         # print(context)
         # print("********************************************************")
         # print(ctx)

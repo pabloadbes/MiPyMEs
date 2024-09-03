@@ -130,23 +130,29 @@ class Survey(models.Model):
                     print(filter)
                     print(answering_question.question.id+1)
                     print(filter.dest)
-                    print(filter.variable)
-                    print(filter.variable_id)
-                    variable = Variable.objects.get(survey_id = self.id, variable_list_id = filter.variable_id)
+                    print(filter.variables)
+                    filter_variables = filter.variables.all()
+                    print(filter_variables)
+                    # print(filter.variable_id)
+                    # variable = Variable.objects.get(survey_id = self.id, variable_list_id = filter.variable_id)
                     print("VALOR DEL FILTRO")
                     print(filter.value)
-                    print("VALOR DE LA VARIABLE")
-                    print(variable.value)
-                    if filter.evaluation(variable):
+                    # print("VALOR DE LA VARIABLE")
+                    # print(variable.value)
+                    print("VAMOS  A EVALUAR")
+                    if filter.evaluation(self):
+                        print("ACTIVAMOS EL FILTRO")
                         if filter.filter_type_id == 1:
                             for i in range(answering_question.question.id+1,filter.dest):
                                 passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
                                 passed_question.survey_question_state_id = 3
                                 passed_question.save()
-                        elif filter.filter_type_id == 2:
+                        elif filter.filter_type_id in (2, 3, 4, 5):
                             passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = filter.dest)
                             passed_question.survey_question_state_id = 3
                             passed_question.save()
+                        # elif filter.filter_type_id == 3:
+
             next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
             self.set_next_question(next_question.question.id)
             self.save()
@@ -256,7 +262,7 @@ class Variable(models.Model):
         return self.variable_list.name + " " + self.value
     
 class Condition_Type(models.Model):
-    symbol = models.CharField(max_length=1 ,verbose_name="símbolo")
+    symbol = models.CharField(max_length=2 ,verbose_name="símbolo")
     description = models.CharField(max_length=500, verbose_name="Descripción")
     created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
@@ -289,7 +295,7 @@ class Filter_Type(models.Model):
 
 class Filter(models.Model):
     question = models.ForeignKey(Question, verbose_name="pregunta", on_delete=models.DO_NOTHING)
-    variable = models.ForeignKey(Variable_List, verbose_name="Variable", on_delete=models.DO_NOTHING)
+    variables = models.ManyToManyField(Variable_List, verbose_name="Variables")
     filter_type = models.ForeignKey(Filter_Type, verbose_name="Tipo de filtro", on_delete=models.DO_NOTHING)
     condition_type = models.ForeignKey(Condition_Type, verbose_name="Condición", on_delete=models.DO_NOTHING)
     value = models.IntegerField(verbose_name="Valor")
@@ -305,21 +311,75 @@ class Filter(models.Model):
         ordering = ["question"]
         
     def __str__(self) -> str:
-        return self.question.text
+        return self.filter_type.name + self.condition_type.symbol
     
-    def evaluation(self, variable: Variable) -> bool:
-        if self.condition_type_id == 1:
-            if self.value == int(variable.value):
-                return True
-            else:
-                return False
-        elif self.condition_type_id == 2:
-            if self.value > int(variable.value):
-                return True
-            else:
-                return False
-        elif self.condition_type_id == 3:
-            if self.value < int(variable.value):
-                return True
-            else:
-                return False
+    def evaluation(self, survey: Survey) -> bool:
+        if self.filter_type_id in (1, 2):
+            print("FILTRO TIPO 1-DELETE O 2-GOTO")
+            variable_list_id = self.variables.all().first()
+            print(variable_list_id)
+            variable = Variable.objects.get(survey_id = survey.id, variable_list_id = variable_list_id)
+            if self.condition_type_id == 1:
+                if self.value == int(variable.value):
+                    return True
+                else:
+                    return False
+            elif self.condition_type_id == 2:
+                if self.value > int(variable.value):
+                    return True
+                else:
+                    return False
+            elif self.condition_type_id == 3:
+                if self.value < int(variable.value):
+                    return True
+                else:
+                    return False
+            elif self.condition_type_id == 4:
+                if self.value != int(variable.value):
+                    return True
+                else:
+                    return False
+        else:
+            print("ES TIPO 3-CONJUNCIÓN O 4-DISJUNCIÓN, EVALUAMOS SI ACTIVAMOS EL FILTRO")
+            filter_variable_list = self.variables.all().values_list('id', flat=True)
+            print(filter_variable_list)
+            variables = Variable.objects.all().filter(survey_id = survey.id).filter(variable_list_id__in = filter_variable_list)
+            print(variables)
+            if self.filter_type_id == 3:
+                print("CONJUNCIÓN")
+                if self.condition_type_id == 4:
+                    print("CONDICIÓN NO IGUAL")
+                    print("VAMOS A VER PARA CADA VARIABLE SI TODAS SON DIFERENTES DE " + str(self.value))
+                    resultado = True
+                    for variable in variables:
+                        print("VARIABLE")
+                        print(variable)
+                        resultado = resultado and int(variable.value) != self.value
+                        print("RESULTADO")
+                        print(resultado)
+                    return resultado
+            elif self.filter_type_id == 4:
+                print("DISJUNCIÓN")
+                if self.condition_type_id == 3:
+                    print("CONDICIÓN NO IGUAL")
+                    print("VAMOS A VER PARA CADA VARIABLE ES MAYOR QUE " + str(self.value))
+                    resultado = False
+                    for variable in variables:
+                        print("VARIABLE")
+                        print(variable)
+                        resultado = resultado or int(variable.value) > self.value
+                        print("RESULTADO")
+                        print(resultado)
+                    return resultado
+                elif self.condition_type_id == 4:
+                    print("CONDICIÓN NO IGUAL")
+                    print("VAMOS A VER PARA CADA VARIABLE SI ALGUNA ES DIFERENTE A " + str(self.value))
+                    resultado = False
+                    for variable in variables:
+                        print("VARIABLE")
+                        print(variable)
+                        resultado = resultado or int(variable.value) != self.value
+                        print("RESULTADO")
+                        print(resultado)
+                    return resultado
+            return False
