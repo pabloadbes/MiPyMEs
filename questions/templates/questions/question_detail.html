@@ -19,10 +19,8 @@
       </form>
 {% else %}
 {% if question.subsection  %}
-{% comment %} <h3 style="background-color:black;color:white"> {% endcomment %}
 <h3>{{ question.subsection }}</h3>
 <hr>
-{% comment %} </h3> {% endcomment %}
 {% endif %}
   <div class="row mt-3">
     <div class="col-md-9 mx-auto">
@@ -35,9 +33,16 @@
         {% include template_type %}
 
         <div class="mb-3">
-          <input type="submit" class="btn btn-primary btn-block" value="Guardar" />
+          <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" />
         </div>
       </form>
+      <script>
+        let btnGuardar=document.getElementById("btnGuardar");
+        let txtFields=document.querySelectorAll(".form-control");
+        btnGuardar.addEventListener("click",()=>{
+          alert("Enviando..." + btnGuardar + "--" + txtFields[0] + txtFields[1] + txtFields[2] + txtFields[3])
+        })
+      </script>
     </div>
   </div>
 {% endif %}
