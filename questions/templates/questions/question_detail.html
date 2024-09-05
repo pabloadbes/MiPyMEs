@@ -33,15 +33,21 @@
         {% include template_type %}
 
         <div class="mb-3">
-          <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" />
+          <input type="button" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" />
+          {% comment %} <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" /> {% endcomment %}
         </div>
       </form>
       <script>
         let btnGuardar=document.getElementById("btnGuardar");
         let txtFields=document.querySelectorAll(".form-control");
-        btnGuardar.addEventListener("click",()=>{
-          alert("Enviando..." + btnGuardar + "--" + txtFields[0] + txtFields[1] + txtFields[2] + txtFields[3])
+        btnGuardar.addEventListener("click", async ()=>{
+          txtFields.forEach(txtField => console.log(txtField));
+          await delay(3000);
+          alert("Enviando..." + btnGuardar + "--" + txtFields[0] + txtFields[1] + txtFields[2] + txtFields[3]);
         })
+       const delay = millis => new Promise((resolve, reject) => {
+                                setTimeout(resolve, millis);
+                                });
       </script>
     </div>
   </div>
