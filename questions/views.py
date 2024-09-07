@@ -59,30 +59,32 @@ class QuestionDetail(TemplateView):
         data = request.POST.dict()
         data.pop('csrfmiddlewaretoken')
 
-        # print("********************************************************")
-        # print("EN EL POST")
-        # print(context)
-        # print("********************************************************")
-        # print(ctx)
-        # print("********************************************************")
-        # print(data)
-        # print("********************************************************")
-        # for item in ctx['items']:
-        #     print(item)
-        #     for option in item[1]:
-        #         print(option[0])
-        #         if option[0].children_id:
-        #             print(option[0].children_id)
-        #             children_item = Item.objects.get(id = option[0].children_id)
-        #             print(children_item)
-        #             children_options = Option.objects.filter(item_id = children_item.id)
+        print("********************************************************")
+        print("EN EL POST")
+        print(context)
+        print("********************************************************")
+        print(ctx)
+        print("********************************************************")
+        print(data)
+        print("********************************************************")
+        for item in ctx['items']:
+            print(item)
+            for option in item[1]:
+                print(option[0])
+                if option[0].children_id:
+                    print(option[0].children_id)
+                    children_item = Item.objects.get(id = option[0].children_id)
+                    print(children_item)
+                    children_options = Option.objects.filter(item_id = children_item.id)
 
-        #             for children_option in children_options:
-        #                 print(children_option)
+                    for children_option in children_options:
+                        print(children_option)
         try:
             with transaction.atomic():
                 if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
                     for d in data:
+                        print("RESPUESTA:")
+                        print("{'"+str(d)+"':"+str(data(d))+"}")
                         response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                         response.save()
                         if Variable_List.objects.all().filter(option_id = d).exists():

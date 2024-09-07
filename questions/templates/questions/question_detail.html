@@ -32,85 +32,30 @@
         <input id="question_type" name="question_type" type="hidden" value="{{question.question_type}}" />
         {% include template_type %}
         <div class="mb-3">
-          <input type="button" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/>
-          {% comment %} <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" /> {% endcomment %}
+          {% comment %} <input type="button" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/> {% endcomment %}
+          <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/>
         </div>
       </form>
       <script>
         let btnGuardar=document.getElementById("btnGuardar");
-        let txtFields=document.querySelectorAll(".form-control");
-/*        const delay = millis => new Promise((resolve, reject) => {
-          setTimeout(resolve, millis);
-          });
-        for(let i=0; i<txtFields.length; i++){
-          txtFields[i].disabled = false;
-          delay(3000);
-        }
-        let questionType = document.getElementById("question_type")
-        btnGuardar.addEventListener("click", async ()=>{
-          txtFields.forEach(txtField => {
-            console.log(txtField);
-            console.log(txtField.value);
-          });
-          console.log(questionType);
-          console.log(questionType.value);
-        });
+        let txtFields = document.querySelectorAll('.form-control');
+        txtFields[0].disabled = false;
+        txtFields.forEach(function(txtField) {
+          txtField.addEventListener('input', function() {
+            let elementToEnable;
+            txtFieldNext = parseInt(txtField.id) + 1;
+            for(compareField of txtFields)
+              if(compareField.id == txtFieldNext) elementToEnable = compareField;
+            if(!elementToEnable) elementToEnable = btnGuardar;
 
-        //Activar o desactivar botón
-        console.log(txtFields)
-
-        for(let i=0; i<txtFields.length; i++){
-          console.log("EN EL FOR - " + i)
-          console.log(txtFields[i])
-          console.log(txtFields[i].value)
-          console.log(txtFields[i].checkValidity())
-          txtFields[i].addEventListener("keyup", ()=>{
-            console.log(this)
-            console.log(this.value)
-            console.log(this.checkValidity)
-          })          
-        }*/
-
-                // Selecciona todos los campos de entrada que tengan la clase 'dynamic-field'
-        let dynamicFields = document.querySelectorAll('.form-control');
-        dynamicFields[0].disabled = false;
-        dynamicFields.forEach((field)=>{
-          console.log(field);
-          console.log(field.id);
-          idBuscado = parseInt(field.id) + 1
-          console.log(parseInt(field.id) + 1);
-          for(compareField of dynamicFields){
-            if(compareField.id == idBuscado) console.log("IGUAL")
-            else console.log("DIFERENTE")
-          }
-          
-        });
-        // Itera sobre cada campo y añade un EventListener
-        dynamicFields.forEach(function(field) {
-          field.addEventListener('input', function() {
-            console.log(field.id);
-            console.log(`El valor del ${field} campo ha cambiado a: ${field.value}`);
-            console.log(this.checkValidity());
-            console.log(field.checkValidity());
-            console.log(this)
-            console.log(field)
-
-            let elementoHabilitar;
-            for(compareField of dynamicFields){
-              if(compareField.id == idBuscado) elementoHabilitar = compareField
-            if(!elementoHabilitar)
-
-            if(!field.checkValidity || !field.value){
-              btnGuardar.disabled = true;
+            if(!txtField.checkValidity() || !txtField.value){
+              elementToEnable.disabled = true;
             }
             else{
-              btnGuardar.disabled = false;
+              elementToEnable.disabled = false;
             }
           });
         });
-        /*for(let i=0; i<dinamicFields.length; i++){
-
-        }*/
       </script>
     </div>
   </div>
