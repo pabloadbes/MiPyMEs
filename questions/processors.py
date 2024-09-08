@@ -1,6 +1,7 @@
 from .models import Question, Item, Option, Note, Subsection
 from companies.models import Company
-from surveys.models import Survey, Variable_List
+from surveys.models import Survey
+import json
 
 def ctx_dict(request):
    ctx = {}
@@ -36,7 +37,7 @@ def ctx_questions(request):
    company_id = Survey.objects.get(id = survey_id).company_id
    company = Company.objects.get(id = company_id)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
-
+   question_metadata = dict(question_type = question.question_type.__str__())
    items = []
    its = Item.objects.all().filter(question_id = question_id)
    for item in its:
@@ -49,24 +50,22 @@ def ctx_questions(request):
             notes.append(note.text)
          if option.children:
             child_items = []
-            print("TIENE HIJO")
             child_its = Item.objects.all().filter(id = option.children.id)
-            print(child_its)
             for child_item in child_its:
                child_options = []
                child_opts = Option.objects.all().filter(item_id = child_item.id)
-               print(child_opts)
                for child_option in child_opts:
-                  print(child_option)
                   child_options.append(child_option)
+                  question_metadata[option.id] = child_option.id
                child_items.append([child_item, child_options])
             options.append([option, notes, child_items])
          else:
             options.append([option, notes])   
       items.append([item, options])
-
+   json_question_metadata = json.dumps(question_metadata)
    ctx = {}
    ctx['company'] = company
    ctx['items'] = items
    ctx['template_type'] = template_type
+   ctx['question_metadata'] = json_question_metadata
    return ctx

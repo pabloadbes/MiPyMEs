@@ -29,7 +29,7 @@
       </div>
       <form action="" method=post>
         {% csrf_token %}
-        <input id="question_type" name="question_type" type="hidden" value="{{question.question_type}}" />
+        <input id="question_metadata" name="question_metadata" type="hidden" value="{{question_metadata}}" />
         {% include template_type %}
         <div class="mb-3">
           {% comment %} <input type="button" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/> {% endcomment %}
@@ -37,25 +37,78 @@
         </div>
       </form>
       <script>
-        let btnGuardar=document.getElementById("btnGuardar");
-        let txtFields = document.querySelectorAll('.form-control');
-        txtFields[0].disabled = false;
-        txtFields.forEach(function(txtField) {
-          txtField.addEventListener('input', function() {
-            let elementToEnable;
-            txtFieldNext = parseInt(txtField.id) + 1;
-            for(compareField of txtFields)
-              if(compareField.id == txtFieldNext) elementToEnable = compareField;
-            if(!elementToEnable) elementToEnable = btnGuardar;
+        const btnGuardar = document.getElementById('btnGuardar');
+        let questionMetadata = document.getElementById('question_metadata').value
+        console.log(questionMetadata)
+        questionMetadata = JSON.parse(questionMetadata)
+        console.log(questionMetadata)
+        const questionType = questionMetadata.question_type
+        const dataFields = document.querySelectorAll('.form-control');
+        console.log(questionMetadata)
+        console.log(questionMetadata.question_type)
+        console.log(questionType)
+        const basicValidationTxt = (txtFields) => {
+          console.log("HACEMOS VALIDACIONES BÁSICAS DE TEXTO")
+          txtFields[0].disabled = false;
+          txtFields.forEach(function(txtField) {
+            txtField.addEventListener('input', function() {
+              let elementToEnable;
+              txtFieldNext = parseInt(txtField.id) + 1;
+              for(compareField of txtFields)
+                if(compareField.id == txtFieldNext) elementToEnable = compareField;
+              if(!elementToEnable) elementToEnable = btnGuardar;
 
-            if(!txtField.checkValidity() || !txtField.value){
-              elementToEnable.disabled = true;
-            }
-            else{
-              elementToEnable.disabled = false;
-            }
-          });
-        });
+              if(!txtField.checkValidity() || !txtField.value){
+                elementToEnable.disabled = true;
+              }
+              else{
+                elementToEnable.disabled = false;
+              }
+            });
+          });}
+
+        const basicValidationNum = (numFields) => {
+          console.log("HACEMOS VALIDACIONES BÁSICAS DE NÚMERO")
+          numFields[0].disabled = false;
+          numFields.forEach(function(numField) {
+            numField.addEventListener('input', function() {
+              let elementToEnable;
+              numFieldNext = parseInt(numField.id) + 1;
+              for(compareField of numFields)
+                if(compareField.id == numFieldNext) elementToEnable = compareField;
+              if(!elementToEnable) elementToEnable = btnGuardar;
+
+              if(!numField.checkValidity() || !(numField.value >= 0) ){
+                elementToEnable.disabled = true;
+              }
+              else{
+                elementToEnable.disabled = false;
+              }
+            });
+          });}
+  
+  
+        console.log(questionType)
+        const VALIDATIONS = {
+          'text': (txtFields) => basicValidationTxt(txtFields),
+          'number': (numFields) => basicValidationNum(numFields),
+          'scale': (numFields) => basicValidationNum(numFields)
+        }
+
+        const VALIDATIONS_DEFAULT = () => console.log('Sin validaciones');
+
+        console.log(VALIDATIONS[questionType])
+        const validations = VALIDATIONS[questionType]
+          ? VALIDATIONS[questionType](dataFields)
+          : VALIDATIONS_DEFAULT
+        /*  ? VALIDATIONS[questionType](fields)
+          : VALIDATIONS_DEFAULT()*/
+
+
+
+
+
+
       </script>
     </div>
   </div>
