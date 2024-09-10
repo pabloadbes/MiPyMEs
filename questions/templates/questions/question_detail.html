@@ -41,132 +41,78 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         console.log(questionMetadata)
         const questionType = questionMetadata.question_type
-        const dataFields = document.querySelectorAll('.form-control');
+        const dataFields = document.querySelectorAll('.data');
+        console.log(dataFields)
+        dataFields.forEach(data => console.log(data+"-"+data.name+"-"+data.id))
+        dataFields[0].disabled = true
+        dataFields[3].disabled = true
+        dataFields[5].disabled = true
+        dataFields[9].disabled = true
 
-        const basicValidationTxt = (txtFields) => {
-          console.log("HACEMOS VALIDACIONES BÁSICAS DE TEXTO")
+
+        const toEnableFieldTxt = (txtField, elementToEnable) => {
+          if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9.,\s]+$/)){
+            elementToEnable.disabled = false;
+          }
+          else{
+            elementToEnable.disabled = true;
+          }
+        }
+
+        const toEnableFieldNum = (numField, minValue, elementToEnable) => {
+          if(numField.checkValidity() && numField.value>=minValue){
+            elementToEnable.disabled = false;
+          }
+          else{
+            elementToEnable.disabled = true;
+          }
+        }
+
+        const basicValidationTxt = (txtFields, metadata) => {
           txtFields[0].disabled = false;
-          txtFields.forEach(function(txtField) {
+          txtFields.forEach(function(txtField, index) {
             txtField.addEventListener('input', function() {
-              let elementToEnable;
-              txtFieldNext = parseInt(txtField.id) + 1;
-              for(compareField of txtFields)
-                if(compareField.id == txtFieldNext) elementToEnable = compareField;
-              if(!elementToEnable) elementToEnable = btnGuardar;
-
-              if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9.,\s]+$/)){
-                elementToEnable.disabled = false;
-              }
-              else{
-                elementToEnable.disabled = true;
-              }
+              let nextElement;
+              nextElement = txtFields[index+1]
+                            ? txtFields[index+1]
+                            : btnGuardar
+              toEnableFieldTxt(txtField, nextElement)
             });
           });}
 
         const basicValidationNum = (numFields, metadata) => {
-          console.log("HACEMOS VALIDACIONES BÁSICAS DE NUM")
           numFields[0].disabled = false;
-          //eliminar del nodelist los hijos (filtrar con el JSON metadata)
-          let numFieldsArray = Array.from(numFields)
-          const metadataArray = Object.values(metadata)
-          metadataArray.pop()
-          metadataArray.forEach( data => {
-            numFieldsArray = numFieldsArray.filter(field => field.id !== data.toString())
-          })
-          console.log(numFieldsArray)
-          numFieldsArray.forEach(function(numField, index) {
+          numFields.forEach(function(numField, index) {
             numField.addEventListener('input', function() {
               let nextElement;
-              nextElement = numFieldsArray[index+1]
-                            ? numFieldsArray[index+1]
+              nextElement = numFields[index+1]
+                            ? numFields[index+1]
                             : btnGuardar
-              if(!metadata[numField.id]) { //Si no hay hijo solo validamos para el siguiente campo
-                console.log("NO HAY HIJO")
-                if(numField.checkValidity() && (numField.value >= 0) )
-                  {console.log("NEXT HABILITADO")
-                  nextElement.disabled = false}
-                else
-                  {console.log("NEXT DESHABILITADO")
-
-                  nextElement.disabled = true}
-
-              } else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
-                  console.log("HAY HIJO")
-                  childElement = document.getElementById(metadata[numField.id]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  if(numField.checkValidity() && (numField.value >= 1)){
-                    console.log("OK HABILITAMOS HIJO")
-                    childElement.disabled = false;
-                    console.log("VALIDEMOS EL HIJO")
-                    console.log(nextElement.id)
-
-                    if(!childElement.disabled) nextElement.disabled = true;
-
-
-                    childElement.addEventListener('input', function() {
-                      //let elementToEnable;
-                      //txtFieldNext = parseInt(txtField.id) + 1;
-                      //for(compareField of txtFields)
-                        //if(compareField.id == txtFieldNext) elementToEnable = compareField;
-                      //if(!elementToEnable) elementToEnable = btnGuardar;
-                      if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
-                        nextElement.disabled = false;
-                      }
-                      else{
-                        nextElement.disabled = true;
-                      }
-                    });
-
-
-
-
-
-
-
-
-
-
-
-                    /*if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
-                      console.log("HIJO OK, HABILITAMOS NEXT")
-                      nextElement.disabled = false;
-                    }
-                    else{
-                      console.log("NO HABILITAMOS NEXT")
-                      nextElement.disabled = true;
-                    }*/
-      
+              if(!metadata[numField.id])  //Si no hay hijo solo validamos para el siguiente campo
+                toEnableFieldNum(numField, 0, nextElement);
+              else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
+                childElement = document.getElementById(metadata[numField.id]);
+                if(numField.checkValidity() && (numField.value >= 1)){
+                  childElement.disabled = false;
+                  nextElement.disabled = true;
+                  childElement.addEventListener('input', function() {
+                    toEnableFieldTxt(childElement, nextElement)
+                  });
+                }
+                else{
+                  if(numField.value >= 0){
+                    childElement.disabled = true;
+                    nextElement.disabled = false;
                   }
                   else{
-                    console.log("NO HABILITAMOS HIJO, VEAMOS EL NEXT")
-                    if(numField.value >= 0){
-                      console.log("HABILITAMOS NEXT")
-                      childElement.disabled = true;
-                      nextElement.disabled = false;
-                    }
-                    else{
-                      console.log("NO HABILITAMOS NEXT")
-                      childElement.disabled = true;
-                      nextElement.disabled = true;
-                    }
+                    childElement.disabled = true;
+                    nextElement.disabled = true;
                   }
                 }
+              }
             });
-          });}
-  
+          });
+        }
   
         console.log(questionType)
         const VALIDATIONS = {
