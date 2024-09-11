@@ -42,13 +42,6 @@
         console.log(questionMetadata)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
-        console.log(dataFields)
-        dataFields.forEach(data => console.log(data+"-"+data.name+"-"+data.id))
-        dataFields[0].disabled = true
-        dataFields[3].disabled = true
-        dataFields[5].disabled = true
-        dataFields[9].disabled = true
-
 
         const toEnableFieldTxt = (txtField, elementToEnable) => {
           if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9.,\s]+$/)){
@@ -113,17 +106,73 @@
             });
           });
         }
+
+        const basicValidationSelectOne = (checkFields, metadata) => {
+          console.log("VALIDAMOS EL SELECT ONE")
+          //items es un array de arrays, cada array interno contiene las opciones del item
+          const options = Object.values(dataFields);
+          const items = Object.values(
+            options.reduce((acc, option) => {
+              // Si el grupo aún no existe, lo inicializamos como un array vacío
+              if (!acc[option.name]) {
+                acc[option.name] = [];
+              }
+              // Añadimos el objeto actual al grupo correspondiente
+              acc[option.name].push(option);
+              return acc;
+            }, {})
+          );
+          console.log(items);
+          items[0].forEach(option => option.disabled = false)
+
+          items.forEach((item, index) => {
+            item.forEach(option => {
+              option.addEventListener('change', function(){
+                if(this.checked) 
+                console.log("*********************************")
+                console.log(`CHEQUEADO ${option.id}`)
+                  if(!metadata[option.id]){
+                    console.log("NO HAY HIJO, HABILITEMOS")
+                    if(items[index+1]) {
+                      
+                      items[index+1].forEach(option => option.disabled = false)}
+                    else btnGuardar.disabled = false
+                  } else {
+                      console.log("HAY HIJO - HABILITO HIJO Y DESHABILITO NEXT")
+                      childElement = document.getElementById(metadata[option.id])
+                      childElement.disabled = false
+                      if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
+                      else btnGuardar.disabled = true
+                      //VALIDO EL HIJO
+                    
+
+                      childElement.addEventListener('input', function() {
+                        if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
+                          if(items[index+1]) items[index+1].forEach(option => option.disabled = false)
+                          else btnGuardar.disabled = false
+                        }
+                        else{
+                          if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
+                          else btnGuardar.disabled = true
+                        }                      
+                      });                      
+
+
+                    }
+              });
+            });
+        })
+        }
   
-        console.log(questionType)
         const VALIDATIONS = {
           'text': (txtFields) => basicValidationTxt(txtFields),
           'number': (numFields, metadata) => basicValidationNum(numFields, metadata),
-          'scale': (numFields, metadata) => basicValidationNum(numFields, metadata)
+          'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
+          'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)
         }
 
         const VALIDATIONS_DEFAULT = () => console.log('Sin validaciones');
 
-        console.log(VALIDATIONS[questionType])
         const validations = VALIDATIONS[questionType]
           ? VALIDATIONS[questionType](dataFields, questionMetadata)
           : VALIDATIONS_DEFAULT
