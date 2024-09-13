@@ -40,6 +40,9 @@
         const btnGuardar = document.getElementById('btnGuardar');
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         console.log(questionMetadata)
+        console.log("METADATA DE PRUEBA")
+        //questionMetadata = {22:925, 24: 925, 25:926, 27: 926, 28:927, 30: 927, question_type: 'select_one'}
+        console.log(questionMetadata)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
 
@@ -122,7 +125,27 @@
               return acc;
             }, {})
           );
+          console.log("ITEMS")
           console.log(items);
+          const itemChilds = [];
+          console.log("ARREGLO DE HIJOS POR ITEM")
+          console.log(itemChilds)
+
+          items.forEach((item, index) => {
+            item.forEach(option => {
+              if(metadata[option.id]) {
+                console.log(`LA OPCIÓN ${option.id} DEL ITEM ${item} - POSICIÓN ${index} TIENE HIJO`)
+                //if(index < 0 || index > arr.length) {
+                //  console.log("ERROR INTENTANDO AGREGAR ELEMENTO AL ARREGLO: Posición fuera de rango");
+                //}
+                itemChilds.splice(index, 0, document.getElementById(metadata[option.id]));
+              }
+            })
+          })
+
+          console.log(itemChilds)
+
+
           items[0].forEach(option => option.disabled = false)
 
           items.forEach((item, index) => {
@@ -131,15 +154,19 @@
                 if(this.checked) 
                 console.log("*********************************")
                 console.log(`CHEQUEADO ${option.id}`)
+                  //if(itemChilds[index]) childElement = itemChilds[index]
                   if(!metadata[option.id]){
                     console.log("NO HAY HIJO, HABILITEMOS")
                     if(items[index+1]) {
                       
                       items[index+1].forEach(option => option.disabled = false)}
                     else btnGuardar.disabled = false
+                    //SI EL GRUPO TIENE HIJO LO DESHABILITAMOS
+                    if(itemChilds[index]) itemChilds[index].disabled = true
                   } else {
                       console.log("HAY HIJO - HABILITO HIJO Y DESHABILITO NEXT")
-                      childElement = document.getElementById(metadata[option.id])
+                      childElement = itemChilds[index]
+                      childElement = itemChilds[index]
                       childElement.disabled = false
                       if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
                       else btnGuardar.disabled = true
