@@ -15,6 +15,7 @@
         <div class="col-md-3 mx-auto mb-3">
           <select class="form-control data" id="{{option.0.id}}" name="{{option.0.id}}" disabled/>
             <option selected>Elija un valor</option>
+            <option value="0">0</option>
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -26,13 +27,16 @@
             <option value="9">9</option>
             <option value="10">10</option>
 
-            {% if option.0.children %}
-
-            <option value="0">0</option>
-
           </select>
         </div>
       </div>
+            {% if option.0.children %}
+
+            {% comment %} <option value="0">0</option>
+
+          </select>
+        </div>
+      </div> {% endcomment %}
 
         <div class="row">
           <div class="col-md-3 mx-auto mb-3">
@@ -46,9 +50,9 @@
         </div>
       {% else %}
 
-          </select>
+          {% comment %} </select>
         </div>
-      </div>      
+      </div>       {% endcomment %}
       {% endif %} 
 
 
