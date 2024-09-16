@@ -1,0 +1,29 @@
+{% for item in items %}
+  <div>
+    {% if item.0.text %}
+      <div class="mb-2">
+        <b>{{ item.0.text }}</b>
+      </div> 
+    {% endif %} 
+
+
+
+    {% for option in item.1  %}
+      <div class="row">
+        <div class="col mx-auto mb-3">
+          <textarea class="form-control data" id="{{option.0.id}}" name="{{option.0.id}}" rows="10" disabled></textarea>
+        </div>
+      </div>
+      
+      {% if option.1.0 %}
+        <div class="row">
+          <div class="col">
+            <small><b>{{ option.1.0 }}</b></small>
+          </div>
+        </div>        
+      {% endif %}
+
+    {% endfor %}
+    <hr>
+  </div>
+{% endfor %}

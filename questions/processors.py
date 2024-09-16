@@ -30,6 +30,9 @@ def page_request(request):
       return aux[1]
    
 def ctx_questions(request):
+   print("**************************************************")
+   print("PROCESORS")
+   print("**************************************************")
    aux = request.__str__().split("/")
    question_id = aux[2]
    question = Question.objects.get(id = question_id)
@@ -44,27 +47,53 @@ def ctx_questions(request):
       hide_item = False
       opts = Option.objects.all().filter(item_id = item)
       options = []
-      for option in opts:
-         nts = Note.objects.all().filter(option_id = option.id)
-         notes = []
-         for note in nts:
-            notes.append(note.text)
-         if option.children:
-            child_items = []
-            child_its = Item.objects.all().filter(id = option.children.id)
-            for child_item in child_its:
-               child_options = []
-               child_opts = Option.objects.all().filter(item_id = child_item.id)
-               for child_option in child_opts:
-                  child_options.append(child_option)
-                  if child_option.id in question_metadata.values():
-                     hide_item = True
-                  question_metadata[option.id] = child_option.id
-               child_items.append([child_item, child_options, hide_item])
-            options.append([option, notes, child_items])
-         else:
-            options.append([option, notes])   
-      items.append([item, options])
+      print(template_type)
+      if question.question_type.__str__() == "double_select":
+         print("ES DOUBLE SELECT")
+         for option in opts:
+            question_metadata[option.id] = []
+            if option.children:
+               child_items = []
+               child_its = Item.objects.all().filter(id = option.children.id)
+               for child_item in child_its:
+                  child_options = []
+                  child_opts = Option.objects.all().filter(item_id = child_item.id)
+                  for child_option in child_opts:
+                     child_options.append(child_option)
+                     if child_option.id in question_metadata.values():
+                        question_metadata[option.id].append(child_option.id)
+                        print("question_metadata del double select")
+                        print(question_metadata[option.id])
+                     question_metadata[option.id] = child_option.id
+                     print("METADATA")
+                     print(question_metadata)
+                  child_items.append([child_item, child_options])
+               options.append([option, notes, child_items])
+            else:
+               options.append([option, notes])   
+      else:
+         print("NO ES DOUBLE SELECT")
+         for option in opts:
+            nts = Note.objects.all().filter(option_id = option.id)
+            notes = []
+            for note in nts:
+               notes.append(note.text)
+            if option.children:
+               child_items = []
+               child_its = Item.objects.all().filter(id = option.children.id)
+               for child_item in child_its:
+                  child_options = []
+                  child_opts = Option.objects.all().filter(item_id = child_item.id)
+                  for child_option in child_opts:
+                     child_options.append(child_option)
+                     if child_option.id in question_metadata.values():
+                        hide_item = True
+                     question_metadata[option.id] = child_option.id
+                  child_items.append([child_item, child_options, hide_item])
+               options.append([option, notes, child_items])
+            else:
+               options.append([option, notes])   
+         items.append([item, options])
    
    if Validationjs.objects.all().filter(question_id = question_id).exists():
       val = Validationjs.objects.get(question_id = question_id)

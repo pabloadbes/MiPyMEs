@@ -143,8 +143,44 @@
           });
         }
 
+        const basicValidationTotal = (numFields, metadata) => {
+          numFields[0].disabled = false;
+          numFields.forEach(function(numField, index) {
+            if(index < numFields.length-1) {
+              numField.addEventListener('input', function() {
+                console.log("LISTENER DE "+  index)
+                let nextElement;
+                nextElement = numFields[index+2]
+                              ? numFields[index+1]
+                              : btnGuardar
+                if(!metadata[numField.id])  //Si no hay hijo solo validamos para el siguiente campo
+                  toEnableFieldNum(numField, 0, 300, nextElement);
+                else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
+                  childElement = document.getElementById(metadata[numField.id]);
+                  if(numField.checkValidity() && (numField.value >= 1)){
+                    childElement.disabled = false;
+                    nextElement.disabled = true;
+                    childElement.addEventListener('input', function() {
+                      toEnableFieldTxt(childElement, nextElement)
+                    });
+                  }
+                  else{
+                    if(numField.value >= 0){
+                      childElement.disabled = true;
+                      nextElement.disabled = false;
+                    }
+                    else{
+                      childElement.disabled = true;
+                      nextElement.disabled = true;
+                    }
+                  }
+                }
+              });
+            }
+          });
+        }
+
         const basicValidationSelectOne = (checkFields, metadata) => {
-          console.log("VALIDAMOS EL SELECT ONE")
           //items es un array de arrays, cada array interno contiene las opciones del item
           const options = Object.values(dataFields);
           const items = Object.values(
@@ -158,60 +194,34 @@
               return acc;
             }, {})
           );
-          console.log("ITEMS")
-          console.log(items);
           const itemChilds = [];
-          console.log("ARREGLO DE HIJOS POR ITEM")
-          console.log(itemChilds)
 
           items.forEach((item, index) => {
             let itemChild;
             item.forEach(option => {
               if(metadata[option.id]) {
-                console.log(`LA OPCIÓN ${option.id} DEL ITEM ${item} - POSICIÓN ${index} TIENE HIJO`)
-                //if(index < 0 || index > arr.length) {
-                //  console.log("ERROR INTENTANDO AGREGAR ELEMENTO AL ARREGLO: Posición fuera de rango");
-                //}
                 itemChild = document.getElementById(metadata[option.id]);
               }
             })
             itemChilds.splice(index, 0, itemChild);
           })
-
-          console.log(itemChilds)
-
-
           items[0].forEach(option => option.disabled = false)
-
           items.forEach((item, index) => {
             item.forEach(option => {
               option.addEventListener('change', function(){
                 if(this.checked) 
-                console.log("*********************************")
-                console.log(`CHEQUEADO ${option.id}`)
-                  //if(itemChilds[index]) childElement = itemChilds[index]
                   if(!metadata[option.id]){
-                    console.log("NO HAY HIJO, HABILITEMOS")
                     if(items[index+1]) {
-                      
                       items[index+1].forEach(option => option.disabled = false)}
                     else btnGuardar.disabled = false
                     //SI EL GRUPO TIENE HIJO LO DESHABILITAMOS
                     if(itemChilds[index]) itemChilds[index].disabled = true
                   } else {
-                      console.log("HAY HIJO - HABILITO HIJO Y DESHABILITO NEXT")
-                      console.log("ESTAMOS EN INDEX -> ", index)
-                      console.log("OTRA VEZ MOSTRAMOS EL ARREGLO DE HIJOS")
-                      console.log(itemChilds)
-                      console.log("CHILD ELEMENT")
                       childElement = itemChilds[index]
-                      console.log(childElement)
                       childElement.disabled = false
                       if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
                       else btnGuardar.disabled = true
                       //VALIDO EL HIJO
-                    
-
                       childElement.addEventListener('input', function() {
                         if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
                           if(items[index+1]) items[index+1].forEach(option => option.disabled = false)
@@ -222,24 +232,93 @@
                           else btnGuardar.disabled = true
                         }                      
                       });                      
-
-
-                    }
+                  }
               });
             });
-        })
+          })
+        }
+  
+        const basicValidationDoubleSelect = (checkFields, metadata) => {
+          console.log("VALIDACIÓN DOUBLE SELECT")
+          console.log("checkFields")
+          console.log(checkFields)
+          console.log(metadata)
+          //items es un array de arrays, cada array interno contiene las opciones del item
+          const options = Object.values(dataFields);
+          const items = Object.values(
+            options.reduce((acc, option) => {
+              // Si el grupo aún no existe, lo inicializamos como un array vacío
+              if (!acc[option.name]) {
+                acc[option.name] = [];
+              }
+              // Añadimos el objeto actual al grupo correspondiente
+              acc[option.name].push(option);
+              return acc;
+            }, {})
+          );
+          const itemChilds = [];
+          console.log("ITEMS")
+          console.log(items)
+          items.forEach((item, index) => {
+            let itemChild;
+            item.forEach(option => {
+              if(metadata[option.id]) {
+                itemChild = document.getElementById(metadata[option.id]);
+              }
+            })
+            itemChild.splice(index, 0, itemChild);
+          })
+          console.log("ITEMCHILDS")
+          console.log(itemChilds)
+          items[0].forEach(option => option.disabled = false)
+          items.forEach((item, index) => {
+            item.forEach(option => {
+              option.addEventListener('change', function(){
+                if(this.checked) 
+                  if(!metadata[option.id]){//NO HAY HIJO
+                    if(items[index+1]) {
+                      items[index+1].forEach(option => option.disabled = false)}
+                    else btnGuardar.disabled = false
+                    //SI EL GRUPO TIENE HIJO LO DESHABILITAMOS
+                    if(itemChilds[index]) itemChilds[index].disabled = true
+                  } else {
+                      childElements = itemChilds[index]
+                      console.log(itemChilds[index])
+                      console.log(childElements)
+                      childElements.forEach(childElement => childElement.disabled = false)
+                      if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
+                      else btnGuardar.disabled = true
+                      //VALIDO EL HIJO
+                      childElement.addEventListener('input', function() {
+                        if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
+                          if(items[index+1]) items[index+1].forEach(option => option.disabled = false)
+                          else btnGuardar.disabled = false
+                        }
+                        else{
+                          if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
+                          else btnGuardar.disabled = true
+                        }                      
+                      });                      
+                  }
+              });
+            });
+          })
         }
   
         const BASIC_VALIDATIONS = {
           'text': (txtFields) => basicValidationTxt(txtFields),
+          'area': (txtFields) => basicValidationTxt(txtFields),
           'number': (numFields, metadata) => basicValidationNum(numFields, metadata),
           'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
           'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
-          'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)
+          'total': (numFields, metadata) => basicValidationTotal(numFields, metadata),
+          'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata),
+          'double_select': (checkFields, metadata) => basicValidationDoubleSelect(checkFields, metadata)
         }
 
         const BASIC_VALIDATIONS_DEFAULT = () => console.log('Sin validaciones básicas');
-
+        console.log("ANTES DEL LLAMADO")
+        console.log(dataFields)
         const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
           : BASIC_VALIDATIONS_DEFAULT;
@@ -249,8 +328,7 @@
           const divTotal = document.getElementById("total-div");
           const form = document.getElementById("form")
           let total;
-          console.log("FILDS")
-          console.log(fields)
+          let labelTotal;
           if(condition == '=') {
             numFields = fields;
             divTotal.innerHTML=
@@ -267,18 +345,13 @@
               </div>
               <hr>
             `;
-            console.log("condition")
-            console.log(condition)
             total = document.getElementById("total");
-            const labelTotal = document.getElementById("total-label")
+            labelTotal = document.getElementById("total-label")
           } else {
             numFields = Array.from(fields);
             total = numFields.pop();
-            console.log("FILDS")
-            console.log(numFields)
             total.disabled = false;
             const form = document.getElementById("form")
-            //const labelTotal = document.getElementById("total-label")  
           }
           form.addEventListener("focusout", function(){
             total.value = 0;
@@ -298,12 +371,9 @@
                     break;
                   case '>':
                     if(total.value > value) {
-                      //btnGuardar.disabled = false;
-                      //labelTotal.style = "color:green"
                       total.style = "color:green"
                     } else {
                       btnGuardar.disabled = true;
-                      //labelTotal.style = "color:red"
                       total.style = "color:red"
                     }
                     break;
