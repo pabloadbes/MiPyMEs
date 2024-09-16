@@ -16,7 +16,7 @@
         <div class="mb-3">
           <input type="submit" class="btn btn-primary btn-block" value="Siguiente" />
         </div>
-      </form>
+      </form>otal
 {% else %}
 {% if question.subsection  %}
 <h3>{{ question.subsection }}</h3>
@@ -27,10 +27,21 @@
       <div class="mb-5">
         <b>{{ question.number }}.  {{ question }}</b>
       </div>
-      <form action="" method=post>
+      <form id="form" action="" method=post>
         {% csrf_token %}
         <input id="question_metadata" name="question_metadata" type="hidden" value="{{question_metadata}}" />
         {% include template_type %}
+        <div class="row">
+          <div class="col-md-9 mx-auto mb-3">
+            <label id="total-label" for="total">
+              <b>TOTAL</b>
+            </label>
+          </div>
+          <div class="col-md-3 mx-auto mb-3">
+            <input type="number" class="form-control total" id="total" name="total" disabled/>
+          </div>
+        </div>
+        <hr>
         <div class="mb-3">
           {% comment %} <input type="button" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/> {% endcomment %}
           <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/>
@@ -47,7 +58,7 @@
         const dataFields = document.querySelectorAll('.data');
 
         const toEnableFieldTxt = (txtField, elementToEnable) => {
-          if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9.,\s]+$/)){
+          if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ.,\s]+$/)){
             elementToEnable.disabled = false;
           }
           else{
@@ -55,8 +66,8 @@
           }
         }
 
-        const toEnableFieldNum = (numField, minValue, elementToEnable) => {
-          if(numField.checkValidity() && numField.value>=minValue){
+        const toEnableFieldNum = (numField, minValue, maxValue, elementToEnable) => {
+          if(numField.checkValidity() && numField.value>=minValue && numField.value<=maxValue){
             elementToEnable.disabled = false;
           }
           else{
@@ -85,7 +96,41 @@
                             ? numFields[index+1]
                             : btnGuardar
               if(!metadata[numField.id])  //Si no hay hijo solo validamos para el siguiente campo
-                toEnableFieldNum(numField, 0, nextElement);
+                toEnableFieldNum(numField, 0, 100, nextElement);
+              else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
+                childElement = document.getElementById(metadata[numField.id]);
+                if(numField.checkValidity() && (numField.value >= 1)){
+                  childElement.disabled = false;
+                  nextElement.disabled = true;
+                  childElement.addEventListener('input', function() {
+                    toEnableFieldTxt(childElement, nextElement)
+                  });
+                }
+                else{
+                  if(numField.value >= 0){
+                    childElement.disabled = true;
+                    nextElement.disabled = false;
+                  }
+                  else{
+                    childElement.disabled = true;
+                    nextElement.disabled = true;
+                  }
+                }
+              }
+            });
+          });
+        }
+
+        const basicValidationYear = (numFields, metadata) => {
+          numFields[0].disabled = false;
+          numFields.forEach(function(numField, index) {
+            numField.addEventListener('input', function() {
+              let nextElement;
+              nextElement = numFields[index+1]
+                            ? numFields[index+1]
+                            : btnGuardar
+              if(!metadata[numField.id])  //Si no hay hijo solo validamos para el siguiente campo
+                toEnableFieldNum(numField, 1884, 2024, nextElement);
               else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
                 childElement = document.getElementById(metadata[numField.id]);
                 if(numField.checkValidity() && (numField.value >= 1)){
@@ -132,15 +177,17 @@
           console.log(itemChilds)
 
           items.forEach((item, index) => {
+            let itemChild;
             item.forEach(option => {
               if(metadata[option.id]) {
                 console.log(`LA OPCIÓN ${option.id} DEL ITEM ${item} - POSICIÓN ${index} TIENE HIJO`)
                 //if(index < 0 || index > arr.length) {
                 //  console.log("ERROR INTENTANDO AGREGAR ELEMENTO AL ARREGLO: Posición fuera de rango");
                 //}
-                itemChilds.splice(index, 0, document.getElementById(metadata[option.id]));
+                itemChild = document.getElementById(metadata[option.id]);
               }
             })
+            itemChilds.splice(index, 0, itemChild);
           })
 
           console.log(itemChilds)
@@ -165,8 +212,12 @@
                     if(itemChilds[index]) itemChilds[index].disabled = true
                   } else {
                       console.log("HAY HIJO - HABILITO HIJO Y DESHABILITO NEXT")
+                      console.log("ESTAMOS EN INDEX -> ", index)
+                      console.log("OTRA VEZ MOSTRAMOS EL ARREGLO DE HIJOS")
+                      console.log(itemChilds)
+                      console.log("CHILD ELEMENT")
                       childElement = itemChilds[index]
-                      childElement = itemChilds[index]
+                      console.log(childElement)
                       childElement.disabled = false
                       if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
                       else btnGuardar.disabled = true
@@ -191,18 +242,66 @@
         })
         }
   
-        const VALIDATIONS = {
+        const BASIC_VALIDATIONS = {
           'text': (txtFields) => basicValidationTxt(txtFields),
           'number': (numFields, metadata) => basicValidationNum(numFields, metadata),
           'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
+          'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)
         }
 
         const VALIDATIONS_DEFAULT = () => console.log('Sin validaciones');
 
-        const validations = VALIDATIONS[questionType]
-          ? VALIDATIONS[questionType](dataFields, questionMetadata)
-          : VALIDATIONS_DEFAULT
+        const validations = BASIC_VALIDATIONS[questionType]
+          ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
+          : VALIDATIONS_DEFAULT;
+
+
+
+
+        console.log("SEGUIMOS")
+
+        //PROCEDER CON OTRAS VALIDACIONES
+        const itemSum = (numFields) => {
+          console.log("SUMA DE LAS OPCIONES DE UN ITEM")
+          let total = document.getElementById("total")
+          console.log(total)
+          console.log(total.value)
+          //numFields.forEach(function(numField, index) {
+          const form = document.getElementById("form")
+          const labelTotal = document.getElementById("total-label")
+          form.addEventListener("focusout", function(){
+            total.value = 0;
+            numFields.forEach(function(num) {
+                total.value = parseInt(total.value) + parseInt(num.value || 0)
+                if(total.value != 100) {
+                  btnGuardar.disabled = true;
+                  labelTotal.style = "color:red"
+                  total.style = "color:red"
+                } else {
+                  btnGuardar.disabled = false;
+                  labelTotal.style = "color:green"
+                  total.style = "color:green"
+                }
+          })
+
+        })
+
+
+/*          numFields.forEach(function(numField, index) {
+            numField.addEventListener('blur', function() {
+              total.value = 0;
+              numFields.forEach(function(num) {
+                  total.value = parseInt(total.value) + parseInt(num.value || 0)
+                  if(total.value != 100)
+                    btnGuardar.disabled = true;
+              });
+            });
+          });*/
+        }
+
+        console.log("LLAMADO A ITEMSUM")
+        itemSum(dataFields)        
       </script>
     </div>
   </div>

@@ -60,20 +60,20 @@ class QuestionDetail(TemplateView):
         data.pop('csrfmiddlewaretoken')
         data.pop('question_metadata',0)
 
-        print("********************************************************")
-        print("EN EL POST")
-        print("CONTEXT")
-        print(context)
-        print("********************************************************")
-        print("CTX")
-        print(ctx)
+        # print("********************************************************")
+        # print("EN EL POST")
+        # print("CONTEXT")
+        # print(context)
+        # print("********************************************************")
+        # print("CTX")
+        # print(ctx)
         print("********************************************************")
         print("DATA")
         print(data)
-        print("DATA ELIMINANDO EL PRIMERO")
+        # print("DATA ELIMINANDO EL PRIMERO")
         data.pop('question_type',0)
-        print(data)
-        print("********************************************************")
+        # print(data)
+        # print("********************************************************")
         # for item in ctx['items']:
         #     print(item)
         #     for option in item[1]:
@@ -88,7 +88,7 @@ class QuestionDetail(TemplateView):
         #                 print(children_option)
         try:
             with transaction.atomic():
-                if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type']:
+                if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type'] or "year" in ctx['template_type']:
                     for d in data:
                         response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                         response.save()
@@ -112,13 +112,13 @@ class QuestionDetail(TemplateView):
                                 children_item = Item.objects.get(id = option[0].children_id)
                                 children_option = Option.objects.get(item_id = children_item.id)
                                 children_vble = Variable_List.objects.get(option_id = children_option.id)
-                                print("EVALUEMOS")
+                                # print("EVALUEMOS")
                                 if str(children_option.id) in data:
-                                    print("EL VALOR DEL HIJO ES:")
-                                    print(children_option)
-                                    print(children_option.id)
-                                    print(str(children_option.id))
-                                    print(data[str(children_option.id)])
+                                    # print("EL VALOR DEL HIJO ES:")
+                                    # print(children_option)
+                                    # print(children_option.id)
+                                    # print(str(children_option.id))
+                                    # print(data[str(children_option.id)])
                                     children_response = Response.objects.create(value = data[str(children_option.id)], option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                                     children_variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
                                     children_response.save()
