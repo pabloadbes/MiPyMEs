@@ -1,6 +1,6 @@
-from .models import Question, Item, Option, Note, Subsection
+from .models import Question, Item, Option, Note
 from companies.models import Company
-from surveys.models import Survey
+from surveys.models import Survey, Validationjs
 import json
 
 def ctx_dict(request):
@@ -65,10 +65,17 @@ def ctx_questions(request):
          else:
             options.append([option, notes])   
       items.append([item, options])
+   
+   if Validationjs.objects.all().filter(question_id = question_id).exists():
+      val = Validationjs.objects.get(question_id = question_id)
+      validation = dict(validation = [val.name, val.value, val.condition_type.symbol])
+      question_metadata['validation'] = validation
+
    json_question_metadata = json.dumps(question_metadata)
    ctx = {}
    ctx['company'] = company
    ctx['items'] = items
    ctx['template_type'] = template_type
    ctx['question_metadata'] = json_question_metadata
+
    return ctx

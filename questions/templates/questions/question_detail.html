@@ -16,7 +16,7 @@
         <div class="mb-3">
           <input type="submit" class="btn btn-primary btn-block" value="Siguiente" />
         </div>
-      </form>otal
+      </form>
 {% else %}
 {% if question.subsection  %}
 <h3>{{ question.subsection }}</h3>
@@ -31,17 +31,8 @@
         {% csrf_token %}
         <input id="question_metadata" name="question_metadata" type="hidden" value="{{question_metadata}}" />
         {% include template_type %}
-        <div class="row">
-          <div class="col-md-9 mx-auto mb-3">
-            <label id="total-label" for="total">
-              <b>TOTAL</b>
-            </label>
-          </div>
-          <div class="col-md-3 mx-auto mb-3">
-            <input type="number" class="form-control total" id="total" name="total" disabled/>
-          </div>
+        <div id="total-div">
         </div>
-        <hr>
         <div class="mb-3">
           {% comment %} <input type="button" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/> {% endcomment %}
           <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/>
@@ -50,9 +41,6 @@
       <script>
         const btnGuardar = document.getElementById('btnGuardar');
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
-        console.log(questionMetadata)
-        console.log("METADATA DE PRUEBA")
-        //questionMetadata = {22:925, 24: 925, 25:926, 27: 926, 28:927, 30: 927, question_type: 'select_one'}
         console.log(questionMetadata)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
@@ -250,58 +238,101 @@
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)
         }
 
-        const VALIDATIONS_DEFAULT = () => console.log('Sin validaciones');
+        const BASIC_VALIDATIONS_DEFAULT = () => console.log('Sin validaciones básicas');
 
-        const validations = BASIC_VALIDATIONS[questionType]
+        const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
-          : VALIDATIONS_DEFAULT;
-
-
-
-
-        console.log("SEGUIMOS")
+          : BASIC_VALIDATIONS_DEFAULT;
 
         //PROCEDER CON OTRAS VALIDACIONES
-        const itemSum = (numFields) => {
-          console.log("SUMA DE LAS OPCIONES DE UN ITEM")
-          let total = document.getElementById("total")
-          console.log(total)
-          console.log(total.value)
-          //numFields.forEach(function(numField, index) {
+        const itemSumValidation = (fields, value, condition) => {
+          const divTotal = document.getElementById("total-div");
           const form = document.getElementById("form")
-          const labelTotal = document.getElementById("total-label")
+          let total;
+          console.log("FILDS")
+          console.log(fields)
+          if(condition == '=') {
+            numFields = fields;
+            divTotal.innerHTML=
+            `
+              <div class="row">
+                <div class="col-md-9 mx-auto mb-3">
+                  <label id="total-label" for="total">
+                    <b>TOTAL</b>
+                  </label>
+                </div>
+                <div class="col-md-3 mx-auto mb-3">
+                  <input type="number" class="form-control total" id="total" name="total" disabled/>
+                </div>
+              </div>
+              <hr>
+            `;
+            console.log("condition")
+            console.log(condition)
+            total = document.getElementById("total");
+            const labelTotal = document.getElementById("total-label")
+          } else {
+            numFields = Array.from(fields);
+            total = numFields.pop();
+            console.log("FILDS")
+            console.log(numFields)
+            total.disabled = false;
+            const form = document.getElementById("form")
+            //const labelTotal = document.getElementById("total-label")  
+          }
           form.addEventListener("focusout", function(){
             total.value = 0;
             numFields.forEach(function(num) {
                 total.value = parseInt(total.value) + parseInt(num.value || 0)
-                if(total.value != 100) {
-                  btnGuardar.disabled = true;
-                  labelTotal.style = "color:red"
-                  total.style = "color:red"
-                } else {
-                  btnGuardar.disabled = false;
-                  labelTotal.style = "color:green"
-                  total.style = "color:green"
+                switch(condition) {
+                  case '=':
+                    if(total.value == value) {
+                      btnGuardar.disabled = false;
+                      labelTotal.style = "color:green"
+                      total.style = "color:green"
+                    } else {
+                      btnGuardar.disabled = true;
+                      labelTotal.style = "color:red"
+                      total.style = "color:red"
+                    }
+                    break;
+                  case '>':
+                    if(total.value > value) {
+                      //btnGuardar.disabled = false;
+                      //labelTotal.style = "color:green"
+                      total.style = "color:green"
+                    } else {
+                      btnGuardar.disabled = true;
+                      //labelTotal.style = "color:red"
+                      total.style = "color:red"
+                    }
+                    break;
                 }
-          })
+              })
+            })
+          }
 
-        })
 
-
-/*          numFields.forEach(function(numField, index) {
-            numField.addEventListener('blur', function() {
-              total.value = 0;
-              numFields.forEach(function(num) {
-                  total.value = parseInt(total.value) + parseInt(num.value || 0)
-                  if(total.value != 100)
-                    btnGuardar.disabled = true;
-              });
-            });
-          });*/
+        const VALIDATIONS = {
+          'itemSum': (fields, value, condition) => itemSumValidation(fields, value, condition),
+          /*'number': (numFields, metadata) => basicValidationNum(numFields, metadata),
+          'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
+          'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
+          'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)*/
         }
 
-        console.log("LLAMADO A ITEMSUM")
-        itemSum(dataFields)        
+        const VALIDATIONS_DEFAULT = () => console.log('Sin validaciones');
+
+        if(questionMetadata.validation) {
+          const [name, value, condition] = questionMetadata.validation.validation
+          console.log(name)
+          console.log(name=='itemSum')
+          console.log(name==='itemSum')
+          const validations = VALIDATIONS[name]
+            ? VALIDATIONS[name](dataFields, value, condition)
+            : VALIDATIONS_DEFAULT;
+        }
+      
       </script>
     </div>
   </div>

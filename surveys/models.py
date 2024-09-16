@@ -341,3 +341,22 @@ class Filter(models.Model):
                         resultado = resultado or int(variable.value) != self.value
                     return resultado
             return False
+        
+
+class Validationjs(models.Model):
+    name = models.CharField(max_length=500, verbose_name="Nombre")
+    question = models.ForeignKey(Question, verbose_name="pregunta", on_delete=models.DO_NOTHING)
+    condition_type = models.ForeignKey(Condition_Type, verbose_name="Condición", on_delete=models.DO_NOTHING)
+    value = models.IntegerField(verbose_name="Valor")
+    created_at = models.DateTimeField(verbose_name="Creado el", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Modificado el", auto_now=True)
+    created_by = models.ForeignKey(User, verbose_name="Creado por", on_delete=models.CASCADE, related_name="validationjs_created_by_user")
+    updated_by = models.ForeignKey(User, verbose_name="Modificado por", on_delete=models.CASCADE, related_name="validationjs_updated_by_user")
+
+    class Meta:
+        verbose_name = "Validación JS"
+        verbose_name_plural = "Validaciones JS"
+        ordering = ["name"]
+    
+    def __str__(self) -> str:
+        return self.name
