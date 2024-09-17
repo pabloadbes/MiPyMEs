@@ -261,11 +261,18 @@
             let itemChilds = [];
             item.forEach((option, index) => {
               let optionChilds = [];
-              childs_id = metadata[option.id]
-              childs_id.forEach(child_id => {
-                child = document.getElementById(child_id);
-                optionChilds.splice(index, 0, child);
-              })
+              if(metadata[option.id]){
+                console.log("HAY HIJO")
+                childs_id = metadata[option.id]
+                console.log(option)
+                console.log(option.id)
+                console.log("CHILDSID")
+                console.log(childs_id)
+                childs_id.forEach(child_id => {
+                  child = document.getElementById(child_id);
+                  optionChilds.splice(index, 0, child);
+                })
+              }
               itemChilds.splice(index, 0, optionChilds)
             })
             itemsChilds.splice(index, 0, itemChilds);
@@ -274,7 +281,7 @@
           items.forEach((item) => {
             item.forEach((option,index) => {
               option.addEventListener('change', function(){
-                if(this.checked) 
+                if(this.checked) {
                   childElements = itemsChilds[0][index]
                   notChildElements = itemsChilds[0][itemsChilds[0].length-1-index]
                   childElements.forEach(childElement => childElement.disabled = false)
@@ -293,11 +300,11 @@
                       })
                     })
                   }
-                    
+                }
                   
-                });                      
-              });
+              });                      
             });
+          });
         }
   
         const BASIC_VALIDATIONS = {

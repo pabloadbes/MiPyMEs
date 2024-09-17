@@ -51,8 +51,13 @@ def ctx_questions(request):
       if question.question_type.__str__() == "double_select":
          print("ES DOUBLE SELECT")
          for option in opts:
-            question_metadata[option.id] = []
+            print("OPTION")
+            print(option)
+            print("INICIALIZO METADATA para esta option")
+            
             if option.children:
+               print("HAY HIJO")
+               question_metadata[option.id] = []
                child_items = []
                child_its = Item.objects.all().filter(id = option.children.id)
                for child_item in child_its:
@@ -69,6 +74,9 @@ def ctx_questions(request):
                      # print(question_metadata)
                   child_items.append([child_item, child_options])
                options.append([option, child_items])
+            else:
+               print("NO HAY HIJO")
+               options.append([option])
          items.append([item, options])
             
       else:
@@ -100,6 +108,8 @@ def ctx_questions(request):
       validation = dict(validation = [val.name, val.value, val.condition_type.symbol])
       question_metadata['validation'] = validation
 
+   print("QUESTION METADATA")
+   print(question_metadata)
    json_question_metadata = json.dumps(question_metadata)
    ctx = {}
    ctx['company'] = company
