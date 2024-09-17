@@ -41,7 +41,6 @@
       <script>
         const btnGuardar = document.getElementById('btnGuardar');
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
-        console.log(questionMetadata)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
 
@@ -194,7 +193,8 @@
               return acc;
             }, {})
           );
-          const itemChilds = [];
+          const itemChilds = [];  //Arreglo de hijos de cada item
+                                  //un hijo por item, organizados por index
 
           items.forEach((item, index) => {
             let itemChild;
@@ -256,53 +256,48 @@
               return acc;
             }, {})
           );
-          const itemChilds = [];
-          console.log("ITEMS")
-          console.log(items)
+          const itemsChilds = [];
           items.forEach((item, index) => {
-            let itemChild;
-            item.forEach(option => {
-              if(metadata[option.id]) {
-                itemChild = document.getElementById(metadata[option.id]);
-              }
+            let itemChilds = [];
+            item.forEach((option, index) => {
+              let optionChilds = [];
+              childs_id = metadata[option.id]
+              childs_id.forEach(child_id => {
+                child = document.getElementById(child_id);
+                optionChilds.splice(index, 0, child);
+              })
+              itemChilds.splice(index, 0, optionChilds)
             })
-            itemChild.splice(index, 0, itemChild);
+            itemsChilds.splice(index, 0, itemChilds);
           })
-          console.log("ITEMCHILDS")
-          console.log(itemChilds)
           items[0].forEach(option => option.disabled = false)
-          items.forEach((item, index) => {
-            item.forEach(option => {
+          items.forEach((item) => {
+            item.forEach((option,index) => {
               option.addEventListener('change', function(){
                 if(this.checked) 
-                  if(!metadata[option.id]){//NO HAY HIJO
-                    if(items[index+1]) {
-                      items[index+1].forEach(option => option.disabled = false)}
-                    else btnGuardar.disabled = false
-                    //SI EL GRUPO TIENE HIJO LO DESHABILITAMOS
-                    if(itemChilds[index]) itemChilds[index].disabled = true
+                  childElements = itemsChilds[0][index]
+                  notChildElements = itemsChilds[0][itemsChilds[0].length-1-index]
+                  childElements.forEach(childElement => childElement.disabled = false)
+                  notChildElements.forEach(notChildElement => notChildElement.disabled = true)
+                  btnGuardar.disabled = true
+                  //VALIDO EL HIJO
+                  if(childElements.length == 1) {
+                    childElements[0].addEventListener('input', function(){
+                                      toEnableFieldTxt(childElements[0], btnGuardar) })
                   } else {
-                      childElements = itemChilds[index]
-                      console.log(itemChilds[index])
-                      console.log(childElements)
-                      childElements.forEach(childElement => childElement.disabled = false)
-                      if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
-                      else btnGuardar.disabled = true
-                      //VALIDO EL HIJO
-                      childElement.addEventListener('input', function() {
-                        if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
-                          if(items[index+1]) items[index+1].forEach(option => option.disabled = false)
-                          else btnGuardar.disabled = false
-                        }
-                        else{
-                          if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
-                          else btnGuardar.disabled = true
-                        }                      
-                      });                      
+                    console.log(childElements)
+                    console.log(childElements[0])
+                    childElements.forEach(child => {
+                      child.addEventListener('change', function(){
+                        btnGuardar.disabled = false;
+                      })
+                    })
                   }
+                    
+                  
+                });                      
               });
             });
-          })
         }
   
         const BASIC_VALIDATIONS = {

@@ -141,17 +141,18 @@ class QuestionDetail(TemplateView):
                                 children_options = Option.objects.all().filter(item_id = children_item.id)
                                 if len(children_options) == 1:
                                     children_option = children_options.first()
-                                    children_response = Response.objects.create(value = data[str(children_option.id)], option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                                    response.save()
-                                    if Variable_List.objects.all().filter(option_id = children_option.id).exists():
-                                        vble = Variable_List.objects.get(option_id = children_option.id)
-                                        variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
-                                        variable.save()
+                                    if data.get(str(children_option.id), False):
+                                        children_response = Response.objects.create(value = data[str(children_option.id)], option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                                        response.save()
+                                        if Variable_List.objects.all().filter(option_id = children_option.id).exists():
+                                            vble = Variable_List.objects.get(option_id = children_option.id)
+                                            variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = vble.id, created_by = user_id, updated_by = user_id)   
+                                            variable.save()
                                 else:
                                     for children_option in children_options:
                                         if Variable_List.objects.all().filter(option_id = children_option.id).exists():
                                             children_vble = Variable_List.objects.get(option_id = children_option.id)
-                                        if children_option.text == data[str(children_item.id)]:
+                                        if data.get(str(children_item.id), False) and children_option.text == data[str(children_item.id)]:
                                             children_response = Response.objects.create(value = True, option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                                             children_variable = Variable.objects.create(value = str(children_option.code), survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
                                             children_response.save()
