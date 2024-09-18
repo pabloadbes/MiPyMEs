@@ -292,28 +292,45 @@
                 if(this.checked) {
                   console.log("OPTION CHEKEADA")
                   console.log(option)
-                  console.log("TIENE HIJOS???")
-                  console.log(metadata[option.id])
-                  //SI TIENE HIJOS ACTIVARLOS Y DESACTIVAR NEXT
-                    //VALIDARLOS Y ACTIVAR NEXTELEMNT
-                  //NO TIENE HIJOS ACTIVAR NEXTELEMENT
+
                   /*childElements = itemsChilds[0][index]
                   notChildElements = itemsChilds[0][itemsChilds[0].length-1-index]
                   childElements.forEach(childElement => childElement.disabled = false)
                   notChildElements.forEach(notChildElement => notChildElement.disabled = true)*/
-                  nextItem = items[index+1]
-                            ? items[index+1]
-                            : btnGuardar
-                  if(metadata[option.id]){
-                    itemsChilds.forEach(optionChild => optionChild.disabled = false);
-                    console.log("NEXTITEM")
-                    console.log(nextItem)
-                    if(nextItem.length){
-                      console.log("LARGOOOOO")
-                      console.log(nextItem.length)
-                    }
+                  nextItem = items[index+1] || undefined
+                  console.log("NEXTITEM")
+                  console.log(nextItem)
+                  //console.log(nextItem.length)
 
+                  if(metadata[option.id]){ //SI TIENE HIJOS ACTIVARLOS Y DESACTIVAR NEXT
+                    console.log("TIENE HIJOS")
+                    console.log(metadata[option.id])
+                    console.log(itemsChilds)
+                    itemsChilds[index].forEach(optionChild => optionChild.disabled = false);
+
+                    //if(nextItem.length){
+                    console.log("DESACTIVMOS NEXT")
+                    if(nextItem) nextItem.forEach(nextOption => nextOption.disabled = true)
+                    else btnGuardar.disabled = true
+                    //itemsChilds.forEach(optionChild => optionChild.disabled = false);
+                    //}
+                    //VALIDARLOS Y ACTIVAR NEXTELEMNT
+                    itemsChilds[index].forEach( itemChild => {
+                      console.log("VALIDAR ITEMCHILD")
+                      console.log(itemChild)
+                      itemChild.addEventListener('change', function(){
+                        if(nextItem) nextItem.forEach(option => option.disabled = false)
+                        else btnGuardar.disabled = false
+                      })
+                    })       
+                  } else { //NO TIENE HIJOS ACTIVAR NEXTELEMENT, DESACTIVAR HIJOS DEL ITEM
+                    if(nextItem) nextItem.forEach(nextOption => nextOption.disabled = false)
+                    else btnGuardar.disabled = false
+                    itemsChilds[index].forEach(optionChild => optionChild.disabled = true);
+                  } 
                     
+
+                    /*
                   }
                   if(childElements.length == 0) {
                     if(nextItem) {
@@ -322,14 +339,10 @@
                     } else {
                       btnGuardar.disabled = false
                     }
-                  }
+                  }*/
 
                   //VALIDO EL HIJO
-                  if(childElements.length == 1) {
-                    btnGuardar.disabled = true
-                    childElements[0].addEventListener('input', function(){
-                                      toEnableFieldTxt(childElements[0], btnGuardar) })
-                  } 
+                 /*
                   if(childElements.length == 2) {
                     if(nextItem) {
                       nextItem.forEach(option => {
@@ -344,8 +357,8 @@
                         if(nextItem) nextItem.forEach(option => option.disabled = false)
                         else btnGuardar.disabled = false
                       })
-                    })
-                  }
+                    })*/
+                  
                 }
                   
               });                      
