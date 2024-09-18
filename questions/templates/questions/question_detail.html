@@ -239,6 +239,9 @@
         }
   
         const basicValidationDoubleSelect = (checkFields, metadata) => {
+          console.log("DOUBLE CHECK")
+          console.log("METADATA")
+          console.log(metadata)
           //items es un array de arrays, cada array interno contiene las opciones del item
           const options = Object.values(dataFields);
           const items = Object.values(
@@ -254,30 +257,64 @@
           );
           const itemsChilds = [];
           items.forEach((item, index) => {
-            let itemChilds = [];
-            item.forEach((option, index) => {
+            option = item[1]
+            let optionChilds = [];
+            childs_id = metadata[option.id]
+            childs_id.forEach(child_id => {
+              child = document.getElementById(child_id);
+              optionChilds.splice(index, 0, child);
+            })
+            itemsChilds.splice(index, 0, optionChilds)
+          })
+            /*item.forEach((option) => {
               let optionChilds = [];
               if(metadata[option.id]){
                 childs_id = metadata[option.id]
                 childs_id.forEach(child_id => {
                   child = document.getElementById(child_id);
                   optionChilds.splice(index, 0, child);
+                  console.log("AGREGANDO A OPTIONCHILDS")
+                  console.log(optionChilds)
                 })
               }
               itemChilds.splice(index, 0, optionChilds)
-            })
-            itemsChilds.splice(index, 0, itemChilds);
-          })
+              console.log("AGREGANDO A ITEMCHILDS")
+              console.log(itemChilds)
+            })*/
+    /*        itemsChilds.splice(index, 0, itemChilds);
+            console.log("AGREGANDO A ITEMSCHILDS")
+            console.log(itemsChilds)
+          })*/
           items[0].forEach(option => option.disabled = false)
-          items.forEach((item) => {
-            item.forEach((option, index) => {
+          items.forEach((item, index) => {
+            item.forEach((option) => {
               option.addEventListener('change', function(){
                 if(this.checked) {
-                  childElements = itemsChilds[0][index]
+                  console.log("OPTION CHEKEADA")
+                  console.log(option)
+                  console.log("TIENE HIJOS???")
+                  console.log(metadata[option.id])
+                  //SI TIENE HIJOS ACTIVARLOS Y DESACTIVAR NEXT
+                    //VALIDARLOS Y ACTIVAR NEXTELEMNT
+                  //NO TIENE HIJOS ACTIVAR NEXTELEMENT
+                  /*childElements = itemsChilds[0][index]
                   notChildElements = itemsChilds[0][itemsChilds[0].length-1-index]
                   childElements.forEach(childElement => childElement.disabled = false)
-                  notChildElements.forEach(notChildElement => notChildElement.disabled = true)
+                  notChildElements.forEach(notChildElement => notChildElement.disabled = true)*/
                   nextItem = items[index+1]
+                            ? items[index+1]
+                            : btnGuardar
+                  if(metadata[option.id]){
+                    itemsChilds.forEach(optionChild => optionChild.disabled = false);
+                    console.log("NEXTITEM")
+                    console.log(nextItem)
+                    if(nextItem.length){
+                      console.log("LARGOOOOO")
+                      console.log(nextItem.length)
+                    }
+
+                    
+                  }
                   if(childElements.length == 0) {
                     if(nextItem) {
                       console.log(items[index+1])
@@ -315,7 +352,11 @@
             });
           });
         }
-  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
         const basicValidationDoubleCheckTxt = (checkFields, metadata) => {
           //items es un array de arrays, cada array interno contiene las opciones del item
           const options = Object.values(dataFields);
@@ -402,13 +443,13 @@
           'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
           'total': (numFields, metadata) => basicValidationTotal(numFields, metadata),
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata),
-          'double_select': (checkFields, metadata) => basicValidationDoubleSelect(checkFields, metadata)
+          'double_select': (checkFields, metadata) => basicValidationDoubleSelect(checkFields, metadata),
           'double_check_txt': (checkFields, metadata) => basicValidationDoubleCheckTxt(checkFields, metadata)
         }
 
         const BASIC_VALIDATIONS_DEFAULT = () => console.log('Sin validaciones básicas');
-        console.log("ANTES DEL LLAMADO")
-        console.log(dataFields)
+        //console.log("ANTES DEL LLAMADO")
+        //console.log(dataFields)
         const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
           : BASIC_VALIDATIONS_DEFAULT;

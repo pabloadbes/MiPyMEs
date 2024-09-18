@@ -57,7 +57,7 @@ class Company(models.Model):
     name = models.CharField(max_length=100, verbose_name="Razón Social", blank=True, null=True)
     cuit = models.CharField(max_length=13, verbose_name="CUIT", default="")
     clanae_code = models.CharField(max_length=6, verbose_name="CLANAE")
-    surveyor = models.ForeignKey(Surveyor, verbose_name="Encuestador Asignado", on_delete=models.DO_NOTHING, blank=True, null=True)
+    supervisor = models.ForeignKey(Supervisor, verbose_name="Supervisor Asignado", on_delete=models.DO_NOTHING, blank=True, null=True)
     year = models.IntegerField(verbose_name="Año del operativo")
     due_id = models.IntegerField(verbose_name="Valor del campo ID en DUE")
     inactive = models.BooleanField(verbose_name="Estado")

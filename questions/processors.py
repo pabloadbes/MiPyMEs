@@ -48,7 +48,7 @@ def ctx_questions(request):
       hide_item = False
       opts = Option.objects.all().filter(item_id = item)
       options = []
-      if question.question_type.__str__() == "double_select":
+      if question.question_type.__str__() == "double_select" or question.question_type.__str__() == "double_check_txt":
          print("ES DOUBLE SELECT")
          for option in opts:
             print("OPTION")
