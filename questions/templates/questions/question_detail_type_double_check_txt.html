@@ -1,0 +1,66 @@
+  {% for item in items %}
+    <div>
+      <div class="row">
+        <div class="col-md-9">
+          {% if item.0.text %}
+            <div class="mb-2">
+              <b>{{ item.0.text }}</b>
+            </div> 
+          {% endif %} 
+
+          {% for option in item.1  %}
+            <div class="row">
+              <div class="col-md-10 mx-auto mb-3">
+                <div class="form-check">
+                  <input class="form-check-input data" type="radio" name="{{item.0.id}}" id="{{option.0.id}}" value="{{option.0.text}}" disabled/>
+                  <label class="form-check-label" 
+                          for="{{option.0.id}}">
+                    {{option.0.text}}
+                  </label>
+                </div>
+
+                {% if option.0.children %}
+                  {% if option.1.0.1|length == 1 %}
+                      <label for="{{option.1.0.1.0.id}}">
+                        {{option.1.0.1.0.text}}
+                      </label>
+                      <input type="text" class="form-control" id="{{option.1.0.1.0.id}}" name="{{option.1.0.1.0.id}}" disabled/>
+                  {% endif %}
+                {% endif %} 
+            
+
+              </div>
+            </div>        
+                      
+            {% if option.0.children %}
+              
+              {% if option.1.0.1|length == 2 %}
+        </div>
+
+                <div class="col-md-3">
+                  <div class="mb-2">
+                    <b>{{option.0.children}}</b>
+                  </div> 
+              
+                  {% for child_option in option.1.0.1  %}
+                  
+                    <div class="row">
+                      <div class="col-md-10 mx-auto mb-3">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="{{option.0.children.id}}" id="{{child_option.id}}" value="{{child_option.text}}" disabled/>
+                          <label class="form-check-label" 
+                                  for="{{child_option.id}}">
+                            {{child_option.text}}
+                          </label>
+                        </div>
+                      </div>
+                    </div>        
+                  {% endfor %}
+              {% endif %}
+            {% endif %} 
+          {% endfor %}
+        </div>
+      </div>
+      <hr>
+    </div>
+  {% endfor %}

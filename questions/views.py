@@ -127,7 +127,7 @@ class QuestionDetail(TemplateView):
                                     children_variable.save()
                             response.save()
 
-                elif "double_select" in ctx['template_type']:
+                elif "double_select" in ctx['template_type'] or "double_check_txt" in ctx['template_type']:
                     for item in ctx['items']:
                         for option in item[1]:
                             if Variable_List.objects.all().filter(option_id = option[0].id).exists():
