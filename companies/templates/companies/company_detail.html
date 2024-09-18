@@ -13,7 +13,7 @@
             <li>{{company.cuit|safe}}</li>
             <li>{{company.clanae_code|safe}}</li>
             <li>{{company.city|safe}}</li>
-            <li>{{company.district|safe}}</li>
+            {% comment %} <li>{{company.district|safe}}</li> {% endcomment %}
           </ul>
           {% if request.user.is_staff %}
             <p><a href="{% url 'companies:update' company.id %}">Editar</a></p>

@@ -32,9 +32,11 @@ class QuestionDetail(TemplateView):
             context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
         elif "init_3" in ctx['template_type']:
             company = Company.objects.get(id = context["survey_data"].company.id)
-            district, city = company.district, company.city
-            context["district_registered"], context["city_registered"] = district, city
-            context["districts"] = District.objects.all().exclude(id = district.id)
+            #district, city = company.district, company.city
+            city = company.city
+            #context["district_registered"], context["city_registered"] = district, city
+            context["city_registered"] = city
+            #context["districts"] = District.objects.all().exclude(id = district.id)
             context["cities"] = City.objects.all().exclude(id = city.id)
 
         return context
