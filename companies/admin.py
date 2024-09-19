@@ -3,6 +3,6 @@ from .models import Company
 
 # Register your models here.
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'clanae_code')
+    list_display = ('name', 'cuit')
 
 admin.site.register(Company, CompanyAdmin)
