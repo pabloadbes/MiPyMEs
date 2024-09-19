@@ -147,7 +147,6 @@
           numFields.forEach(function(numField, index) {
             if(index < numFields.length-1) {
               numField.addEventListener('input', function() {
-                console.log("LISTENER DE "+  index)
                 let nextElement;
                 nextElement = numFields[index+2]
                               ? numFields[index+1]
@@ -332,7 +331,6 @@
                   nextItem = items[index+1]
                   if(childElements.length == 0) {
                     if(nextItem) {
-                      console.log(items[index+1])
                       nextItem.forEach(option => option.disabled = false)
                     } else {
                       btnGuardar.disabled = false
@@ -348,7 +346,6 @@
                   if(childElements.length == 2) {
                     if(nextItem) {
                       nextItem.forEach(option => {
-                        console.log(option)
                         option => option.disabled = true})
                     } else {
                       btnGuardar.disabled = true
@@ -381,8 +378,6 @@
         }
 
         const BASIC_VALIDATIONS_DEFAULT = () => console.log('Sin validaciones básicas');
-        //console.log("ANTES DEL LLAMADO")
-        //console.log(dataFields)
         const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
           : BASIC_VALIDATIONS_DEFAULT;
@@ -459,9 +454,6 @@
 
         if(questionMetadata.validation) {
           const [name, value, condition] = questionMetadata.validation.validation
-          console.log(name)
-          console.log(name=='itemSum')
-          console.log(name==='itemSum')
           const validations = VALIDATIONS[name]
             ? VALIDATIONS[name](dataFields, value, condition)
             : VALIDATIONS_DEFAULT;

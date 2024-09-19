@@ -1,5 +1,5 @@
 from typing import List
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
 from companies.models import Company
 from questions.models import Option, Survey_Type, Question, Section
@@ -112,36 +112,39 @@ class Survey(models.Model):
         return self.get_next_question() == self.get_number_of_questions() + self.get_first_question() + 3
     
     def calculate_next_question(self) -> int:
-        #Al iniciar la encuesta debe indicar la primera pregunta
-        if self.get_survey_state() == "created":
-        #Debe detectar si la encuesta se completó
-            if self.is_survey_complete():
-                return self.get_last_question()
-        #Durante el llenado debe indicar la pregunta siguiente o el pase
-            answering_question = Survey_Questions.objects.get(survey_id = self.id, survey_question_state_id = 4)
-            answering_question.survey_question_state_id = 2
-            answering_question.save()
-            if Filter.objects.all().filter(question_id = answering_question.question.id).exists():
-                filters = Filter.objects.all().filter(question_id = answering_question.question.id)
-                for filter in filters:
-                    filter_variables = filter.variables.all()
-                    if filter.evaluation(self):
-                        if filter.filter_type_id == 1:
-                            for i in range(answering_question.question.id+1,filter.dest):
-                                passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
-                                passed_question.survey_question_state_id = 3
-                                passed_question.save()
-                        elif filter.filter_type_id in (2, 3, 4, 5):
-                            passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = filter.dest)
-                            passed_question.survey_question_state_id = 3
-                            passed_question.save()
+        try:
+            with transaction.atomic():
+                #Al iniciar la encuesta debe indicar la primera pregunta
+                if self.get_survey_state() == "created":
+                #Debe detectar si la encuesta se completó
+                    if self.is_survey_complete():
+                        return self.get_last_question()
+                #Durante el llenado debe indicar la pregunta siguiente o el pase
+                    answering_question = Survey_Questions.objects.get(survey_id = self.id, survey_question_state_id = 4)
+                    answering_question.survey_question_state_id = 2
+                    answering_question.save()
+                    if Filter.objects.all().filter(question_id = answering_question.question.id).exists():
+                        filters = Filter.objects.all().filter(question_id = answering_question.question.id)
+                        for filter in filters:
+                            filter_variables = filter.variables.all()
+                            if filter.evaluation(self):
+                                if filter.filter_type_id == 1:
+                                    for i in range(answering_question.question.id+1,filter.dest):
+                                        passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = i)
+                                        passed_question.survey_question_state_id = 3
+                                        passed_question.save()
+                                elif filter.filter_type_id in (2, 3, 4, 5):
+                                    passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = filter.dest)
+                                    passed_question.survey_question_state_id = 3
+                                    passed_question.save()
 
-            next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
-            self.set_next_question(next_question.question.id)
-            self.save()
-            next_question.survey_question_state_id = 4
-            next_question.save()
-
+                    next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
+                    self.set_next_question(next_question.question.id)
+                    self.save()
+                    next_question.survey_question_state_id = 4
+                    next_question.save()
+        except Exception as e:
+            print(f"Error: Actualizando estado de preguntas {e}")
         return self.next_question
 
 class Survey_Question_State(models.Model):
