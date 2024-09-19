@@ -24,12 +24,16 @@ class QuestionDetail(TemplateView):
         context["question"] = Question.objects.get(id = context['pk'])
         context["survey_data"] = Survey.objects.get(id = context['survey'])
         ctx = ctx_dict(self.request)
+        print("EN GET CONTEXT")
+        print(context)
         if "init_1" in ctx['template_type']:
-            surveyor = Company.objects.get(id = context["survey_data"].company.id).surveyor
-            context["surveyor_asigned"] = surveyor
-            supervisor = Supervisor.objects.get(id = surveyor.supervisor.id)
+            print("INIT1")
+            #surveyor = Company.objects.get(id = context["survey_data"].company.id).surveyor
+            #context["surveyor_asigned"] = surveyor
+            supervisor = Company.objects.get(id = context["survey_data"].company.id).supervisor
             context["supervisor"] = supervisor
-            context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
+            #context["surveyors"] = Surveyor.objects.all().exclude(id = surveyor.id)
+            context["surveyors"] = Surveyor.objects.all().exclude
         elif "init_3" in ctx['template_type']:
             company = Company.objects.get(id = context["survey_data"].company.id)
             #district, city = company.district, company.city

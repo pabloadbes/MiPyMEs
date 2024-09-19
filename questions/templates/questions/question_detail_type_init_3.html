@@ -16,7 +16,7 @@
     </div>
     <div class="col-md-10 mx-auto mb-3">
       <select class="form-control" id="district" name="district">
-        <option value="{{ district_registered.code }}" selected>{{ district_registered }}</option>
+        {% comment %} <option value="{{ district_registered.code }}" selected>{{ district_registered }}</option> {% endcomment %}
         
         {% for district in districts %}
           <option value="{{ district.code }}">{{ district }}</option>
