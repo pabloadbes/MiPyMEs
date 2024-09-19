@@ -40,7 +40,7 @@ class QuestionDetail(TemplateView):
             city = company.city
             #context["district_registered"], context["city_registered"] = district, city
             context["city_registered"] = city
-            #context["districts"] = District.objects.all().exclude(id = district.id)
+            context["districts"] = District.objects.all()
             context["cities"] = City.objects.all().exclude(id = city.id)
 
         return context
@@ -324,21 +324,21 @@ class QuestionDetail(TemplateView):
                     variable_email.save()
                     variable_web_page.save()
 
-                survey.save()
+
+
+            if survey.is_survey_complete():
+                survey.set_survey_state(2)
+            survey.set_next_question(survey.calculate_next_question())
+            if question.number > 0:
+                survey.set_progress(100 * question.number / survey.get_number_of_questions())
+            else:
+                survey.set_progress(0)
+            survey.set_updated_by(user_id)
+            survey.save()
 
         except Exception as e:
-            print(f"Error: {e}")
-            return HttpResponseRedirect(reverse_lazy("home"))
-
-        if survey.is_survey_complete():
-            survey.set_survey_state(2)
-        survey.set_next_question(survey.calculate_next_question())
-        if question.number > 0:
-            survey.set_progress(100 * question.number / survey.get_number_of_questions())
-        else:
-            survey.set_progress(0)
-        survey.set_updated_by(user_id)
-
+            print(f"Error: No se guardó la respuesta {e}")
+            return HttpResponseRedirect(reverse_lazy("surveys:surveys"))
         # print("CANTIDAD DE PREGUNTAS")
         # print(survey.get_number_of_questions())
         # print("NÚMERO DE PREGUNTA")
