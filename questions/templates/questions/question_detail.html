@@ -8,7 +8,7 @@
         <h1><b>{{ question|upper }}</b></h1>
       </div>
         
-      <form id="form" action="" method=post>
+      <form id="form" action="" method=post autocomplete="off">
         {% csrf_token %}
             
         {% include template_type %}
@@ -27,7 +27,7 @@
       <div class="mb-5">
         <b>{{ question.number }}.  {{ question }}</b>
       </div>
-      <form id="form" action="" method=post>
+      <form id="form" action="" method=post autocomplete="off">
         {% csrf_token %}
         <input id="question_metadata" name="question_metadata" type="hidden" value="{{question_metadata}}" />
         {% include template_type %}
@@ -229,7 +229,7 @@
                       else btnGuardar.disabled = true
                       //VALIDO EL HIJO
                       childElement.addEventListener('input', function() {
-                        if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9.,\s]+$/)){
+                        if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ.,\s]+$/)){
                           if(items[index+1]) items[index+1].forEach(option => option.disabled = false)
                           else btnGuardar.disabled = false
                         }

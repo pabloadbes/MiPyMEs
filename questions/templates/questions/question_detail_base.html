@@ -1,10 +1,16 @@
 {% extends 'core/base.html' %}
-{% block title %}Pregunta {{ question.number }}{% endblock %}
+{% block title %}
+  {% if 'init' not in template_type %}
+    Pregunta {{ question.number }}
+  {% else %}
+    {{ question.text }}
+  {% endif %}
+{% endblock %}
 {% block content %}
 <main role="main">
   <div class="container">
     
-    {% if 'init' not in template_type %}
+    {% if 'init' not in template_type %}.
       <h3 style="display:flex;justify-content:right;align-items:center;">{{ company|upper }}</h3>
       <h1 class="section-heading mb-4" 
           style="background-color:black;color:white" >

@@ -118,17 +118,13 @@ class QuestionDetail(TemplateView):
                                 children_item = Item.objects.get(id = option[0].children_id)
                                 children_option = Option.objects.get(item_id = children_item.id)
                                 children_vble = Variable_List.objects.get(option_id = children_option.id)
-                                # print("EVALUEMOS")
                                 if str(children_option.id) in data:
-                                    # print("EL VALOR DEL HIJO ES:")
-                                    # print(children_option)
-                                    # print(children_option.id)
-                                    # print(str(children_option.id))
-                                    # print(data[str(children_option.id)])
                                     children_response = Response.objects.create(value = data[str(children_option.id)], option_id = children_option.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                                    children_variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
                                     children_response.save()
-                                    children_variable.save()
+                                    children_exists = Variable.objects.all().filter(survey_id = survey.id,variable_list_id = children_vble.id).exists()
+                                    if not children_exists:
+                                        children_variable = Variable.objects.create(value = data[str(children_option.id)], survey_id = survey.id, variable_list_id = children_vble.id, created_by = user_id, updated_by = user_id)   
+                                        children_variable.save()
                             response.save()
 
                 elif "double_select" in ctx['template_type'] or "double_check_txt" in ctx['template_type']:
