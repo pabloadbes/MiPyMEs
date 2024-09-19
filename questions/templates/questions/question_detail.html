@@ -8,13 +8,13 @@
         <h1><b>{{ question|upper }}</b></h1>
       </div>
         
-      <form action="" method=post>
+      <form id="form" action="" method=post>
         {% csrf_token %}
             
         {% include template_type %}
 
         <div class="mb-3">
-          <input type="submit" class="btn btn-primary btn-block" value="Siguiente" />
+          <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Siguiente" />
         </div>
       </form>
 {% else %}
@@ -39,10 +39,17 @@
         </div>
       </form>
       <script>
+        const form = document.getElementById("form")
         const btnGuardar = document.getElementById('btnGuardar');
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
+
+
+        form.addEventListener('submit', function() {
+          // Desactiva el botón de envío después de hacer clic
+          btnGuardar.disabled = true;
+        });
 
         const toEnableFieldTxt = (txtField, elementToEnable) => {
           if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ.,\s]+$/)){
@@ -385,7 +392,7 @@
         //PROCEDER CON OTRAS VALIDACIONES
         const itemSumValidation = (fields, value, condition) => {
           const divTotal = document.getElementById("total-div");
-          const form = document.getElementById("form")
+          //const form = document.getElementById("form")
           let total;
           let labelTotal;
           if(condition == '=') {
@@ -410,7 +417,7 @@
             numFields = Array.from(fields);
             total = numFields.pop();
             total.disabled = false;
-            const form = document.getElementById("form")
+            //const form = document.getElementById("form")
           }
           form.addEventListener("focusout", function(){
             total.value = 0;

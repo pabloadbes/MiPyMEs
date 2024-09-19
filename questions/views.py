@@ -40,7 +40,7 @@ class QuestionDetail(TemplateView):
             city = company.city
             #context["district_registered"], context["city_registered"] = district, city
             context["city_registered"] = city
-            #context["districts"] = District.objects.all().exclude(id = district.id)
+            context["districts"] = District.objects.all()
             context["cities"] = City.objects.all().exclude(id = city.id)
 
         return context

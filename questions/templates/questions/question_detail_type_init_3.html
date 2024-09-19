@@ -9,7 +9,7 @@
             id="state" name="state" 
             value="Tierra del Fuego" disabled/>
     </div>
-  </div>
+  </div> 
   <div class="row">
     <div class="col-md-2 mx-auto mb-3">
       <label for="district">Departamento</label>
@@ -19,7 +19,7 @@
         {% comment %} <option value="{{ district_registered.code }}" selected>{{ district_registered }}</option> {% endcomment %}
         
         {% for district in districts %}
-          <option value="{{ district.code }}">{{ district }}</option>
+          <option value="{{ district.id }}">{{ district }}</option>
         {% endfor %}
 
       </select>
