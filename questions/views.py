@@ -248,12 +248,12 @@ class QuestionDetail(TemplateView):
                     response_provincia = Response.objects.create(value = '94', option_id = option_provincia.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     response_departamento = Response.objects.create(value = data['district'], option_id = option_departamento.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     response_localidad = Response.objects.create(value = data['city'], option_id = option_localidad.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                    response_cod_emp = Response.objects.create(value = data['clanae'], option_id = option_cod_emp.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    response_cod_emp = Response.objects.create(value = data['activity_code'], option_id = option_cod_emp.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
 
                     variable_provincia = Variable.objects.create(value = '94', variable_list_id = vble_provincia.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     variable_departamento = Variable.objects.create(value = data['district'], variable_list_id = vble_departamento.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                     variable_localidad = Variable.objects.create(value = data['city'], variable_list_id = vble_localidad.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                    variable_cod_emp = Variable.objects.create(value = data['clanae'], variable_list_id = vble_cod_emp.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_cod_emp = Variable.objects.create(value = data['activity_code'], variable_list_id = vble_cod_emp.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
 
                     response_provincia.save()
                     response_departamento.save()
