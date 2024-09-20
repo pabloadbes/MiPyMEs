@@ -377,7 +377,7 @@
             });
           });
         }
-  
+
         const BASIC_VALIDATIONS = {
           'text': (txtFields) => basicValidationTxt(txtFields),
           'area': (txtFields) => basicValidationTxt(txtFields),
@@ -389,11 +389,16 @@
           'double_select': (checkFields, metadata) => basicValidationDoubleSelect(checkFields, metadata),
           'double_check_txt': (checkFields, metadata) => basicValidationDoubleCheckTxt(checkFields, metadata)
         }
+        
+        const BASIC_VALIDATIONS_DEFAULT = () => {
+          alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
+          btnGuardar.disabled = false;
+          console.log("Sin validaciones");
+        }
 
-        const BASIC_VALIDATIONS_DEFAULT = () => console.log('Sin validaciones básicas');
         const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
-          : BASIC_VALIDATIONS_DEFAULT;
+          : BASIC_VALIDATIONS_DEFAULT()
 
         //PROCEDER CON OTRAS VALIDACIONES
         const itemSumValidation = (fields, value, condition) => {
