@@ -37,6 +37,12 @@
           <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/>
         </div>
       </form>
+
+
+
+
+
+
       <script>
         const form = document.getElementById("form")
         const btnGuardar = document.getElementById('btnGuardar');
@@ -60,7 +66,8 @@
         }
 
         const toEnableFieldNum = (numField, minValue, maxValue, elementToEnable) => {
-          if(numField.checkValidity() && numField.value>=minValue && numField.value<=maxValue){
+          if(numField.checkValidity() && numField.value>=minValue 
+            && numField.value<=maxValue && numField.value!==''){
             elementToEnable.disabled = false;
           }
           else{
@@ -416,6 +423,7 @@
             numFields = Array.from(fields);
             total = numFields.pop();
             total.disabled = false;
+            total.readonly = false;
             //const form = document.getElementById("form")
           }
           form.addEventListener("focusout", function(){
