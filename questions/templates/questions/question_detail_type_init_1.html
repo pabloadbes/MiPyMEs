@@ -7,7 +7,7 @@
     <div class="col-md-10 mx-auto mb-3">
       <select class="form-control" id="surveyor" name="surveyor">
         {% for surveyor in surveyors %}
-          <option value="{{ surveyor.ENC_CODE }}">{{ surveyor }}</option>
+          <option value="{{ surveyor.ENC_CODE }}">{{surveyor.ENC_CODE}} - {{ surveyor }}</option>
         {% endfor %}
 
       </select>
@@ -21,7 +21,7 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="supervisor" name="supervisor" 
-            value="{{ supervisor }}" disabled/>
+            value="{{supervisor.SUP_CODE}} - {{ supervisor }}" disabled/>
     </div>
   </div>
   <div class="row">
