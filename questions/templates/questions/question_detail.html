@@ -37,6 +37,12 @@
           <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Guardar" disabled/>
         </div>
       </form>
+
+
+
+
+
+
       <script>
         const form = document.getElementById("form")
         const btnGuardar = document.getElementById('btnGuardar');
@@ -60,7 +66,8 @@
         }
 
         const toEnableFieldNum = (numField, minValue, maxValue, elementToEnable) => {
-          if(numField.checkValidity() && numField.value>=minValue && numField.value<=maxValue){
+          if(numField.checkValidity() && numField.value>=minValue 
+          && numField.value<=maxValue && numField.value!==''){
             elementToEnable.disabled = false;
           }
           else{
@@ -383,7 +390,11 @@
           'double_check_txt': (checkFields, metadata) => basicValidationDoubleCheckTxt(checkFields, metadata)
         }
 
-        const BASIC_VALIDATIONS_DEFAULT = () => console.log('Sin validaciones básicas');
+        const BASIC_VALIDATIONS_DEFAULT = () => {
+          alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.")
+          btnGuardar.disabled = false;
+        }
+        
         const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
           : BASIC_VALIDATIONS_DEFAULT;
@@ -416,7 +427,7 @@
             numFields = Array.from(fields);
             total = numFields.pop();
             total.disabled = false;
-            //const form = document.getElementById("form")
+            total.setAttribute('readonly', true);
           }
           form.addEventListener("focusout", function(){
             total.value = 0;
