@@ -393,7 +393,6 @@
         const BASIC_VALIDATIONS_DEFAULT = () => {
           alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
           btnGuardar.disabled = false;
-          console.log("Sin validaciones");
         }
 
         const basic_validations = BASIC_VALIDATIONS[questionType]
@@ -425,15 +424,16 @@
             total = document.getElementById("total");
             labelTotal = document.getElementById("total-label")
           } else {
+            console.log("NO HAY QUE COMPROBAR IGUALDAD, QUITAMOS DISABLEd, HACEMOS READONLY")
             numFields = Array.from(fields);
             total = numFields.pop();
-            total.disabled = false;
-            total.readonly = false;
+            //total.disabled = false;
+            total.readonly = true;
             //const form = document.getElementById("form")
           }
           form.addEventListener("focusout", function(){
             total.value = 0;
-            numFields.forEach(function(num) {
+            numFields.forEach(function(num, index) {
                 total.value = parseInt(total.value) + parseInt(num.value || 0)
                 switch(condition) {
                   case '=':
