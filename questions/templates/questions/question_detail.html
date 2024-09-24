@@ -67,7 +67,7 @@
 
         const toEnableFieldNum = (numField, minValue, maxValue, elementToEnable) => {
           if(numField.checkValidity() && numField.value>=minValue 
-          && numField.value<=maxValue && numField.value!==''){
+            && numField.value<=maxValue && numField.value!==''){
             elementToEnable.disabled = false;
           }
           else{
@@ -377,7 +377,7 @@
             });
           });
         }
-  
+
         const BASIC_VALIDATIONS = {
           'text': (txtFields) => basicValidationTxt(txtFields),
           'area': (txtFields) => basicValidationTxt(txtFields),
@@ -389,15 +389,15 @@
           'double_select': (checkFields, metadata) => basicValidationDoubleSelect(checkFields, metadata),
           'double_check_txt': (checkFields, metadata) => basicValidationDoubleCheckTxt(checkFields, metadata)
         }
-
+        
         const BASIC_VALIDATIONS_DEFAULT = () => {
-          alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.")
+          alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
           btnGuardar.disabled = false;
         }
         
         const basic_validations = BASIC_VALIDATIONS[questionType]
           ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
-          : BASIC_VALIDATIONS_DEFAULT;
+          : BASIC_VALIDATIONS_DEFAULT()
 
         //PROCEDER CON OTRAS VALIDACIONES
         const itemSumValidation = (fields, value, condition) => {
@@ -424,6 +424,7 @@
             total = document.getElementById("total");
             labelTotal = document.getElementById("total-label")
           } else {
+            console.log("NO HAY QUE COMPROBAR IGUALDAD, QUITAMOS DISABLEd, HACEMOS READONLY")
             numFields = Array.from(fields);
             total = numFields.pop();
             total.disabled = false;
@@ -431,7 +432,7 @@
           }
           form.addEventListener("focusout", function(){
             total.value = 0;
-            numFields.forEach(function(num) {
+            numFields.forEach(function(num, index) {
                 total.value = parseInt(total.value) + parseInt(num.value || 0)
                 switch(condition) {
                   case '=':
