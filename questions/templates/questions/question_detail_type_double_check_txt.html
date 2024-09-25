@@ -24,7 +24,9 @@
                       <label for="{{option.1.0.1.0.id}}">
                         {{option.1.0.1.0.text}}
                       </label>
-                      <input type="text" class="form-control" id="{{option.1.0.1.0.id}}" name="{{option.1.0.1.0.id}}" disabled/>
+                      <input type="text" class="form-control" id="{{option.1.0.1.0.id}}" name="{{option.1.0.1.0.id}}" 
+                            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü"
+                            disabled/>
                   {% endif %}
                 {% endif %} 
             

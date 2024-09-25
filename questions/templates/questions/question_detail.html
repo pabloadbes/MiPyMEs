@@ -57,7 +57,7 @@
         });
 
         const toEnableFieldTxt = (txtField, elementToEnable) => {
-          if(txtField.checkValidity() && txtField.value.match(/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ.,\s]+$/)){
+          if(txtField.checkValidity()){
             elementToEnable.disabled = false;
           }
           else{
@@ -101,6 +101,7 @@
                 childElement = document.getElementById(metadata[numField.id]);
                 if(numField.checkValidity() && (numField.value >= 1)){
                   childElement.disabled = false;
+                  childElement.required = true;
                   nextElement.disabled = true;
                   childElement.addEventListener('input', function() {
                     toEnableFieldTxt(childElement, nextElement)
@@ -109,10 +110,12 @@
                 else{
                   if(numField.value >= 0){
                     childElement.disabled = true;
+                    childElement.required = false;
                     nextElement.disabled = false;
                   }
                   else{
                     childElement.disabled = true;
+                    childElement.required = false;
                     nextElement.disabled = true;
                   }
                 }
@@ -123,35 +126,8 @@
 
         const basicValidationYear = (numFields, metadata) => {
           numFields[0].disabled = false;
-          numFields.forEach(function(numField, index) {
-            numField.addEventListener('input', function() {
-              let nextElement;
-              nextElement = numFields[index+1]
-                            ? numFields[index+1]
-                            : btnGuardar
-              if(!metadata[numField.id])  //Si no hay hijo solo validamos para el siguiente campo
-                toEnableFieldNum(numField, 1884, 2024, nextElement);
-              else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
-                childElement = document.getElementById(metadata[numField.id]);
-                if(numField.checkValidity() && (numField.value >= 1)){
-                  childElement.disabled = false;
-                  nextElement.disabled = true;
-                  childElement.addEventListener('input', function() {
-                    toEnableFieldTxt(childElement, nextElement)
-                  });
-                }
-                else{
-                  if(numField.value >= 0){
-                    childElement.disabled = true;
-                    nextElement.disabled = false;
-                  }
-                  else{
-                    childElement.disabled = true;
-                    nextElement.disabled = true;
-                  }
-                }
-              }
-            });
+          numFields[0].addEventListener('input', function() {
+            toEnableFieldNum(numFields[0], 1884, 2024, btnGuardar);
           });
         }
 
@@ -164,28 +140,7 @@
                 nextElement = numFields[index+2]
                               ? numFields[index+1]
                               : btnGuardar
-                if(!metadata[numField.id])  //Si no hay hijo solo validamos para el siguiente campo
-                  toEnableFieldNum(numField, 0, 300, nextElement);
-                else { //Si hay hijo validamos para el hijo, y luego el siguiente campo
-                  childElement = document.getElementById(metadata[numField.id]);
-                  if(numField.checkValidity() && (numField.value >= 1)){
-                    childElement.disabled = false;
-                    nextElement.disabled = true;
-                    childElement.addEventListener('input', function() {
-                      toEnableFieldTxt(childElement, nextElement)
-                    });
-                  }
-                  else{
-                    if(numField.value >= 0){
-                      childElement.disabled = true;
-                      nextElement.disabled = false;
-                    }
-                    else{
-                      childElement.disabled = true;
-                      nextElement.disabled = true;
-                    }
-                  }
-                }
+                toEnableFieldNum(numField, 0, 300, nextElement);
               });
             }
           });
@@ -227,15 +182,19 @@
                       items[index+1].forEach(option => option.disabled = false)}
                     else btnGuardar.disabled = false
                     //SI EL GRUPO TIENE HIJO LO DESHABILITAMOS
-                    if(itemChilds[index]) itemChilds[index].disabled = true
+                    if(itemChilds[index]) {
+                      itemChilds[index].disabled = true;
+                      itemChilds[index].required = false;
+                    }
                   } else {
                       childElement = itemChilds[index]
                       childElement.disabled = false
+                      childElement.required = true
                       if(items[index+1]) items[index+1].forEach(option => option.disabled = true)
                       else btnGuardar.disabled = true
                       //VALIDO EL HIJO
                       childElement.addEventListener('input', function() {
-                        if(childElement.checkValidity() && childElement.value.match(/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ.,\s]+$/)){
+                        if(childElement.checkValidity()){
                           if(items[index+1]) items[index+1].forEach(option => option.disabled = false)
                           else btnGuardar.disabled = false
                         }
@@ -353,6 +312,7 @@
                   //VALIDO EL HIJO
                   if(childElements.length == 1) {
                     btnGuardar.disabled = true
+                    childElements[0].required = true
                     childElements[0].addEventListener('input', function(){
                                       toEnableFieldTxt(childElements[0], btnGuardar) })
                   } 
@@ -363,7 +323,7 @@
                     } else {
                       btnGuardar.disabled = true
                     }
-                    
+                    notChildElements[0].required = false
                     childElements.forEach(child => {
                       child.addEventListener('change', function(){
                         if(nextItem) nextItem.forEach(option => option.disabled = false)
