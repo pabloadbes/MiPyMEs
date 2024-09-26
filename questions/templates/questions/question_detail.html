@@ -274,67 +274,42 @@
               return acc;
             }, {})
           );
-          const itemsChilds = [];
-          items.forEach((item, index) => {
-            let itemChilds = [];
-            item.forEach((option, index) => {
-              let optionChilds = [];
-              if(metadata[option.id]){
-                childs_id = metadata[option.id]
-                childs_id.forEach(child_id => {
-                  child = document.getElementById(child_id);
-                  optionChilds.splice(index, 0, child);
-                })
-              }
-              itemChilds.splice(index, 0, optionChilds)
-            })
-            itemsChilds.splice(index, 0, itemChilds);
+          let child;
+          items[0].forEach(option => {
+            if(metadata[option.id]) child = document.getElementById(metadata[option.id]);
           })
-          items[0].forEach(option => option.disabled = false)
-          items.forEach((item) => {
-            item.forEach((option, index) => {
-              option.addEventListener('change', function(){
-                if(this.checked) {
-                  childElements = itemsChilds[0][index]
-                  notChildElements = itemsChilds[0][itemsChilds[0].length-1-index]
-                  childElements.forEach(childElement => childElement.disabled = false)
-                  notChildElements.forEach(notChildElement => notChildElement.disabled = true)
-                  nextItem = items[index+1]
-                  if(childElements.length == 0) {
-                    if(nextItem) {
-                      nextItem.forEach(option => option.disabled = false)
-                    } else {
-                      btnGuardar.disabled = false
-                    }
-                  }
-
-                  //VALIDO EL HIJO
-                  if(childElements.length == 1) {
-                    btnGuardar.disabled = true
-                    childElements[0].required = true
-                    childElements[0].addEventListener('input', function(){
-                                      toEnableFieldTxt(childElements[0], btnGuardar) })
-                  } 
-                  if(childElements.length == 2) {
-                    if(nextItem) {
-                      nextItem.forEach(option => {
-                        option => option.disabled = true})
-                    } else {
-                      btnGuardar.disabled = true
-                    }
-                    notChildElements[0].required = false
-                    childElements.forEach(child => {
-                      child.addEventListener('change', function(){
-                        if(nextItem) nextItem.forEach(option => option.disabled = false)
-                        else btnGuardar.disabled = false
+          items[0].forEach(option => {
+            option.disabled = false;
+            option.addEventListener('change', function(){
+              if(this.checked) {
+                if(metadata[option.id]) {
+                  btnGuardar.disabled = true;
+                  child.disabled = false;
+                  child.addEventListener('input', function() {
+                    if(child.checkValidity()) {
+                      items[1].forEach(option => {
+                        option.disabled = false;
+                        option.addEventListener('change', function(){
+                          if(this.checked) {
+                            btnGuardar.disabled = false;
+                          }
+                        })
                       })
-                    })
-                  }
+                    } else {
+                      btnGuardar.disabled = true;
+                      items[1].forEach(option => {
+                        option.disabled = true;
+                      })
+                    }
+                  })
                 }
-                  
-              });                      
-            });
-          });
+                else {
+                  btnGuardar.disabled = false;
+                  child.disabled = true;
+                }
+              }
+            })
+          })
         }
 
         const BASIC_VALIDATIONS = {
