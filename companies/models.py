@@ -58,7 +58,7 @@ class Company(models.Model):
     supervisor = models.ForeignKey(Supervisor, verbose_name="Supervisor Asignado", on_delete=models.DO_NOTHING, blank=True, null=True)
     year = models.IntegerField(verbose_name="Año del operativo")
     due_id = models.IntegerField(verbose_name="Valor del campo ID en DUE")
-    inactive = models.BooleanField(verbose_name="Estado")
+    inactive = models.BooleanField(verbose_name="Inactivo")
     original_id = models.IntegerField(verbose_name="ID original", default=0)
     address_street = models.CharField(max_length=100, verbose_name="Calle / Ruta", blank=True, null=True)
     address_number = models.IntegerField(verbose_name="Número / Km", blank=True, null=True)
