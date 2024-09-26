@@ -85,11 +85,11 @@ def ctx_questions(request):
                options.append([option, notes])   
          items.append([item, options])
    
+   question_metadata['validation'] = []
    if Validationjs.objects.all().filter(question_id = question_id).exists():
-      val = Validationjs.objects.get(question_id = question_id)
-      validation = dict(validation = [val.name, val.value, val.condition_type.symbol])
-      question_metadata['validation'] = validation
-
+      validations = Validationjs.objects.all().filter(question_id = question_id)
+      for val in validations:
+         question_metadata['validation'].append([val.name, val.value, val.condition_type.symbol])
    json_question_metadata = json.dumps(question_metadata)
    ctx = {}
    ctx['company'] = company

@@ -49,7 +49,7 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
-
+        console.log(questionMetadata)
 
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
@@ -391,49 +391,55 @@
           }
           form.addEventListener("focusout", function(){
             total.value = 0;
-            numFields.forEach(function(num, index) {
-                total.value = parseInt(total.value) + parseInt(num.value || 0)
-                switch(condition) {
-                  case '=':
-                    if(total.value == value) {
-                      btnGuardar.disabled = false;
-                      labelTotal.style = "color:green"
-                      total.style = "color:green"
-                    } else {
-                      btnGuardar.disabled = true;
-                      labelTotal.style = "color:red"
-                      total.style = "color:red"
-                    }
-                    break;
-                  case '>':
-                    if(total.value > value) {
-                      total.style = "color:green"
-                    } else {
-                      btnGuardar.disabled = true;
-                      total.style = "color:red"
-                    }
-                    break;
-                }
-              })
+            numFields.forEach(function(num) {
+              total.value = parseInt(total.value) + parseInt(num.value || 0)
+              switch(condition) {
+                case '=':
+                  if(total.value == value) {
+                    btnGuardar.disabled = false;
+                    labelTotal.style = "color:green"
+                    total.style = "color:green"
+                  } else {
+                    btnGuardar.disabled = true;
+                    labelTotal.style = "color:red"
+                    total.style = "color:red"
+                  }
+                  break;
+                case '>':
+                  if(total.value > value) {
+                    total.style = "color:green"
+                  } else {
+                    btnGuardar.disabled = true;
+                    total.style = "color:red"
+                  }
+                  break;
+              }
             })
-          }
+          })
+        }
 
+        const optionMaxValueValidation = (numFields, value) => {
+          numFields.forEach((numField) => numField.max = value)
+        }
 
         const VALIDATIONS = {
           'itemSum': (fields, value, condition) => itemSumValidation(fields, value, condition),
-          /*'number': (numFields, metadata) => basicValidationNum(numFields, metadata),
-          'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
+          'optionMaxValue': (numFields, value) => optionMaxValueValidation(numFields, value),
+          /*'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
           'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)*/
         }
 
-        const VALIDATIONS_DEFAULT = () => console.log('Sin validaciones');
+        const VALIDATIONS_DEFAULT = () => console.log('Sin otras validaciones');
 
-        if(questionMetadata.validation) {
-          const [name, value, condition] = questionMetadata.validation.validation
-          const validations = VALIDATIONS[name]
-            ? VALIDATIONS[name](dataFields, value, condition)
-            : VALIDATIONS_DEFAULT;
+        if(questionMetadata.validation.length > 0) {
+          questionMetadata.validation.forEach(validation => {
+            const [name, value, condition] = validation
+            const validations = VALIDATIONS[name]
+              ? VALIDATIONS[name](dataFields, value, condition)
+              : VALIDATIONS_DEFAULT();
+  
+          })
         }
       
       </script>
