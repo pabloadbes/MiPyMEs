@@ -17,6 +17,21 @@
           <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Siguiente" />
         </div>
       </form>
+      <script>
+
+        questionType = ''
+        const BASIC_VALIDATIONS = {}
+        const BASIC_VALIDATIONS_DEFAULT = () => {
+          alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
+          btnGuardar.disabled = false;
+        }
+        
+        const basic_validations = BASIC_VALIDATIONS[questionType]
+          ? BASIC_VALIDATIONS[questionType](dataFields, questionMetadata)
+          : BASIC_VALIDATIONS_DEFAULT()
+
+
+      </script>
 {% else %}
 {% if question.subsection  %}
 <h3>{{ question.subsection }}</h3>
@@ -49,6 +64,7 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
+        console.log("METADATA")
         console.log(questionMetadata)
 
         form.addEventListener('submit', function() {
