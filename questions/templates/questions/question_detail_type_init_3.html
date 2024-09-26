@@ -30,10 +30,10 @@
     </div>
     <div class="col-md-10 mx-auto mb-3">
       <select class="form-control" id="city" name="city">
-        <option value="{{ city_registered.code }}" selected>{{ city_registered.id }} - {{ city_registered }}</option>
+        <option value="{{ city_registered.id }}" selected>{{ city_registered.id }} - {{ city_registered }}</option>
         
         {% for city in cities %}
-          <option value="{{ city.code }}">{{ city.id }} - {{ city }}</option>
+          <option value="{{ city.id }}">{{ city.id }} - {{ city }}</option>
         {% endfor %}
 
       </select>
