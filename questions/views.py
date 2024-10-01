@@ -85,7 +85,7 @@ class QuestionDetail(TemplateView):
         #                 print(children_option)
         try:
             with transaction.atomic():
-                if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type'] or "year" in ctx['template_type'] or "total" in ctx['template_type']:
+                if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type'] or "year" in ctx['template_type'] or "total" in ctx['template_type'] or "area" in ctx['template_type']:
                     for d in data:
                         response = Response.objects.create(value = data[d], option_id = d, survey_id = survey.id, created_by = user_id, updated_by = user_id)
                         response.save()
