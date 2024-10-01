@@ -30,9 +30,6 @@ def page_request(request):
       return aux[1]
    
 def ctx_questions(request):
-   print("*-**-*-**-*-*-*-*-*-*-*-*-*-*-*-**-**-*--*-*-*-*-*--**-")
-   print("*-**-*-**-*-*-*-*-*-*-*-*-*-*-*-**-**-*--*-*-*-*-*--**-")
-   print("*-**-*-**-*-*-*-*-*-*-*-*-*-*-*-**-**-*--*-*-*-*-*--**-")
    aux = request.__str__().split("/")
    question_id = aux[2]
    question = Question.objects.get(id = question_id)

@@ -64,8 +64,6 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
-        console.log("METADATA")
-        console.log(questionMetadata)
 
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
@@ -374,7 +372,6 @@
             total = document.getElementById("total");
             labelTotal = document.getElementById("total-label")
           } else {
-            console.log("NO HAY QUE COMPROBAR IGUALDAD, QUITAMOS DISABLEd, HACEMOS READONLY")
             numFields = Array.from(fields);
             total = numFields.pop();
             total.disabled = false;
