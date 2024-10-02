@@ -329,55 +329,24 @@
           })
         }
 
-        const basicValidationTxtSel = (checkFields, metadata) => {
-          //items es un array de arrays, cada array interno contiene las opciones del item
-          const options = Object.values(dataFields);
-          const items = Object.values(
-            options.reduce((acc, option) => {
-              // Si el grupo aún no existe, lo inicializamos como un array vacío
-              if (!acc[option.name]) {
-                acc[option.name] = [];
+        const basicValidationTxtSel = (fields, metadata) => {
+          console.log(fields)
+          console.log(metadata)
+          fields[0].disabled = false;
+          fields[0].addEventListener('input', function() {
+            if(fields[0].checkValidity()) {
+              for(let i=1; i<fields.length; i++) fields[i].disabled = false;
+            } else {
+              for(let i=1; i<fields.length; i++) {
+                fields[i].disabled = true;
+                btnGuardar.disabled = true;
               }
-              // Añadimos el objeto actual al grupo correspondiente
-              acc[option.name].push(option);
-              return acc;
-            }, {})
-          );
-          let child;
-          items[0].forEach(option => {
-            if(metadata[option.id]) child = document.getElementById(metadata[option.id]);
-          })
-          items[0].forEach(option => {
-            option.disabled = false;
-            option.addEventListener('change', function(){
-              if(this.checked) {
-                if(metadata[option.id]) {
-                  btnGuardar.disabled = true;
-                  child.disabled = false;
-                  child.addEventListener('input', function() {
-                    if(child.checkValidity()) {
-                      items[1].forEach(option => {
-                        option.disabled = false;
-                        option.addEventListener('change', function(){
-                          if(this.checked) {
-                            btnGuardar.disabled = false;
-                          }
-                        })
-                      })
-                    } else {
-                      btnGuardar.disabled = true;
-                      items[1].forEach(option => {
-                        option.disabled = true;
-                      })
-                    }
-                  })
-                }
-                else {
-                  btnGuardar.disabled = false;
-                  child.disabled = true;
-                }
-              }
+            }
+          for(let i=1; i<fields.length; i++) {
+            fields[i].addEventListener('change', function() {
+              if(this.checked) btnGuardar.disabled = false;
             })
+          }
           })
         }
 
