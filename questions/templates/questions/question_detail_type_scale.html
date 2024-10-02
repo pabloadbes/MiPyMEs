@@ -13,7 +13,8 @@
           </label>
         </div>
         <div class="col-md-3 mx-auto mb-3">
-          <select class="form-control data" id="{{option.0.id}}" name="{{option.0.id}}" disabled/>
+          <select class="form-control data" id="{{option.0.id}}" name="{{option.0.id}}" 
+                  required disabled/>
             <option selected>Elija un valor</option>
             <option value="0">0</option>
             <option value="1">1</option>
@@ -45,7 +46,9 @@
             </label>
           </div>
           <div class="col-md-9 mx-auto mb-3">
-            <input type="text" class="form-control" id="{{option.2.0.1.0.id}}" name="{{option.2.0.1.0.id}}" disabled/>
+            <input type="text" class="form-control" id="{{option.2.0.1.0.id}}" name="{{option.2.0.1.0.id}}" 
+                  pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü"
+                  required disabled/>
           </div>
         </div>
       {% else %}
