@@ -435,11 +435,72 @@
           numFields.forEach((numField) => numField.max = value)
         }
 
+        const calculateAverageNextQuestionValidation = (numFields, value, condition) => {
+          console.log(numFields);
+          console.log(value);
+          console.log(condition);
+          /*const divTotal = document.getElementById("total-div");
+          //const form = document.getElementById("form")
+          let total;
+          let labelTotal;
+          if(condition == '=') {
+            numFields = fields;
+            divTotal.innerHTML=
+            `
+              <div class="row">
+                <div class="col-md-9 mx-auto mb-3">
+                  <label id="total-label" for="total">
+                    <b>TOTAL</b>
+                  </label>
+                </div>
+                <div class="col-md-3 mx-auto mb-3">
+                  <input type="number" class="form-control total" id="total" name="total" disabled/>
+                </div>
+              </div>
+              <hr>
+            `;
+            total = document.getElementById("total");
+            labelTotal = document.getElementById("total-label")
+          } else {
+            numFields = Array.from(fields);
+            total = numFields.pop();
+            total.disabled = false;
+            total.setAttribute('readonly', true);
+          }
+          form.addEventListener("focusout", function(){
+            total.value = 0;
+            numFields.forEach(function(num) {
+              total.value = parseInt(total.value) + parseInt(num.value || 0)
+              switch(condition) {
+                case '=':
+                  if(total.value == value) {
+                    btnGuardar.disabled = false;
+                    labelTotal.style = "color:green"
+                    total.style = "color:green"
+                  } else {
+                    btnGuardar.disabled = true;
+                    labelTotal.style = "color:red"
+                    total.style = "color:red"
+                  }
+                  break;
+                case '>':
+                  if(total.value > value) {
+                    total.style = "color:green"
+                  } else {
+                    btnGuardar.disabled = true;
+                    total.style = "color:red"
+                  }
+                  break;
+              }
+            })
+          })*/
+        }
+
         const VALIDATIONS = {
           'itemSum': (fields, value, condition) => itemSumValidation(fields, value, condition),
           'optionMaxValue': (numFields, value) => optionMaxValueValidation(numFields, value),
-          /*'scale': (numFields, metadata) => basicValidationNum(numFields, metadata),
-          'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
+          'calculateAverageNextQuestion': (numFields, value) => calculateAverageNextQuestionValidation(numFields, value),
+          /*'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)*/
         }
 
