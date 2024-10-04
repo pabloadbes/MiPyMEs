@@ -227,21 +227,24 @@ class QuestionDetail(TemplateView):
                     variable_supervisor.save()
 
                 elif "init_2" in ctx['template_type']:
-                    item_entrevista = ctx['items'][0]
-                    item_fecha = ctx['items'][1]
-                    option_entrevista = item_entrevista[1][0][0]
-                    option_fecha = item_fecha[1][0][0]
-                    vble_entrevista = Variable_List.objects.get(option_id = item_entrevista[1][0][0].id)
-                    vble_fecha = Variable_List.objects.get(option_id = item_fecha[1][0][0].id)
-                    response_entrevista = Response.objects.create(value = data['entrevista'], option_id = option_entrevista.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                    response_fecha = Response.objects.create(value = data['fecha'], option_id = option_fecha.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
-                    variable_entrevista = Variable.objects.create(value = data['entrevista'], survey_id = survey.id, variable_list_id = vble_entrevista.id, created_by = user_id, updated_by = user_id)
-                    variable_fecha = Variable.objects.create(value = data['fecha'], survey_id = survey.id, variable_list_id = vble_fecha.id, created_by = user_id, updated_by = user_id)
 
+                    item_entrevista = ctx['items'][0]
+                    option_entrevista = item_entrevista[1][0][0]
+                    vble_entrevista = Variable_List.objects.get(option_id = item_entrevista[1][0][0].id)
+                    response_entrevista = Response.objects.create(value = data['entrevista'], option_id = option_entrevista.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                    variable_entrevista = Variable.objects.create(value = data['entrevista'], survey_id = survey.id, variable_list_id = vble_entrevista.id, created_by = user_id, updated_by = user_id)
                     response_entrevista.save()
-                    response_fecha.save()
                     variable_entrevista.save()
-                    variable_fecha.save()
+
+                    if 'fecha' in data:
+                        item_fecha = ctx['items'][1]
+                        option_fecha = item_fecha[1][0][0]
+                        vble_fecha = Variable_List.objects.get(option_id = item_fecha[1][0][0].id)
+                        response_fecha = Response.objects.create(value = data['fecha'], option_id = option_fecha.id, survey_id = survey.id, created_by = user_id, updated_by = user_id)
+                        variable_fecha = Variable.objects.create(value = data['fecha'], survey_id = survey.id, variable_list_id = vble_fecha.id, created_by = user_id, updated_by = user_id)
+
+                        response_fecha.save()
+                        variable_fecha.save()
 
                 elif "init_3" in ctx['template_type']:
                     item = ctx['items'][0]

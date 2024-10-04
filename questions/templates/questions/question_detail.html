@@ -7,20 +7,65 @@
       <div class="mb-5">
         <h1><b>{{ question|upper }}</b></h1>
       </div>
-        
       <form id="form" action="" method=post autocomplete="off">
         {% csrf_token %}
-            
+        <input id="question_metadata" name="question_metadata" type="hidden" value="{{question_metadata}}" />            
         {% include template_type %}
 
         <div class="mb-3">
-          <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Siguiente" />
+          <input type="submit" class="btn btn-primary btn-block" id= "btnGuardar" value="Siguiente" disabled/>
         </div>
       </form>
       <script>
 
-        questionType = ''
-        const BASIC_VALIDATIONS = {}
+        let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
+        const questionType = questionMetadata.question_type
+        const dataFields = document.querySelectorAll('.data');
+
+        console.log(dataFields)
+        const basicValidationInit2 = (fields, metadata) => {
+          fields[0].disabled = false;
+          fields[1].disabled = false;
+
+          for(let i=0; i<2; i++) {
+            fields[i].addEventListener('change', function() {
+              if(this.checked) {
+                if(this.value === '1') {
+                  fields[2].disabled = false;
+                  btnGuardar.disabled = true;
+                }
+                else {
+                  fields[2].disabled = true;
+                  btnGuardar.disabled = false;                  
+                }
+              }
+            })
+          }
+
+          fields[2].addEventListener('input', function() {
+            if(fields[2].checkValidity()) btnGuardar.disabled = false;
+            else btnGuardar.disabled = true;
+          })
+          /*fields[0].addEventListener('input', function() {
+            if(fields[0].checkValidity()) {
+              for(let i=1; i<fields.length; i++) fields[i].disabled = false;
+            } else {
+              for(let i=1; i<fields.length; i++) {
+                fields[i].disabled = true;
+                btnGuardar.disabled = true;
+              }
+            }
+          for(let i=1; i<fields.length; i++) {
+            fields[i].addEventListener('change', function() {
+              if(this.checked) btnGuardar.disabled = false;
+            })
+          }
+          })*/
+        }
+
+        const BASIC_VALIDATIONS = {
+          'init_2': (fields, metadata) => basicValidationInit2(fields, metadata)
+        }
         const BASIC_VALIDATIONS_DEFAULT = () => {
           alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
           btnGuardar.disabled = false;
@@ -66,7 +111,6 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
-
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
           btnGuardar.disabled = true;
@@ -364,11 +408,12 @@
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata),
           'double_select': (checkFields, metadata) => basicValidationDoubleSelect(checkFields, metadata),
           'double_check_txt': (checkFields, metadata) => basicValidationDoubleCheckTxt(checkFields, metadata),
-          'txt_sel': (fields, metadata) => basicValidationTxtSel(fields, metadata)
+          'txt_sel': (fields, metadata) => basicValidationTxtSel(fields, metadata),
         }
-        
+        console.log(questionType)
+
         const BASIC_VALIDATIONS_DEFAULT = () => {
-          alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
+          alert("asdsad " + questionType +" Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
           btnGuardar.disabled = false;
         }
         

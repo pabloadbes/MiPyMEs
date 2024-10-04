@@ -6,26 +6,28 @@
     </div>
     <div class="col-md-1 mx-auto mb-3">
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="entrevista" id="entrevista_realizada1" value="1">
+        <input class="form-check-input data" type="radio" name="entrevista" id="entrevista_realizada1" value="1"
+              required disabled/>
         <label class="form-check-label" for="entrevista_realizada1">SI</label>
       </div>
     </div>
     <div class="col-md-1 mx-auto mb-3">
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="entrevista" id="entrevista_realizada2" value="2">
+        <input class="form-check-input data" type="radio" name="entrevista" id="entrevista_realizada2" value="2"
+              required disabled/>
         <label class="form-check-label" for="entrevista_realizada2">NO</label>
       </div>
     </div>
   </div>
 
-  {% comment %} <hr> {% endcomment %}
   <div class="row">
     <div class="col-md-2 mx-auto mb-3">
       <label for="supervisor">Fecha de la entrevista</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <input type="date" class="form-control" 
-            id="fecha" name="fecha" value="" />
+      <input type="date" class="form-control data" 
+            id="fecha" name="fecha" value=""
+            required disabled/>
     </div>
   </div>
 
