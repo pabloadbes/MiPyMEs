@@ -49,13 +49,6 @@ class QuestionDetail(TemplateView):
         data.pop('question_metadata',0)
         data.pop('question_type',0)
 
-        print("#############################################")
-        print("#############################################")
-        print("POST")
-        print(data)
-        print("#############################################")
-        print("#############################################")
-
         try:
             with transaction.atomic():
                 if "text" in ctx['template_type'] or "number" in ctx['template_type'] or "scale" in ctx['template_type'] or "year" in ctx['template_type'] or "total" in ctx['template_type'] or "area" in ctx['template_type']:
