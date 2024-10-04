@@ -15,7 +15,8 @@
       <label for="district">Departamento</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <select class="form-control" id="district" name="district">
+      <select class="form-control data" id="district" name="district"
+              required>
         
         {% for district in districts %}
           <option value="{{ district.id }}">{{ district.id }} - {{ district }}</option>
@@ -29,7 +30,8 @@
       <label for="city">Localidad</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <select class="form-control" id="city" name="city">
+      <select class="form-control data" id="city" name="city"
+              required>
         <option value="{{ city_registered.id }}" selected>{{ city_registered.id }} - {{ city_registered }}</option>
         
         {% for city in cities %}
@@ -44,9 +46,11 @@
       <label for="due_id">Código Empresa</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <input type="text" class="form-control" 
+      <input type="text" class="form-control data" 
             id="due_id" name="due_id" 
-            value="{{ company.due_id }}" />
+            value="{{ company.due_id }}" 
+            pattern="[0-9]" title="Solo se permiten números"
+            required/>
     </div>
   </div>
   <div class="row">

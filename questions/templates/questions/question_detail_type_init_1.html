@@ -5,7 +5,8 @@
       <label for="surveyor">Encuestador</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <select class="form-control" id="surveyor" name="surveyor">
+      <select class="form-control data" id="surveyor" name="surveyor"
+              required>
         {% for surveyor in surveyors %}
           <option value="{{ surveyor.ENC_CODE }}">{{surveyor.ENC_CODE}} - {{ surveyor }}</option>
         {% endfor %}

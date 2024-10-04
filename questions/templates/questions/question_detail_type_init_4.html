@@ -17,7 +17,8 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="name" name="name" 
-            value="{{company.name}}" />
+            value="{{company.name}}"
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
   <p><b>Dirección de la Empresa</b></p>
@@ -28,7 +29,8 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="street" name="street" 
-            value="{{company.adress_street}}" />
+            value="{{company.adress_street}}"
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
   <div class=row>
@@ -37,8 +39,9 @@
     </div>
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
-            id="numer" name="number" 
-            value="{{company.address_number}}" />
+            id="number" name="number" 
+            value="{{company.address_number}}"
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
   <div class=row>
@@ -48,7 +51,8 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="zip_code" name="zip_code" 
-            value="{{company.zip_code}}" />
+            value="{{company.zip_code}}"
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
   <div class=row>
@@ -58,7 +62,8 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="phone" name="phone" 
-            value="{{company.phone}}" />
+            value="{{company.phone}}"
+            pattern="[0-9]"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
   <div class=row>
@@ -66,9 +71,10 @@
       <label for="email">E-mail</label>
     </div>
     <div class="col-md-10 mx-auto mb-3">
-      <input type="text" class="form-control" 
+      <input type="email" class="form-control" 
             id="email" name="email" 
-            value="{{company.email}}" />
+            value="{{company.email}}"
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ@.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
   <div class=row>
@@ -78,7 +84,8 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="web_page" name="web_page" 
-            value="{{company.web_page}}" />
+            value="{{company.web_page}}"
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>
 {% endblock %}

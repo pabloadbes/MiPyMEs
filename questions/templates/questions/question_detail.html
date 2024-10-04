@@ -22,6 +22,10 @@
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
 
+        const basicValidationInit1 = (fields, metadata) => {
+          btnGuardar.disabled = false;
+        }
+
         const basicValidationInit2 = (fields, metadata) => {
           fields[0].disabled = false;
           fields[1].disabled = false;
@@ -47,8 +51,19 @@
           })
         }
 
+        const basicValidationInit3 = (fields, metadata) => {
+          btnGuardar.disabled = false;
+        }
+
+        const basicValidationInit4 = (fields, metadata) => {
+          btnGuardar.disabled = false;
+        }
+
         const BASIC_VALIDATIONS = {
-          'init_2': (fields, metadata) => basicValidationInit2(fields, metadata)
+          'init_1': (fields, metadata) => basicValidationInit1(fields, metadata),
+          'init_2': (fields, metadata) => basicValidationInit2(fields, metadata),
+          'init_3': (fields, metadata) => basicValidationInit3(fields, metadata),
+          'init_4': (fields, metadata) => basicValidationInit4(fields, metadata)
         }
         const BASIC_VALIDATIONS_DEFAULT = () => {
           alert("Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
@@ -98,10 +113,11 @@
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
           btnGuardar.disabled = true;
-          if(questionMetadata['validation'][0][0] === 'calculateAverageNextQuestion') {
-            const [, value, condition] = questionMetadata['validation'][0];
-            calculateAverageNextQuestionValidation(dataFields, value, condition);
-          }
+          if(questionMetadata['validation'][0][0]) 
+            if(questionMetadata['validation'][0][0] === 'calculateAverageNextQuestion') {
+              const [, value, condition] = questionMetadata['validation'][0];
+              calculateAverageNextQuestionValidation(dataFields, value, condition);
+            }
         });
 
         const toEnableFieldTxt = (txtField, elementToEnable) => {
