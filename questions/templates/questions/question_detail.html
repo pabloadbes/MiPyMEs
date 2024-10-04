@@ -22,7 +22,6 @@
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
 
-        console.log(dataFields)
         const basicValidationInit2 = (fields, metadata) => {
           fields[0].disabled = false;
           fields[1].disabled = false;
@@ -410,7 +409,6 @@
           'double_check_txt': (checkFields, metadata) => basicValidationDoubleCheckTxt(checkFields, metadata),
           'txt_sel': (fields, metadata) => basicValidationTxtSel(fields, metadata),
         }
-        console.log(questionType)
 
         const BASIC_VALIDATIONS_DEFAULT = () => {
           alert("asdsad " + questionType +" Esta pregunta no tiene validaciones. Por favor seleccione la opción correspondiente.");
