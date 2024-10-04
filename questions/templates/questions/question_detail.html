@@ -45,6 +45,8 @@
       <form id="form" action="" method=post autocomplete="off">
         {% csrf_token %}
         <input id="question_metadata" name="question_metadata" type="hidden" value="{{question_metadata}}" />
+        <div id="hidden-div">
+        </div>
         {% include template_type %}
         <div id="total-div">
         </div>
@@ -65,11 +67,13 @@
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
 
+        console.log(questionMetadata['validation'])
         console.log(questionMetadata['validation'][0][0])
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
           btnGuardar.disabled = true;
           if(questionMetadata['validation'][0][0] === 'calculateAverageNextQuestion') {
+            console.log("hola")
             const [, value, condition] = questionMetadata['validation'][0];
             calculateAverageNextQuestionValidation(dataFields, value, condition);
           }
@@ -444,72 +448,38 @@
           console.log(numFields);
           console.log(value);
           console.log(condition);
-          /*let flag = false;
-          numFields.forEach(numField => {
-            numField.addEventListener('input', function() {
-              if(numflag = flag || parseInt(numField.value) > 0)
-            })
-            flag = flag || parseInt(numField.value) > 0
-          })
-          console.log("FLAG")
-          console.log(flag)*/
-
-
-          /*const divTotal = document.getElementById("total-div");
-          //const form = document.getElementById("form")
-          let total;
-          let labelTotal;
-          if(condition == '=') {
-            numFields = fields;
-            divTotal.innerHTML=
-            `
-              <div class="row">
-                <div class="col-md-9 mx-auto mb-3">
-                  <label id="total-label" for="total">
-                    <b>TOTAL</b>
-                  </label>
-                </div>
-                <div class="col-md-3 mx-auto mb-3">
-                  <input type="number" class="form-control total" id="total" name="total" disabled/>
-                </div>
-              </div>
-              <hr>
-            `;
-            total = document.getElementById("total");
-            labelTotal = document.getElementById("total-label")
-          } else {
-            numFields = Array.from(fields);
-            total = numFields.pop();
-            total.disabled = false;
-            total.setAttribute('readonly', true);
-          }
-          form.addEventListener("focusout", function(){
-            total.value = 0;
-            numFields.forEach(function(num) {
-              total.value = parseInt(total.value) + parseInt(num.value || 0)
-              switch(condition) {
-                case '=':
-                  if(total.value == value) {
-                    btnGuardar.disabled = false;
-                    labelTotal.style = "color:green"
-                    total.style = "color:green"
-                  } else {
-                    btnGuardar.disabled = true;
-                    labelTotal.style = "color:red"
-                    total.style = "color:red"
-                  }
-                  break;
-                case '>':
-                  if(total.value > value) {
-                    total.style = "color:green"
-                  } else {
-                    btnGuardar.disabled = true;
-                    total.style = "color:red"
-                  }
-                  break;
+          let sum = 0;
+          let average = 0;
+          let res;
+          numFields.forEach(numField => sum = sum + parseInt(numField.value) )
+          if(sum > 0) {
+            average = sum / 2;
+            const divHidden = document.getElementById("hidden-div");
+            surveyType = document.getElementById('survey').innerText.charAt(0);
+            if(average <= 5) res = 1;
+            else {
+              if(surveyType === 'S') {
+                console.log('Tipo S')
+                if(average > 5 && average <= 50) res = 2;
+                else if(average > 50 && average <= 150 ) res = 3;
+                else res = 4;
               }
-            })
-          })*/
+              else {
+                console.log('Tipo P')
+
+                if(average > 5 && average <= 9) res = 5;
+                else if(average > 9 && average <= 49) res = 6;
+                else if(average > 49 && average <= 150) res = 7;
+                else if(average > 150 && average <= 200) res = 8;
+                else res = 9;
+              }
+            }
+            console.log(res);  
+            divHidden.innerHTML=
+            `
+            <input type="hidden" id="next_question" name="${value}" value="${res}"/>
+            `;
+          }
         }
 
         const VALIDATIONS = {

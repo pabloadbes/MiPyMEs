@@ -137,7 +137,6 @@ class Survey(models.Model):
                                     passed_question = Survey_Questions.objects.get(survey_id = self.id, question_id = filter.dest)
                                     passed_question.survey_question_state_id = 3
                                     passed_question.save()
-
                     next_question = Survey_Questions.objects.all().filter(survey_id = self.id).filter(survey_question_state_id = 1).first()
                     self.set_next_question(next_question.question.id)
                     self.save()

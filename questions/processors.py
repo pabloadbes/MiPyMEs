@@ -34,7 +34,8 @@ def ctx_questions(request):
    question_id = aux[2]
    question = Question.objects.get(id = question_id)
    survey_id = aux[3]
-   company_id = Survey.objects.get(id = survey_id).company_id
+   survey = Survey.objects.get(id = survey_id)
+   company_id = survey.company_id
    company = Company.objects.get(id = company_id)
    template_type = "./question_detail_type_" + question.question_type.__str__() + ".html"
    question_metadata = dict(question_type = question.question_type.__str__())
@@ -92,6 +93,7 @@ def ctx_questions(request):
          question_metadata['validation'].append([val.name, val.value, val.condition_type.symbol])
    json_question_metadata = json.dumps(question_metadata)
    ctx = {}
+   ctx['survey_type'] = survey.survey_type.__str__()[0]
    ctx['company'] = company
    ctx['items'] = items
    ctx['template_type'] = template_type
