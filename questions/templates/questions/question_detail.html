@@ -65,9 +65,14 @@
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
 
+        console.log(questionMetadata['validation'][0][0])
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
           btnGuardar.disabled = true;
+          if(questionMetadata['validation'][0][0] === 'calculateAverageNextQuestion') {
+            const [, value, condition] = questionMetadata['validation'][0];
+            calculateAverageNextQuestionValidation(dataFields, value, condition);
+          }
         });
 
         const toEnableFieldTxt = (txtField, elementToEnable) => {
@@ -439,6 +444,17 @@
           console.log(numFields);
           console.log(value);
           console.log(condition);
+          /*let flag = false;
+          numFields.forEach(numField => {
+            numField.addEventListener('input', function() {
+              if(numflag = flag || parseInt(numField.value) > 0)
+            })
+            flag = flag || parseInt(numField.value) > 0
+          })
+          console.log("FLAG")
+          console.log(flag)*/
+
+
           /*const divTotal = document.getElementById("total-div");
           //const form = document.getElementById("form")
           let total;
@@ -499,8 +515,8 @@
         const VALIDATIONS = {
           'itemSum': (fields, value, condition) => itemSumValidation(fields, value, condition),
           'optionMaxValue': (numFields, value) => optionMaxValueValidation(numFields, value),
-          'calculateAverageNextQuestion': (numFields, value) => calculateAverageNextQuestionValidation(numFields, value),
-          /*'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
+          /*'calculateAverageNextQuestion': (numFields, value, condition) => calculateAverageNextQuestionValidation(numFields, value, condition),
+          'year': (numFields, metadata) => basicValidationYear(numFields, metadata),
           'select_one': (checkFields, metadata) => basicValidationSelectOne(checkFields, metadata)*/
         }
 
