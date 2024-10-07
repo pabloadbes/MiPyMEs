@@ -110,10 +110,11 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
+
         form.addEventListener('submit', function() {
           // Desactiva el botón de envío después de hacer clic
           btnGuardar.disabled = true;
-          if(questionMetadata['validation'][0][0]) 
+          if(questionMetadata['validation'].length > 0) 
             if(questionMetadata['validation'][0][0] === 'calculateAverageNextQuestion') {
               const [, value, condition] = questionMetadata['validation'][0];
               calculateAverageNextQuestionValidation(dataFields, value, condition);
