@@ -1,6 +1,15 @@
 {% extends 'core/base.html' %}
 {% load static %}
 {% block title %}Nueva Encuesta{% endblock %}
+
+{% block extrahead %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> {% endcomment %}
+  <script src="{% static 'core/vendor/jquery/jquery.min.js' %}"></script>
+
+  {{ form.media }}
+{% endblock %}
+
+
 {% block content %}
 {% include 'surveys/includes/surveys_menu.html'%}
 <main role="main">

@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'companies.apps.CompaniesConfig',
     'results.apps.ResultsConfig',
     'surveys.apps.SurveysConfig',
-    'team.apps.TeamConfig'
+    'team.apps.TeamConfig',
+    'django_select2'
 ]
 
 MIDDLEWARE = [
@@ -127,7 +128,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
 # Auth redirects
 
 LOGIN_REDIRECT_URL = 'home'
