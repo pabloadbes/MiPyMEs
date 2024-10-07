@@ -21,10 +21,16 @@
         let questionMetadata = JSON.parse(document.getElementById('question_metadata').value)
         const questionType = questionMetadata.question_type
         const dataFields = document.querySelectorAll('.data');
+        const btnGuardar = document.getElementById('btnGuardar');
 
         const basicValidationInit1 = (fields, metadata) => {
           btnGuardar.disabled = false;
         }
+
+        form.addEventListener('submit', function() {
+          // Desactiva el botón de envío después de hacer clic
+          btnGuardar.disabled = true;
+        });
 
         const basicValidationInit2 = (fields, metadata) => {
           fields[0].disabled = false;
