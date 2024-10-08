@@ -8,7 +8,7 @@ class Result(models.Model):
     ENC_COD = models.CharField(verbose_name="Código de Encuestador", max_length=3)
     SUP_COD = models.CharField(verbose_name="Código de Supervisor", max_length=3)
     RESPUESTA = models.IntegerField(verbose_name="Entrevista Realizada")
-    FECHA = models.DateField(verbose_name="Fecha de la Entrevista")
+    FECHA = models.DateField(verbose_name="Fecha de la Entrevista", blank=True, null=True)
     PROV = models.CharField(verbose_name="Provincia", max_length=20, blank=True, null=True)
     DEPTO = models.CharField(verbose_name="Departamento", max_length=30, blank=True, null=True)
     LOCALIDAD = models.CharField(verbose_name="Localidad", max_length=30, blank=True, null=True)
