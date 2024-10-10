@@ -81,5 +81,8 @@ class Company(models.Model):
         ordering = ["name", "created_at"]
     
     def __str__(self) -> str:
-        return self.cuit + " - " + self.name
+        if self.name:
+            return self.cuit + " - " + self.name
+        else:
+            return self.cuit
     

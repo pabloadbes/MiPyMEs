@@ -17,7 +17,11 @@
     <div class="col-md-10 mx-auto mb-3">
       <input type="text" class="form-control" 
             id="name" name="name" 
-            value="{{company.name}}"
+            {% if company.name %}
+              value="{{company.name}}"
+            {% else %}
+              value=""
+            {% endif %}
             pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ.,;: ]+"  title="Solo se permiten letras, números, letras acentuadas y la letra ü" />
     </div>
   </div>

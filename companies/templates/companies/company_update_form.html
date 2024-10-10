@@ -12,7 +12,8 @@
           {% if 'ok' in request.GET %}
             <p style="color:green;">
               Datos modificados.
-              <a href="{% url 'companies:company' company.id company.name|slugify %}">Haz click aquí para ver los cambios</a>.
+              <a href="{% url 'companies:company' company.id %}">Haz click aquí para ver los cambios</a>.
+              {% comment %} <a href="{% url 'companies:company' company.id company.name|slugify %}">Haz click aquí para ver los cambios</a>. {% endcomment %}
             </p>
           {% endif %}
             

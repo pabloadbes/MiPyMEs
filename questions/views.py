@@ -278,6 +278,10 @@ class QuestionDetail(TemplateView):
                     variable_cod_emp.save()
 
                 elif "init_4" in ctx['template_type']:
+                    print("*********************************")
+                    print("*********************************")
+                    print("DATA")
+                    print(data)
                     item = ctx['items'][0]
                     option_cuit = item[1][0][0]
                     option_name = item[1][1][0]

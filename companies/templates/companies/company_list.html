@@ -8,10 +8,11 @@
     {% for company in company_list %}
       <div class="row mt-3">
         <div class="col-md-9 mx-auto">
-          <h2 class="mb-4">{{company.name}}</h2>
+          <h2 class="mb-4">{% if company.name %} {{company.name}} {% endif %}</h2>
           <div>
             <p>{{company.city|striptags|safe|truncatechars:"200"}}</p>
-            <p><a href="{% url 'companies:company' company.id company.name|slugify %}">Leer más</a>
+            <p><a href="{% url 'companies:company' company.id %}">Leer más</a>
+            {% comment %} <p><a href="{% url 'companies:company' company.id company.name|slugify %}">Leer más</a> {% endcomment %}
               {% if request.user.is_staff %}
                 | <a href="{% url 'companies:update' company.id %}">Editar</a>
                 | <a href="{% url 'companies:delete' company.id %}">Borrar</a>

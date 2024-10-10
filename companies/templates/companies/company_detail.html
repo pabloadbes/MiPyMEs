@@ -7,12 +7,27 @@
   <div class="container">
     <div class="row mt-3">
       <div class="col-md-9 mx-auto">
-        <h2 class="section-heading mb-4">{{company.name}}</h2>
+        <h2 class="section-heading mb-4">Razón Social: 
+          {% if company.name %} {{company.name}} {% endif %} </h2>
         <div>
           <ul>
-            <li>{{company.cuit|safe}}</li>
-            <li>{{company.activity_code|safe}}</li>
-            <li>{{company.city|safe}}</li>
+            <li><b>CUIT:</b> {{company.cuit}}</li>
+            <li><b>Código de Actividad:</b> {{company.activity_code}}</li>
+            <li><b>Supervisor:</b> {{company.supervisor}}</li>
+            <li><b>Año del opertativo:</b> {{company.year}}</li>
+            <li><b>ID DUE:</b> {{company.due_id}}</li>
+            <li><b>Inactivo:</b> {{company.inactive}}</li>
+            <li><b>ID Original:</b> {{company.original_id}}</li>
+            <li><b>Calle / Ruta:</b> {{company.address_street}}</li>
+            <li><b>Número / Km:</b> {{company.address_number}}</li>
+            <li><b>Piso:</b> {{company.floor}}</li>
+            <li><b>Sector:</b> {{company.sector}}</li>
+            <li><b>Departamento:</b> {{company.dept}}</li>
+            <li><b>Localidad:</b> {{company.city}}</li>
+            <li><b>Código Postal:</b> {{company.zip_code}}</li>
+            <li><b>Teléfono:</b> {{company.phone}}</li>
+            <li><b>Email:</b> {{company.email}}</li>
+            <li><b>Web:</b> {{company.web_page}}</li>
             {% comment %} <li>{{company.district|safe}}</li> {% endcomment %}
           </ul>
           {% if request.user.is_staff %}
