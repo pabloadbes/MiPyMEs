@@ -96,6 +96,7 @@ class SurveyEndView(TemplateView):
     def post(self, request, *args, **kwargs):
         result = Result()
         survey_id = kwargs['pk']
+        survey = Survey.objects.get(id = survey_id)
         variables = Variable.objects.all().filter(survey_id = survey_id).order_by('id')
         for variable in variables:
             setattr(result, str(variable.variable_list), variable.value)
@@ -103,4 +104,6 @@ class SurveyEndView(TemplateView):
         setattr(result, 'updated_by', request.user)
         setattr(result, 'survey_id', survey_id)
         result.save()
+        survey.set_survey_state(2)
+        survey.save()
         return HttpResponseRedirect(reverse_lazy("home"))

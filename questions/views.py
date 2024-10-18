@@ -278,10 +278,6 @@ class QuestionDetail(TemplateView):
                     variable_cod_emp.save()
 
                 elif "init_4" in ctx['template_type']:
-                    print("*********************************")
-                    print("*********************************")
-                    print("DATA")
-                    print(data)
                     item = ctx['items'][0]
                     option_cuit = item[1][0][0]
                     option_name = item[1][1][0]
@@ -336,10 +332,6 @@ class QuestionDetail(TemplateView):
                     variable_email.save()
                     variable_web_page.save()
 
-
-
-            if survey.is_survey_complete():
-                survey.set_survey_state(2)
             survey.set_next_question(survey.calculate_next_question())
             if question.number > 0:
                 survey.set_progress(100 * question.number / survey.get_number_of_questions())
@@ -351,18 +343,7 @@ class QuestionDetail(TemplateView):
         except Exception as e:
             print(f"Error: No se guardó la respuesta {e}")
             return HttpResponseRedirect(reverse_lazy("surveys:surveys"))
-        # print("CANTIDAD DE PREGUNTAS")
-        # print(survey.get_number_of_questions())
-        # print("NÚMERO DE PREGUNTA")
-        # print(question.number)
         if question.number == survey.get_number_of_questions():
             return HttpResponseRedirect(reverse_lazy("surveys:end", args=[survey.id]))
         return HttpResponseRedirect(reverse_lazy("questions:question_detail", kwargs={'pk':survey.next_question, 'survey':survey.id}))
 
-
-# question types
-# 1:text
-# 2:number
-# 3:scale
-# 4:select
-# 5:multiple select

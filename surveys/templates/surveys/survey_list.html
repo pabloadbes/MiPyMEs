@@ -8,11 +8,15 @@
       {% for survey in survey_list %}
         <li class="nav-item list-group-item list-group-item-action">
           <a class="nav-link"  
-          {% comment %} {% if survey.next_question == 0 %}
-            href="{% url 'surveys:init' survey.id %}"  
-          {% else %} {% endcomment %}
-            href="{% url 'questions:question_detail' survey.next_question survey.id %}"
-          {% comment %} {% endif %} {% endcomment %}
+            
+            {% if survey.progress == 100 %}
+              href="{% url 'surveys:end' survey.id %}"
+            {% else %}
+              href="{% url 'questions:question_detail' survey.next_question survey.id %}"
+            {% endif %}
+              
+          href="{% url 'questions:question_detail' survey.next_question survey.id %}"
+          
               {% if survey.survey_state_id == 2 or survey.survey_state_id == 4 %}
                 style="pointer-events: none;cursor: default;" 
               {% endif %}
